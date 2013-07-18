@@ -1,0 +1,98 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<RevitAddIns>
+  <!-- 1_HelloWorld -->
+  <AddIn Type="Command">
+    <Text>Hello World</Text>
+    <FullClassName>IntroVb.HelloWorld</FullClassName>
+    <Assembly>C:\Revit 2014 API Training\Labs\1_Revit_API_Intro\SourceVB\bin\Debug\IntroVb.dll</Assembly>
+    <AddInId>8d4aebdc-43f2-4b6e-98df-3afd3f2001c7</AddInId>
+    <VendorId>ADNP</VendorId>
+    <VendorDescription>Autodesk, Inc. www.autodesk.com</VendorDescription>
+  </AddIn>
+  <AddIn Type="Command">
+    <Text>Hello World Simple</Text>
+    <FullClassName>IntroVb.HelloWorldSimple</FullClassName>
+    <Assembly>C:\Revit 2014 API Training\Labs\1_Revit_API_Intro\SourceVB\bin\Debug\IntroVb.dll</Assembly>
+    <AddInId>58a0b579-dc54-4045-8e17-b5a9c10dc28e</AddInId>
+    <VendorId>ADNP</VendorId>
+    <VendorDescription>Autodesk, Inc. www.autodesk.com</VendorDescription>
+  </AddIn>
+  <AddIn Type="Application">
+    <Name>Hello World App</Name>
+    <FullClassName>IntroVb.HelloWorldApp</FullClassName>
+    <Assembly>C:\Revit 2014 API Training\Labs\1_Revit_API_Intro\SourceVB\bin\Debug\IntroVb.dll</Assembly>
+    <AddInId>454a8953-b0a6-4860-b9bc-572fed6e3b43</AddInId>
+    <VendorId>ADNP</VendorId>
+    <VendorDescription>Autodesk, Inc. www.autodesk.com</VendorDescription>
+  </AddIn>
+  <AddIn Type="Command">
+    <Text>Command Data</Text>
+    <FullClassName>IntroVb.CommandData</FullClassName>
+    <Assembly>C:\Revit 2014 API Training\Labs\1_Revit_API_Intro\SourceVB\bin\Debug\IntroVb.dll</Assembly>
+    <AddInId>92d4cba7-ea66-415a-94fa-dd203dfc3422</AddInId>
+    <VendorId>ADNP</VendorId>
+    <VendorDescription>Autodesk, Inc. www.autodesk.com</VendorDescription>
+  </AddIn>
+  <!-- 2_DbElement -->
+  <AddIn Type="Command">
+    <Text>DB Element</Text>
+    <FullClassName>IntroVb.DBElement</FullClassName>
+    <Assembly>C:\Revit 2014 API Training\Labs\1_Revit_API_Intro\SourceVB\bin\Debug\IntroVb.dll</Assembly>
+    <AddInId>4aa1c59b-2b3c-433f-86a5-b527aa7fb442</AddInId>
+    <VendorId>ADNP</VendorId>
+    <VendorDescription>Autodesk, Inc. www.autodesk.com</VendorDescription>
+  </AddIn>
+  <!-- 3_ElementFiltering -->
+  <AddIn Type="Command">
+    <Text>Element Filtering</Text>
+    <FullClassName>IntroVb.ElementFiltering</FullClassName>
+    <Assembly>C:\Revit 2014 API Training\Labs\1_Revit_API_Intro\SourceVB\bin\Debug\IntroVb.dll</Assembly>
+    <AddInId>b71b1d9a-3ba0-4847-9101-46e82b0bce77</AddInId>
+    <VendorId>ADNP</VendorId>
+    <VendorDescription>Autodesk, Inc. www.autodesk.com</VendorDescription>
+  </AddIn>
+  <!-- 4_ElementModification -->
+  <AddIn Type="Command">
+    <Text>Element Modification</Text>
+    <FullClassName>IntroVb.ElementModification</FullClassName>
+    <Assembly>C:\Revit 2014 API Training\Labs\1_Revit_API_Intro\SourceVB\bin\Debug\IntroVb.dll</Assembly>
+    <AddInId>c7b3c994-cc0d-46e5-8b11-c9ceb02e3349</AddInId>
+    <VendorId>ADNP</VendorId>
+    <VendorDescription>Autodesk, Inc. www.autodesk.com</VendorDescription>
+  </AddIn>
+  <!-- 5_ModelCreation -->
+  <AddIn Type="Command">
+    <Text>Model Creation</Text>
+    <FullClassName>IntroVb.ModelCreation</FullClassName>
+    <Assembly>C:\Revit 2014 API Training\Labs\1_Revit_API_Intro\SourceVB\bin\Debug\IntroVb.dll</Assembly>
+    <AddInId>9d3fa8ac-71f9-48a3-a935-3771af1adbea</AddInId>
+    <VendorId>ADNP</VendorId>
+    <VendorDescription>Autodesk, Inc. www.autodesk.com</VendorDescription>
+  </AddIn>
+  <!-- 6_ExtensibleStorage -->
+  <AddIn Type="Command">
+    <Text>Extensible Storage</Text>
+    <FullClassName>IntroVb.ExtensibleStorage</FullClassName>
+    <Assembly>C:\Revit 2014 API Training\Labs\1_Revit_API_Intro\SourceVB\bin\Debug\IntroVb.dll</Assembly>
+    <AddInId>edd671b3-f178-49f0-88df-67211c9cf63c</AddInId>
+    <VendorId>ADNP</VendorId>
+    <VendorDescription>Autodesk, Inc. www.autodesk.com</VendorDescription>
+  </AddIn>
+  <!-- 7_SharedParameter -->
+  <AddIn Type="Command">
+    <Text>Shared Parameter</Text>
+    <FullClassName>IntroVb.SharedParameter</FullClassName>
+    <Assembly>C:\Revit 2014 API Training\Labs\1_Revit_API_Intro\SourceVB\bin\Debug\IntroVb.dll</Assembly>
+    <AddInId>78FF11A3-FFB2-4A16-9DB6-7B387C762410</AddInId>
+    <VendorId>ADNP</VendorId>
+    <VendorDescription>Autodesk, Inc. www.autodesk.com</VendorDescription>
+  </AddIn>
+  <AddIn Type="Command">
+    <Text>Per Document Parameter</Text>
+    <FullClassName>IntroVb.PerDocParameter</FullClassName>
+    <Assembly>C:\Revit 2014 API Training\Labs\1_Revit_API_Intro\SourceVB\bin\Debug\IntroVb.dll</Assembly>
+    <AddInId>2BA8896E-4846-401C-A71D-F5797DACE555</AddInId>
+    <VendorId>ADNP</VendorId>
+    <VendorDescription>Autodesk, Inc. www.autodesk.com</VendorDescription>
+  </AddIn>
+</RevitAddIns>
