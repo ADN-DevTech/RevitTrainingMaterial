@@ -76,11 +76,7 @@ Off we go!
 
 Good luck!
 
-AEC workgroup  
-
-Developer Technical Services  
-
-Autodesk Developer Network
+AEC workgroup - Developer Technical Services - Autodesk Developer Network
 
 March 2013
 
