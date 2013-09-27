@@ -3,7 +3,7 @@ ADN Revit API Training Material
 
 This folder contains the materials used by the Autodesk Developer Network ADN for Revit API Training.
 
-Tip: For easiest setup for the labs exercises, extract this folder under `C:\Revit 2014 API Training`.
+For easiest setup for the labs exercises, extract this folder under `C:\Revit 2014 API Training`.
 
 
 Labs
@@ -41,8 +41,8 @@ your project and references, or take a dependency on references with a
 processor architecture that matches the targeted processor architecture
 of your project.
 
-To overcome the above warning, we modified the Labs .csproj and .vbproj
-files by adding the following lines:
+To overcome the above warning, we modified the lab .csproj and .vbproj
+project files by adding the following lines:
 
     <PropertyGroup>
       <ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>
@@ -76,9 +76,9 @@ Off we go!
 
 Good luck!
 
-AEC workgroup
+AEC workgroup  
 
-Developer Technical Services
+Developer Technical Services  
 
 Autodesk Developer Network
 
