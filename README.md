@@ -1,9 +1,9 @@
-RevitAPI 2014 Training Folder ReadMe
-====================================
+ADN Revit API Training Material
+===============================
 
-This folder contains materials used for Revit API 2014 Training.
+This folder contains the materials used by the Autodesk Developer Network ADN for Revit API Training.
 
-Tip: For easiest set up for the labs exercises, extract this folder under `C:\Revit 2014 API Training`.
+Tip: For easiest setup for the labs exercises, extract this folder under `C:\Revit 2014 API Training`.
 
 
 Labs
@@ -15,7 +15,7 @@ Training Labs - a set of hands-on exercises that you work on during the class.
 Presentation
 ------------
 
-The slide set prresented during the training.
+The slide set presented during the training.
 
 
 Sample Drawing
@@ -24,11 +24,11 @@ Sample Drawing
 Sample Revit models used for lab exercises.
 
 
-Special Note about build warning
+Special Note about Build Warning
 --------------------------------
 
 If a Revit Application is built with "Any CPU" build configuration,
-you will receive a warning similar to the following when and the
+you will receive a warning similar to the following when the
 RevitAPI and RevitAPIUI assemblies are referenced:
 
 There was a mismatch between the processor architecture of the project
@@ -42,7 +42,7 @@ processor architecture that matches the targeted processor architecture
 of your project.
 
 To overcome the above warning, we modified the Labs .csproj and .vbproj
-files to add the following lines.
+files by adding the following lines:
 
     <PropertyGroup>
       <ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>
@@ -60,19 +60,18 @@ About these materials
 * Materials provided here are from our two day classroom trainings.
   You can also use this for self-learning.
 
-* This is to introduce you to the fundamentals of Revit API to get
-  you started. (Not meant to provide a complete coverage of
-  Revit API nor .NET Framework.)
+* This is to introduce you to the fundamentals of Revit API and not
+  meant to provide a complete coverage of Revit API nor the .NET Framework.
 
-* Materials are in C# and VB.NET. Labs exercises are provided
-  in two languages. Powerpoint presentation is mixed.
+* Materials are in C# and VB.NET. All lab exercises are provided
+  in both languages. The Powerpoint presentation is mixed.
 
 * Disclaimer: We are aware that materials is not free of errors.
-  We intend to correct them as we encounter. We hope this will
-  be still useful for you to get started with Revit API programming.
+  They are corrected as we encounter them. Hopefully this will
+  still be useful for you to get started with Revit API programming.
 
 
-Conclusion
+Off we go!
 ----------
 
 Good luck!
