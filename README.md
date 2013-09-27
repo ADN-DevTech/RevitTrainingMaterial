@@ -3,9 +3,7 @@ RevitAPI 2014 Training Folder ReadMe
 
 This folder contains materials used for Revit API 2014 Training.
 
-Tip: For easiest set up for the labs exercises, extract this folder under:
-
-C:\Revit 2014 API Training
+Tip: For easiest set up for the labs exercises, extract this folder under `C:\Revit 2014 API Training`.
 
 
 Labs
@@ -53,7 +51,6 @@ files to add the following lines.
     </PropertyGroup>
 
 For more information on this, please look at this blog post on the
-
 [processor architecture mismatch warning](http://thebuildingcoder.typepad.com/blog/2013/06/processor-architecture-mismatch-warning.html).
 
 
@@ -81,7 +78,9 @@ Conclusion
 Good luck!
 
 AEC workgroup
+
 Developer Technical Services
+
 Autodesk Developer Network
 
 March 2013
