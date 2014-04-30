@@ -274,7 +274,15 @@ Public Class DBElement
     End If
 
     ' (2) by name.  (Mark - most of instance has this parameter.) if you use this method, it will language specific. 
-    param = e.Parameter("Mark")
+    
+    '' Get' accessor of 'Public ReadOnly Property Parameter(paramName As String) As Autodesk.Revit.DB.Parameter' is obsolete: 
+    'This property is obsolete in Revit 2015, 
+
+    'param = e.Parameter("Mark")
+
+    ' updated for Revit 2015
+    param = e.LookupParameter("Mark")
+
     If param IsNot Nothing Then
       s += "Mark (by Name) = " + ParameterToString(param) + vbCr
     End If
@@ -292,7 +300,16 @@ Public Class DBElement
       s += "Type Comments (by BuiltInParameter) = " + ParameterToString(param) + vbCr
     End If
 
-    param = e.Parameter("Fire Rating")
+        
+    '' Get' accessor of 'Public ReadOnly Property Parameter(paramName As String) As Autodesk.Revit.DB.Parameter' is obsolete: 
+    'This property is obsolete in Revit 2015, 
+
+    'param = e.Parameter("Fire Rating")
+
+    ' updated for Revit 2015
+    param = e.LookupParameter("Fire Rating")
+
+    
     If param IsNot Nothing Then
       s += "Fire Rating (by Name) = " + ParameterToString(param) + vbCr
     End If

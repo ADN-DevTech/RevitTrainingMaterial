@@ -727,7 +727,21 @@ namespace FamilyCs
       {
         // no material with the given name.
         ElementId idMat = pMat.Id;
-        pSolid.get_Parameter("Material").Set(idMat);
+
+        // 'Autodesk.Revit.DB.Element.get_Parameter(string)' is obsolete: 
+        // 'This property is obsolete in Revit 2015, 
+        // as more than one parameter can have the same name on a given element. 
+        // Use Element.Parameters to obtain a complete list of parameters on this Element, 
+        // or Element.GetParameters(String) to get a list of all parameters by name, 
+        // or Element.LookupParameter(String) to return the first available parameter with the given name
+
+        //pSolid.get_Parameter("Material").Set(idMat);       
+
+        /// Updated for Revit 2015
+        /// 
+        pSolid.LookupParameter("Material").Set(idMat);
+
+
       }
     }
 
@@ -759,7 +773,13 @@ namespace FamilyCs
 
         // (2b.1) associate material parameter to the family parameter we just added
         //
-        Parameter paramMat = pSolid.get_Parameter("Material");
+        //  // 'Autodesk.Revit.DB.Element.get_Parameter(string)' is obsolete in Revit 2015
+        //Parameter paramMat = pSolid.get_Parameter("Material");
+
+        /// Updated for Revit 2015
+        /// 
+        Parameter paramMat = pSolid.LookupParameter("Material");
+
         pFamilyMgr.AssociateElementParameterToFamilyParameter(paramMat, famParamFinish);
 
         // (2b.2) for our convenience, let's add another type with Glass finish

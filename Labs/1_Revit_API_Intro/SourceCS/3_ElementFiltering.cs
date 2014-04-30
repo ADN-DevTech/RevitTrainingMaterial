@@ -470,19 +470,42 @@ namespace IntroCs
       if (doorFamily != null)
       {
         // If we have a family, then proceed with finding a type under Symbols property. 
-        FamilySymbolSet doorFamilySymbolSet = doorFamily.Symbols;
+        
+        //FamilySymbolSet doorFamilySymbolSet = doorFamily.Symbols;       // 'Autodesk.Revit.DB.Family.Symbols' is obsolete: 
+        // 'This property is obsolete in Revit 2015.  Use Family.GetFamilySymbolIds() instead.'
 
         // Iterate through the set of family symbols. 
-        FamilySymbolSetIterator doorTypeItr = doorFamilySymbolSet.ForwardIterator();
-        while (doorTypeItr.MoveNext())
+        //FamilySymbolSetIterator doorTypeItr = doorFamilySymbolSet.ForwardIterator();
+        //while (doorTypeItr.MoveNext())
+        //{
+        //  FamilySymbol dType = (FamilySymbol)doorTypeItr.Current;
+        //  if ((dType.Name == doorTypeName))
+        //  {
+        //    doorType2 = dType;  // Found it. 
+        //    break;
+        //  }
+        //}
+        
+        /// Following part is modified code for Revit 2015
+
+        ISet<ElementId> familySymbolIds = doorFamily.GetFamilySymbolIds();
+
+        if (familySymbolIds.Count > 0)        
         {
-          FamilySymbol dType = (FamilySymbol)doorTypeItr.Current;
-          if ((dType.Name == doorTypeName))
+          // Get family symbols which is contained in this family
+          foreach (ElementId id in familySymbolIds)
           {
-            doorType2 = dType;  // Found it. 
-            break;
+            FamilySymbol dType = doorFamily.Document.GetElement(id) as FamilySymbol;
+            if ((dType.Name == doorTypeName))
+            {
+              doorType2 = dType;  // Found it. 
+              break;
+            }
           }
         }
+
+        /// End of modified code for Revit 2015          
+        
       }
       return doorType2;
     }

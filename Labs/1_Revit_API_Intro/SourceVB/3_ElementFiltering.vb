@@ -442,18 +442,36 @@ Public Class ElementFiltering
 
     Dim doorType2 As Element = Nothing ' id of door type we are looking for. 
     If doorFamily IsNot Nothing Then
-      ' If we have a family, then proceed with finding a type under Symbols property.  
-      Dim doorFamilySymbolSet As FamilySymbolSet = doorFamily.Symbols
-
+      ' If we have a family, then proceed with finding a type under Symbols property. 
+ 
+      'Public ReadOnly Property Symbols As Autodesk.Revit.DB.FamilySymbolSet' is obsolete: 
+      'This property is obsolete in Revit 2015.  Use Family.GetFamilySymbolIds() instead.'.	
+      
+      'Dim doorFamilySymbolSet As FamilySymbolSet = doorFamily.Symbols
+      
       ' Iterate through the set of family symbols. 
-      Dim doorTypeItr As FamilySymbolSetIterator = doorFamilySymbolSet.ForwardIterator
-      While doorTypeItr.MoveNext
-        Dim dType As FamilySymbol = doorTypeItr.Current
-        If (dType.Name = doorTypeName) Then
-          doorType2 = dType ' Found it.
-          Exit While
-        End If
-      End While
+      
+      'Dim doorTypeItr As FamilySymbolSetIterator = doorFamilySymbolSet.ForwardIterator
+      'While doorTypeItr.MoveNext
+      '  Dim dType As FamilySymbol = doorTypeItr.Current
+      '  If (dType.Name = doorTypeName) Then
+      '    doorType2 = dType ' Found it.
+      '    Exit While
+      '  End If
+      'End While
+
+      ' updated for Revit 2015
+      Dim doorFamilySymbolIds As ISet(Of ElementId) = doorFamily.GetFamilySymbolIds()
+      
+        For Each id As ElementId In doorFamilySymbolIds
+                Dim dType As FamilySymbol = TryCast(doorFamily.Document.GetElement(id), FamilySymbol)
+                If (dType.Name = doorTypeName )Then
+                    doorType2 = dType ' Found it
+                    Exit For
+                End If
+        Next
+
+
     End If
 
     Return doorType2

@@ -722,7 +722,15 @@ Public Class RvtCmd_FamilyCreateColumnVisibility
       Return
     End If
     Dim idMat As ElementId = pMat.Id
-    pSolid.Parameter("Material").Set(idMat)
+    ''pSolid.Parameter("Material").Set(idMat)
+
+    ''  'Get' accessor of 'Public ReadOnly Property Parameter(paramName As String) As Autodesk.Revit.DB.Parameter' is obsolete: 
+    '' 'This property is obsolete in Revit 2015    
+
+    '' Updated for Revit 2015
+
+    pSolid.LookupParameter("Material").Set(idMat)
+
 
   End Sub
 
@@ -757,7 +765,16 @@ Public Class RvtCmd_FamilyCreateColumnVisibility
 
     ''  (2b.1) associate material parameter to the family parameter we just added
     ''
-    Dim paramMat As Parameter = pSolid.Parameter("Material")
+
+    'Dim paramMat As Parameter = pSolid.Parameter("Material")
+
+    ''  'Get' accessor of 'Public ReadOnly Property Parameter(paramName As String) As Autodesk.Revit.DB.Parameter' is obsolete: 
+    '' 'This property is obsolete in Revit 2015    
+
+    '' Updated for Revit 2015
+
+    Dim paramMat As Parameter = pSolid.LookupParameter("Material")
+    
     pFamilyMgr.AssociateElementParameterToFamilyParameter(paramMat, famParamFinish)
 
     ''  (2b.2) for our combeniencem, let's add another type with Glass finish

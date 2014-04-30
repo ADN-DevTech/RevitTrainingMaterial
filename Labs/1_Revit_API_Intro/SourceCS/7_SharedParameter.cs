@@ -197,7 +197,17 @@ namespace IntroCs
       {
         try
         {
-          definition = defGroup.Definitions.Create(defName, defType, visible);
+          //definition = defGroup.Definitions.Create(defName, defType, visible);
+          
+          // 'Autodesk.Revit.DB.Definitions.Create(string, Autodesk.Revit.DB.ParameterType, bool)' is obsolete: 
+          // 'This method is deprecated in Revit 2015. Use Create(Autodesk.Revit.DB.ExternalDefinitonCreationOptions) instead'
+	
+          // Modified code for Revit 2015
+
+          ExternalDefinitonCreationOptions extDefCrOptns = new ExternalDefinitonCreationOptions(defName, defType);
+          extDefCrOptns.Visible = true;
+          definition = defGroup.Definitions.Create(extDefCrOptns);
+
         }
         catch (Exception)
         {
@@ -276,8 +286,20 @@ namespace IntroCs
         return Result.Failed;
       }
       // for simplicity, access params by name rather than by GUID:
-      projInfoElem.get_Parameter(kParamNameVisible).Set(55);
-      projInfoElem.get_Parameter(kParamNameInvisible).Set(0);
+      //projInfoElem.get_Parameter(kParamNameVisible).Set(55);
+      //projInfoElem.get_Parameter(kParamNameInvisible).Set(0);
+
+      // 'Autodesk.Revit.DB.Element.get_Parameter(string)' is obsolete: 
+      // 'This property is obsolete in Revit 2015, as more than one parameter can have the same name on a given element. 
+      // Use Element.Parameters to obtain a complete list of parameters on this Element, 
+      // or Element.GetParameters(String) to get a list of all parameters by name, 
+      // or Element.LookupParameter(String) to return the first available parameter with the given name.
+
+      // modified code for Revit 2015
+      projInfoElem.LookupParameter(kParamNameVisible).Set(55);
+      projInfoElem.LookupParameter(kParamNameVisible).Set(0);
+
+
       return Result.Succeeded;
     }
 

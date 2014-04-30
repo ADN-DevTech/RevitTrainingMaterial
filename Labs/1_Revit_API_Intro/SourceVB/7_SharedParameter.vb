@@ -160,7 +160,19 @@ Class SharedParameter
     Dim definition As Definition = defGroup.Definitions.Item(defName)
     If definition Is Nothing Then
       Try
-        definition = defGroup.Definitions.Create(defName, defType, visible)
+
+        ''Public Function Create(name As String, type As Autodesk.Revit.DB.ParameterType, visible As Boolean) 
+        ''As Autodesk.Revit.DB.Definition' is obsolete: 
+        'This method is deprecated in Revit 2015. 
+        'Use Create(Autodesk.Revit.DB.ExternalDefinitonCreationOptions) instead'
+
+        'definition = defGroup.Definitions.Create(defName, defType, visible)
+
+        ' updated for Revit 2015
+        Dim extDefCrOptions As ExternalDefinitonCreationOptions = New ExternalDefinitonCreationOptions(defName, defType)
+        extDefCrOptions.Visible = True
+        definition = defGroup.Definitions.Create(extDefCrOptions)
+
       Catch generatedExceptionName As Exception
         definition = Nothing
       End Try
@@ -227,8 +239,16 @@ Public Class PerDocParameter
       Return Result.Failed
     End If
     ' for simplicity, access params by name rather than by GUID:
-    projInfoElem.Parameter(kParamNameVisible).Set(55)
-    projInfoElem.Parameter(kParamNameInvisible).Set(0)
+
+    '' 'Get' accessor of 'Public ReadOnly Property Parameter(paramName As String) As Autodesk.Revit.DB.Parameter' is obsolete: 
+    'This property is obsolete in Revit 2015
+
+    'projInfoElem.Parameter(kParamNameVisible).Set(55)  ' Revit 2014 or earlier
+    'projInfoElem.Parameter(kParamNameInvisible).Set(0) ' Revit 2014 or earlier
+
+    projInfoElem.LookupParameter(kParamNameVisible).Set(55)
+    projInfoElem.LookupParameter(kParamNameInvisible).Set(0)
+
     Return Result.Succeeded
   End Function
 

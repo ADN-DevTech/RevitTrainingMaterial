@@ -67,8 +67,18 @@ Public Class UISelection
 
     ' (1) pre-selecetd element is under UIDocument.Selection.Elemens. Classic method.  
     ' You can also modify this selection set. 
+    
+    'Autodesk.Revit.UI.Selection.SelElementSet' is obsolete: 
+    'This class is deprecated in Revit 2015. 
+    ' Use Selection.SetElementIds() and Selection.GetElementIds() instead.'
 
-    Dim selSet As SelElementSet = _uiDoc.Selection.Elements
+    'Dim selSet As SelElementSet = _uiDoc.Selection.Elements  ' For Revit 2014 or earlier
+
+    ' Updated for Revit 2015
+
+    Dim selSet As ICollection(Of ElementId) = _uiDoc.Selection.GetElementIds()
+
+    
     ShowElementList(selSet, "Pre-selection: ")
 
     Try

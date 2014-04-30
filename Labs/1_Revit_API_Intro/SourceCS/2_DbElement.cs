@@ -287,11 +287,24 @@ namespace IntroCs
       }
 
       // (2) by name. (Mark - most of instance has this parameter.) if you use this method, it will language specific. 
-      param = e.get_Parameter("Mark");
+      // param = e.get_Parameter("Mark");
+
+      // 'Autodesk.Revit.DB.Element.get_Parameter(string)' is obsolete: 
+      // 'This property is obsolete in Revit 2015, as more than one parameter can have the same name on a given element. 
+      // Use Element.Parameters to obtain a complete list of parameters on this Element, 
+      // or Element.GetParameters(String) to get a list of all parameters by name, 
+      // or Element.LookupParameter(String) to return the first available parameter with the given name.'
+      //
+      //
+
+      param = e.LookupParameter("Mark");
       if (param != null)
       {
         s += "Mark (by Name) = " + ParameterToString(param) + "\n";
       }
+      
+
+
 
       // Though the first one is the most commonly used, other possible methods are: 
       // (3) by definition 
@@ -307,7 +320,11 @@ namespace IntroCs
         s += "Type Comments (by BuiltInParameter) = " + ParameterToString(param) + "\n";
       }
 
-      param = e.get_Parameter("Fire Rating");
+      //param = e.get_Parameter("Fire Rating"); // Autodesk.Revit.DB.Element.get_Parameter(string)' is obsolete in 2015
+
+
+      param = e.LookupParameter("Fire Rating");
+
       if (param != null)
       {
         s += "Fire Rating (by Name) = " + ParameterToString(param) + "\n";

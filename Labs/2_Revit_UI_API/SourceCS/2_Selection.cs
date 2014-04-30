@@ -65,8 +65,33 @@ namespace UiCs
       // (1) pre-seleceted element is under UIDocument.Selection.Elemens. Classic method. 
       // You can also modify this selection set. 
 
-      SelElementSet selSet = _uiDoc.Selection.Elements;
-      ShowElementList(selSet, "Pre-selection: ");
+      //SelElementSet selSet = _uiDoc.Selection.Elements;
+      //ShowElementList(selectedElementIds, "Pre-selection: ");
+
+      // 'Autodesk.Revit.UI.Selection.SelElementSet' is obsolete: 
+      // 'This class is deprecated in Revit 2015. Use Selection.SetElementIds() 
+      // and Selection.GetElementIds() instead.'
+
+      // 'Autodesk.Revit.UI.Selection.Selection.Elements' is obsolete: 
+      // 'This property is deprecated in Revit 2015. 
+      // Use GetElementIds() and SetElementIds instead.'
+
+      /// Following part is modified code for Revit 2015
+      /// 
+
+      ICollection<ElementId> selectedElementIds = _uiDoc.Selection.GetElementIds();
+
+      // Display current number of selected elements
+      TaskDialog.Show("Revit", "Number of selected elements: " + selectedElementIds.Count.ToString());
+
+      // We need to re-write the following function 
+
+      ShowElementList(selectedElementIds, "Pre-selection: ");
+
+      
+      /// End of modified code for Revit 2015     
+
+      
 
       try
       {
@@ -363,14 +388,36 @@ namespace UiCs
     /// Helper function to display info from a list of elements passed onto. 
     /// (Same as Revit Intro Lab3.) 
     /// </summary>
+    /// 
+
+    // Following code snippet works for Revit 2014 / 2013
+    //public void ShowElementList(IEnumerable elems, string header)
+    //{
+    //  string s = "\n\n - Class - Category - Name (or Family: Type Name) - Id - " + "\r\n";
+
+    //  int count = 0;
+    //  foreach (Element e in elems)
+    //  {
+    //    count++;
+    //    s += ElementToString(e);
+    //  }
+
+    //  s = header + "(" + count + ")" + s;
+
+    //  TaskDialog.Show("Revit UI Lab", s);
+    //}
+
+    /// Changing this in Revit 2015  
+    /// 
     public void ShowElementList(IEnumerable elems, string header)
     {
       string s = "\n\n - Class - Category - Name (or Family: Type Name) - Id - " + "\r\n";
 
       int count = 0;
-      foreach (Element e in elems)
+      foreach (ElementId eId in elems)
       {
-        count++;
+        count++;        
+        Element e = _uiDoc.Document.GetElement(eId);
         s += ElementToString(e);
       }
 
@@ -378,6 +425,8 @@ namespace UiCs
 
       TaskDialog.Show("Revit UI Lab", s);
     }
+
+    /// end of Changing in Revit 2015
 
     /// <summary>
     /// Helper function: summarize an element information as a line of text, 
