@@ -141,7 +141,7 @@ namespace IntroCs
 
       //WallTypeSet wallTypes = rvtDoc.WallTypes; // 2013, deprecated in 2014
 
-      FilteredElementCollector wallTypes // 2014
+      FilteredElementCollector wallTypes // since 2014
         = new FilteredElementCollector( rvtDoc )
           .OfClass( typeof( WallType ) );
 

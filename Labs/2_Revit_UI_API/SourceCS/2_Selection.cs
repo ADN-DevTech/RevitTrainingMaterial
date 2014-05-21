@@ -1,6 +1,6 @@
 ﻿#region Copyright
 //
-// Copyright (C) 2010-2013 by Autodesk, Inc.
+// Copyright (C) 2010-2014 by Autodesk, Inc.
 //
 // Permission to use, copy, modify, and distribute this software in
 // object code form for any purpose and without fee is hereby granted,
@@ -522,8 +522,8 @@ namespace UiCs
       //if( r.GeometryObject is PlanarFace ) // 2011
 
       ElementId id = r.ElementId;
-      //Element e = _doc.get_Element(id); // For 2012
-      Element e = _doc.GetElement(id); // For 2013
+      //Element e = _doc.get_Element(id); // until 2012
+      Element e = _doc.GetElement(id); // since 2013
 
       if (e.GetGeometryObjectFromReference(r) is PlanarFace) 
       {

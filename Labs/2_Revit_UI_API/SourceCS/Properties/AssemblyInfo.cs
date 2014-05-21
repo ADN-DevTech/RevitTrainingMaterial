@@ -10,7 +10,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration( "" )]
 [assembly: AssemblyCompany( "Autodesk Inc." )]
 [assembly: AssemblyProduct( "Revit API UI Labs for C#" )]
-[assembly: AssemblyCopyright( "Copyright (C) 2010-2013 by Jeremy Tammik Autodesk Inc." )]
+[assembly: AssemblyCopyright( "Copyright (C) 2010-2014 by Jeremy Tammik Autodesk Inc." )]
 [assembly: AssemblyTrademark( "" )]
 [assembly: AssemblyCulture( "" )]
 
@@ -32,5 +32,5 @@ using System.Runtime.InteropServices;
 // You can specify all the values or you can default the Build and Revision Numbers 
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion( "2014.0.0.0" )]
-[assembly: AssemblyFileVersion( "2014.0.0.0" )]
+[assembly: AssemblyVersion( "2015.0.0.0" )]
+[assembly: AssemblyFileVersion( "2015.0.0.0" )]

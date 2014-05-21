@@ -1,6 +1,6 @@
 ﻿#Region "Copyright"
 '
-' Copyright (C) 2010-2013 by Autodesk, Inc.
+' Copyright (C) 2010-2014 by Autodesk, Inc.
 '
 ' Permission to use, copy, modify, and distribute this software in
 ' object code form for any purpose and without fee is hereby granted,
@@ -103,7 +103,7 @@ Public Class ElementFiltering
 
     ' Demonstrate obsolete method use first
 
-    'Dim wallTypes As WallTypeSet = _doc.WallTypes ' 2013
+    'Dim wallTypes As WallTypeSet = _doc.WallTypes ' since 2013
     Dim wallTypes As FilteredElementCollector = new FilteredElementCollector(_doc).OfClass(GetType(WallType))
     
 

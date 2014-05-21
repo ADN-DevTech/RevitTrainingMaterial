@@ -1,6 +1,6 @@
 ﻿#Region "Copyright"
 '
-' Copyright (C) 2010-2013 by Autodesk, Inc.
+' Copyright (C) 2010-2014 by Autodesk, Inc.
 '
 ' Permission to use, copy, modify, and distribute this software in
 ' object code form for any purpose and without fee is hereby granted,
@@ -163,9 +163,7 @@ Public Class UITaskDialog
     Dim res As TaskDialogResult = myDialog.Show()
     If TaskDialogResult.CommandLink4 = res Then
       Dim process As New System.Diagnostics.Process()
-      ' process.StartInfo.FileName = "http://docs.autodesk.com/REVIT/2011/ENU/landing.html";
-            'process.StartInfo.FileName = "http://wikihelp.autodesk.com/Revit/enu/2012"
-            process.StartInfo.FileName = "http://wikihelp.autodesk.com/Revit/enu/2013"
+      process.StartInfo.FileName = "http://www.autodesk.com/revitapi-help"
       process.Start()
     End If
 
