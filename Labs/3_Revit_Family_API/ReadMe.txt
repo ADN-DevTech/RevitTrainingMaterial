@@ -2,14 +2,14 @@ ReadMe -- Revit 2015 Family API Labs
 
 Contents:
 
-- FamilyLabs.sln – Visual Studio solution file that includes both VB.NET and C# version of projects. Indivisual solusion files are also provided in each project folder, FamilyLabsCS and FamilyLabsVB. 
-- FamilyLabsCS – C# source code directory
-- FamilyLabsVB – VB source code directory
-- DocsCS – Step-by-step instruction for each exercise in C#
-- DocsVB – Step-by-step instruction for each exercise in VB.NET 
+- FamilyLabs.sln - Visual Studio solution file that includes both VB.NET and C# version of projects. Indivisual solusion files are also provided in each project folder, FamilyLabsCS and FamilyLabsVB. 
+- FamilyLabsCS - C# source code directory
+- FamilyLabsVB - VB source code directory
+- DocsCS - Step-by-step instruction for each exercise in C#
+- DocsVB - Step-by-step instruction for each exercise in VB.NET 
 - FamilyLabsCS.addin - .addin manifest file for C# project
 - FamilyLabsVB.addin - .addin manifest file for VB.NET project 
-- ppt – Presentation
+- ppt - Presentation
 
 Source and Documentation Files:
 
