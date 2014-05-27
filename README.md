@@ -29,7 +29,7 @@ RevitAPI and RevitAPIUI assemblies are referenced:
 
 There was a mismatch between the processor architecture of the project 
 being built "MSIL" and the processor architecture of the reference 
-"RevitAPI, Version=2014.0.0.0, Culture=neutral, processorArchitecture=x86", 
+"RevitAPI, Version=2015.0.0.0, Culture=neutral, processorArchitecture=x86", 
 "AMD64". This mismatch may cause runtime failures. Please consider changing 
 the targeted processor architecture of your project through the 
 Configuration Manager so as to align the processor architectures between 
