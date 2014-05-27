@@ -1,11 +1,10 @@
-========================================
-  RevitAPI 2015 Training Folder ReadMe 
-========================================
+Revit 2015 API Training
+=======================
 
-This folder contains materials used for Revit API 2015 Training. 
+This repository contains material used for Revit 2015 API Training. 
 
-*** Tips: For easiest set up for the labs exercises, extract this 
-folder under:
+Tip: For easiest set up for the labs exercises, extract to the following folder:
+
     C:\Revit 2015 API Training
 
 
