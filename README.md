@@ -70,12 +70,9 @@ About this material
 
 Good luck!  
 
-AEC workgroup
-
-Developer Technical Services
-
-Autodesk Developer Network 
-
+AEC workgroup  
+Developer Technical Services  
+Autodesk Developer Network  
 March 2015 
 
 
