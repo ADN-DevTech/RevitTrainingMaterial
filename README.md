@@ -11,15 +11,15 @@ folder under:
 
 Labs
 ----
-Training Labs - a set of hands-on exercises during the class 
+Training Labs - a set of hands-on exercises during the class.
 
 Presentation 
 ------------
-ppt's used for the training 
+Slide deck used for the training.
 
 Sample Drawing
 --------------
-sample .rvt files used for labs. 
+Sample .RVT Revit models used for labs. 
 
 Special Note about build warning:
 ---------------------------------
@@ -47,13 +47,12 @@ files to add the following lines.
 </PropertyGroup>
 
 For more information on this, please look at this blog post:
+
 http://thebuildingcoder.typepad.com/blog/2013/06/processor-architecture-mismatch-warning.html
 
 
-//////////////////////////////////////////////////////////////////////
-
-About this materials ...
-
+About this material
+-------------------
 
 * Materials provided here are from our two day classroom trainings. 
   You can also use this for self-learning. 
@@ -69,16 +68,18 @@ About this materials ...
   We intend to correct them as we encounter. We hope this will 
   be still useful for you to get started with Revit API programming. 
 
-                         Good luck!  
+Good luck!  
 
 
-                                                      AEC workgroup 
-                                       Developer Technical Services
-                                         Autodesk Developer Network 
+AEC workgroup 
+Developer Technical Services
+Autodesk Developer Network 
 
-                                                          March 2015 
+March 2015 
 
-//////////////////////////////////////////////////////////////////////
+
+Copyright
+---------
 
 (C) Copyright 2013-2014 by Autodesk, Inc. 
 
