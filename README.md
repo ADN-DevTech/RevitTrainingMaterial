@@ -39,11 +39,11 @@ of your project.
 To overcome the above warning, we modified the Labs .csproj and .vbproj
 files to add the following lines.
 
-<PropertyGroup>
-  <ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>
-    None
-  </ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>
-</PropertyGroup>
+    <PropertyGroup>
+      <ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>
+        None
+      </ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>
+    </PropertyGroup>
 
 For more information on this, please look at this blog post:
 
