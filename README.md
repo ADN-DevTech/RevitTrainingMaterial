@@ -20,8 +20,8 @@ Sample Drawing
 --------------
 Sample .RVT Revit models used for labs. 
 
-Special Note about build warning:
----------------------------------
+Note about Build Warning
+------------------------
 If a Revit Application is built with "Any CPU" build configuration, 
 you will receive a warning similar to the following when and the 
 RevitAPI and RevitAPIUI assemblies are referenced:
