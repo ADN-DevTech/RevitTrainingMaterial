@@ -44,7 +44,7 @@ namespace IntroCs
   /// In this example, we store a fire rating value on all doors.
   /// Please also look at the FireRating Revit SDK sample.
   /// </summary>
-  [Transaction(TransactionMode.Manual)]
+  [Transaction( TransactionMode.Manual )]
   class SharedParameter : IExternalCommand
   {
     const string kSharedParamsGroupAPI = "API Parameters";
@@ -54,15 +54,15 @@ namespace IntroCs
     public Result Execute(
       ExternalCommandData commandData,
       ref string message,
-      ElementSet elements)
+      ElementSet elements )
     {
       UIDocument uidoc = commandData.Application.ActiveUIDocument;
-      Application app = commandData.Application.Application; 
+      Application app = commandData.Application.Application;
       Document doc = uidoc.Document;
 
       // Get the current shared params definition file
-      DefinitionFile sharedParamsFile = GetSharedParamsFile(app);
-      if (null == sharedParamsFile)
+      DefinitionFile sharedParamsFile = GetSharedParamsFile( app );
+      if( null == sharedParamsFile )
       {
         message = "Error getting the shared params file.";
         return Result.Failed;
@@ -70,14 +70,14 @@ namespace IntroCs
 
       // Get or create the shared params group
       DefinitionGroup sharedParamsGroup = GetOrCreateSharedParamsGroup(
-        sharedParamsFile, kSharedParamsGroupAPI);
-      if (null == sharedParamsGroup)
+        sharedParamsFile, kSharedParamsGroupAPI );
+      if( null == sharedParamsGroup )
       {
         message = "Error getting the shared params group.";
         return Result.Failed;
       }
 
-      Category cat = doc.Settings.Categories.get_Item(BuiltInCategory.OST_Doors);
+      Category cat = doc.Settings.Categories.get_Item( BuiltInCategory.OST_Doors );
 
       // Visibility of the new parameter:
       // Category.AllowsBoundParameters property indicates if a category can 
@@ -88,8 +88,8 @@ namespace IntroCs
 
       // Get or create the shared params definition
       Definition fireRatingParamDef = GetOrCreateSharedParamsDefinition(
-        sharedParamsGroup, ParameterType.Number, kSharedParamsDefFireRating, visible);
-      if (null == fireRatingParamDef)
+        sharedParamsGroup, ParameterType.Number, kSharedParamsDefFireRating, visible );
+      if( null == fireRatingParamDef )
       {
         message = "Error in creating shared parameter.";
         return Result.Failed;
@@ -100,33 +100,33 @@ namespace IntroCs
       CategorySet catSet = app.Create.NewCategorySet();
       try
       {
-        catSet.Insert(cat);
+        catSet.Insert( cat );
       }
-      catch (Exception)
+      catch( Exception )
       {
         message = string.Format(
           "Error adding '{0}' category to parameters binding set.",
-          cat.Name);
+          cat.Name );
         return Result.Failed;
       }
 
-      using (Transaction transaction = new Transaction(doc))
+      using( Transaction transaction = new Transaction( doc ) )
       {
-          transaction.Start("Bind parameter");
-          // Bind the param
-          try
-          {
-              Binding binding = app.Create.NewInstanceBinding(catSet);
-              // We could check if already bound, but looks like Insert will just ignore it in such case
-              doc.ParameterBindings.Insert(fireRatingParamDef, binding);
-              transaction.Commit();
-          }
-          catch (Exception ex)
-          {
-              message = ex.Message;
-              transaction.RollBack();
-              return Result.Failed;
-          }
+        transaction.Start( "Bind parameter" );
+        // Bind the param
+        try
+        {
+          Binding binding = app.Create.NewInstanceBinding( catSet );
+          // We could check if already bound, but looks like Insert will just ignore it in such case
+          doc.ParameterBindings.Insert( fireRatingParamDef, binding );
+          transaction.Commit();
+        }
+        catch( Exception ex )
+        {
+          message = ex.Message;
+          transaction.RollBack();
+          return Result.Failed;
+        }
       }
 
       return Result.Succeeded;
@@ -135,7 +135,7 @@ namespace IntroCs
     /// <summary>
     /// Helper to get shared parameters file.
     /// </summary>
-    public static DefinitionFile GetSharedParamsFile(Application app)
+    public static DefinitionFile GetSharedParamsFile( Application app )
     {
       // Get current shared params file name
       string sharedParamsFileName;
@@ -143,17 +143,17 @@ namespace IntroCs
       {
         sharedParamsFileName = app.SharedParametersFilename;
       }
-      catch (Exception ex)
+      catch( Exception ex )
       {
-        TaskDialog.Show("Get shared params file", "No shared params file set:" + ex.Message);
+        TaskDialog.Show( "Get shared params file", "No shared params file set:" + ex.Message );
         return null;
       }
 
-      if (0 == sharedParamsFileName.Length ||
-        !System.IO.File.Exists(sharedParamsFileName))
+      if( 0 == sharedParamsFileName.Length ||
+        !System.IO.File.Exists( sharedParamsFileName ) )
       {
         StreamWriter stream;
-        stream = new StreamWriter(kSharedParamsPath);
+        stream = new StreamWriter( kSharedParamsPath );
         stream.Close();
         app.SharedParametersFilename = kSharedParamsPath;
         sharedParamsFileName = app.SharedParametersFilename;
@@ -165,9 +165,9 @@ namespace IntroCs
       {
         sharedParametersFile = app.OpenSharedParameterFile();
       }
-      catch (Exception ex)
+      catch( Exception ex )
       {
-        TaskDialog.Show("Get shared params file", "Cannnot open shared params file:" + ex.Message);
+        TaskDialog.Show( "Get shared params file", "Cannnot open shared params file:" + ex.Message );
         sharedParametersFile = null;
       }
       return sharedParametersFile;
@@ -175,16 +175,16 @@ namespace IntroCs
 
     public static DefinitionGroup GetOrCreateSharedParamsGroup(
      DefinitionFile sharedParametersFile,
-     string groupName)
+     string groupName )
     {
-      DefinitionGroup g = sharedParametersFile.Groups.get_Item(groupName);
-      if (null == g)
+      DefinitionGroup g = sharedParametersFile.Groups.get_Item( groupName );
+      if( null == g )
       {
         try
         {
-          g = sharedParametersFile.Groups.Create(groupName);
+          g = sharedParametersFile.Groups.Create( groupName );
         }
-        catch (Exception)
+        catch( Exception )
         {
           g = null;
         }
@@ -196,26 +196,30 @@ namespace IntroCs
       DefinitionGroup defGroup,
       ParameterType defType,
       string defName,
-      bool visible)
+      bool visible )
     {
-      Definition definition = defGroup.Definitions.get_Item(defName);
-      if (null == definition)
+      Definition definition = defGroup.Definitions.get_Item( defName );
+      if( null == definition )
       {
         try
         {
           //definition = defGroup.Definitions.Create(defName, defType, visible);
-          
+
           // 'Autodesk.Revit.DB.Definitions.Create(string, Autodesk.Revit.DB.ParameterType, bool)' is obsolete: 
           // 'This method is deprecated in Revit 2015. Use Create(Autodesk.Revit.DB.ExternalDefinitonCreationOptions) instead'
-	
-          // Modified code for Revit 2015
 
-          ExternalDefinitonCreationOptions extDefCrOptns = new ExternalDefinitonCreationOptions(defName, defType);
-          extDefCrOptns.Visible = true;
-          definition = defGroup.Definitions.Create(extDefCrOptns);
+          // Modified code for Revit 2015
+          // and fixed typo in class name in Revit 2016
+
+          ExternalDefinitionCreationOptions opt
+            = new ExternalDefinitionCreationOptions(
+              defName, defType );
+
+          opt.Visible = true;
+          definition = defGroup.Definitions.Create( opt );
 
         }
-        catch (Exception)
+        catch( Exception )
         {
           definition = null;
         }
@@ -224,7 +228,7 @@ namespace IntroCs
     }
   }
 
-  [Transaction(TransactionMode.Automatic)]
+  [Transaction( TransactionMode.Automatic )]
   public class PerDocParameter : IExternalCommand
   {
     public const string kParamGroupName = "Per-doc Params";
@@ -234,61 +238,61 @@ namespace IntroCs
     public Result Execute(
       ExternalCommandData commandData,
       ref string message,
-      ElementSet elements)
+      ElementSet elements )
     {
       UIDocument uiDoc = commandData.Application.ActiveUIDocument;
       Application app = commandData.Application.Application;
       Document doc = uiDoc.Document;
 
       // get the current shared params definition file
-      DefinitionFile sharedParamsFile = SharedParameter.GetSharedParamsFile(app);
-      if (null == sharedParamsFile)
+      DefinitionFile sharedParamsFile = SharedParameter.GetSharedParamsFile( app );
+      if( null == sharedParamsFile )
       {
-        TaskDialog.Show("Per document parameter", "Error getting the shared params file.");
+        TaskDialog.Show( "Per document parameter", "Error getting the shared params file." );
         return Result.Failed;
       }
       // get or create the shared params group
-      DefinitionGroup sharedParamsGroup = SharedParameter.GetOrCreateSharedParamsGroup(sharedParamsFile, kParamGroupName);
-      if (null == sharedParamsGroup)
+      DefinitionGroup sharedParamsGroup = SharedParameter.GetOrCreateSharedParamsGroup( sharedParamsFile, kParamGroupName );
+      if( null == sharedParamsGroup )
       {
-        TaskDialog.Show("Per document parameter", "Error getting the shared params group.");
+        TaskDialog.Show( "Per document parameter", "Error getting the shared params group." );
         return Result.Failed;
       }
       // visible param
-      Definition docParamDefVisible = SharedParameter.GetOrCreateSharedParamsDefinition(sharedParamsGroup, ParameterType.Integer, kParamNameVisible, true);
-      if (null == docParamDefVisible)
+      Definition docParamDefVisible = SharedParameter.GetOrCreateSharedParamsDefinition( sharedParamsGroup, ParameterType.Integer, kParamNameVisible, true );
+      if( null == docParamDefVisible )
       {
-        TaskDialog.Show("Per document parameter", "Error creating visible per-doc parameter.");
+        TaskDialog.Show( "Per document parameter", "Error creating visible per-doc parameter." );
         return Result.Failed;
       }
       // invisible param
-      Definition docParamDefInvisible = SharedParameter.GetOrCreateSharedParamsDefinition(sharedParamsGroup, ParameterType.Integer, kParamNameInvisible, false);
-      if (null == docParamDefInvisible)
+      Definition docParamDefInvisible = SharedParameter.GetOrCreateSharedParamsDefinition( sharedParamsGroup, ParameterType.Integer, kParamNameInvisible, false );
+      if( null == docParamDefInvisible )
       {
-        TaskDialog.Show("Per document parameter", "Error creating invisible per-doc parameter.");
+        TaskDialog.Show( "Per document parameter", "Error creating invisible per-doc parameter." );
         return Result.Failed;
       }
       // bind the param
       try
       {
         CategorySet catSet = app.Create.NewCategorySet();
-        catSet.Insert(doc.Settings.Categories.get_Item(BuiltInCategory.OST_ProjectInformation));
-        Binding binding = app.Create.NewInstanceBinding(catSet);
-        doc.ParameterBindings.Insert(docParamDefVisible, binding);
-        doc.ParameterBindings.Insert(docParamDefInvisible, binding);
+        catSet.Insert( doc.Settings.Categories.get_Item( BuiltInCategory.OST_ProjectInformation ) );
+        Binding binding = app.Create.NewInstanceBinding( catSet );
+        doc.ParameterBindings.Insert( docParamDefVisible, binding );
+        doc.ParameterBindings.Insert( docParamDefInvisible, binding );
       }
-      catch (Exception e)
+      catch( Exception e )
       {
-        TaskDialog.Show("Per document parameter", "Error binding shared parameter: " + e.Message);
+        TaskDialog.Show( "Per document parameter", "Error binding shared parameter: " + e.Message );
         return Result.Failed;
       }
       // set the initial values
       // get the singleton project info element
-      Element projInfoElem = GetProjectInfoElem(doc);
+      Element projInfoElem = GetProjectInfoElem( doc );
 
-      if (null == projInfoElem)
+      if( null == projInfoElem )
       {
-        TaskDialog.Show("Per document parameter", "No project info elem found. Aborting command...");
+        TaskDialog.Show( "Per document parameter", "No project info elem found. Aborting command..." );
         return Result.Failed;
       }
       // for simplicity, access params by name rather than by GUID:
@@ -302,8 +306,8 @@ namespace IntroCs
       // or Element.LookupParameter(String) to return the first available parameter with the given name.
 
       // modified code for Revit 2015
-      projInfoElem.LookupParameter(kParamNameVisible).Set(55);
-      projInfoElem.LookupParameter(kParamNameVisible).Set(0);
+      projInfoElem.LookupParameter( kParamNameVisible ).Set( 55 );
+      projInfoElem.LookupParameter( kParamNameVisible ).Set( 0 );
 
 
       return Result.Succeeded;
@@ -313,15 +317,15 @@ namespace IntroCs
     /// Return the one and only project information element using Revit 2009 filtering
     /// by searching for the "Project Information" category. Only one such element exists.
     /// </summary>
-    public static Element GetProjectInfoElem(Document doc)
+    public static Element GetProjectInfoElem( Document doc )
     {
-      FilteredElementCollector collector = new FilteredElementCollector(doc);
-      collector.OfCategory(BuiltInCategory.OST_ProjectInformation);
+      FilteredElementCollector collector = new FilteredElementCollector( doc );
+      collector.OfCategory( BuiltInCategory.OST_ProjectInformation );
       IList<Element> elems = collector.ToElements();
 
-      Debug.Assert(elems.Count == 1, "There should be exactly one of this object in the project"); 
+      Debug.Assert( elems.Count == 1, "There should be exactly one of this object in the project" );
 
-      return elems[0]; 
+      return elems[0];
     }
   }
 }
