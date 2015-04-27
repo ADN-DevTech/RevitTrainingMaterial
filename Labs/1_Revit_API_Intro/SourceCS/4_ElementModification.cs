@@ -1,6 +1,6 @@
 ﻿#region Copyright
 //
-// Copyright (C) 2010-2014 by Autodesk, Inc.
+// Copyright (C) 2009-2015 by Autodesk, Inc.
 //
 // Permission to use, copy, modify, and distribute this software in
 // object code form for any purpose and without fee is hereby granted,
@@ -53,7 +53,7 @@ namespace IntroCs
   /// <summary>
   /// Element Modification 
   /// </summary>  
-  [Transaction(TransactionMode.Automatic)]
+  [Transaction(TransactionMode.Manual)]
   public class ElementModification : IExternalCommand
   {
     // Member variables 
@@ -76,20 +76,25 @@ namespace IntroCs
       // We have picked something. 
       Element e = _doc.GetElement(r);
 
-      // (1) element level modification 
-      // Modify element's properties, parameters, location. 
+      using (Transaction transaction = new Transaction(_doc))
+      {
+          transaction.Start("Modify Element");
+          // (1) element level modification 
+          // Modify element's properties, parameters, location. 
 
-      ModifyElementPropertiesWall(e); 
-      //ModifyElementPropertiesDoor(e);
-      _doc.Regenerate();
+          ModifyElementPropertiesWall(e);
+          //ModifyElementPropertiesDoor(e);
+          _doc.Regenerate();
 
-      // Select an object on a screen. (We'll come back to the selection in the UI Lab later.) 
-      Reference r2 = uiDoc.Selection.PickObject(ObjectType.Element, "Pick another element");
-      // We have picked something. 
-      Element e2 = _doc.GetElement(r2);
+          // Select an object on a screen. (We'll come back to the selection in the UI Lab later.) 
+          Reference r2 = uiDoc.Selection.PickObject(ObjectType.Element, "Pick another element");
+          // We have picked something. 
+          Element e2 = _doc.GetElement(r2);
 
-      // (2) you can also use transformation utility to move and rotate. 
-      ModifyElementByTransformUtilsMethods(e2);
+          // (2) you can also use transformation utility to move and rotate. 
+          ModifyElementByTransformUtilsMethods(e2);
+          transaction.Commit();
+      }
 
       return Result.Succeeded;
     }

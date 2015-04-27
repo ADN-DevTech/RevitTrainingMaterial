@@ -1,6 +1,6 @@
 ﻿#region Copyright
 //
-// Copyright (C) 2010-2014 by Autodesk, Inc.
+// Copyright (C) 2009-2015 by Autodesk, Inc.
 //
 // Permission to use, copy, modify, and distribute this software in
 // object code form for any purpose and without fee is hereby granted,
@@ -215,8 +215,8 @@ namespace UiCs
 
       foreach (ElementId id in idsModified)
       {
-        //  Wall aWall = rvtDoc.get_Element(id) as Wall; // until 2012
-        Wall aWall = rvtDoc.GetElement(id) as Wall; // since 2013
+        //  Wall aWall = rvtDoc.get_Element(id) as Wall; // For 2012
+        Wall aWall = rvtDoc.GetElement(id) as Wall; // For 2013
         CenterWindowDoor(rvtDoc, aWall);
       }
     }

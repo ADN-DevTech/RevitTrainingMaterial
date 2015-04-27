@@ -45,7 +45,7 @@
     <DocumentationFile>TemplateRevitVB.xml</DocumentationFile>
     <NoWarn>42016,41999,42017,42018,42019,42032,42036,42020,42021,42022,42353,42354,42355</NoWarn>
     <StartAction>Program</StartAction>
-    <StartProgram>$(ProgramFiles\Autodesk\Revit 2015\Revit.exe</StartProgram>
+    <StartProgram>$(ProgramFiles)\Autodesk\Revit 2016\Revit.exe</StartProgram>
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
@@ -58,17 +58,17 @@
     <DocumentationFile>TemplateRevitVB.xml</DocumentationFile>
     <NoWarn>42016,41999,42017,42018,42019,42032,42036,42020,42021,42022,42353,42354,42355</NoWarn>
     <StartAction>Program</StartAction>
-    <StartProgram>$(ProgramFiles)\Autodesk\Revit 2015\Revit.exe</StartProgram>
+    <StartProgram>$(ProgramFiles)\Autodesk\Revit 2016\Revit.exe</StartProgram>
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="RevitAPI">
-      <HintPath>\RevitAPI.dll</HintPath>
+      <HintPath>C:\Program Files\Autodesk\Revit 2016\RevitAPI.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="RevitAPIUI">
-      <HintPath>\RevitAPIUI.dll</HintPath>
+      <HintPath>C:\Program Files\Autodesk\Revit 2016\RevitAPIUI.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="System" />
@@ -140,7 +140,7 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.VisualBasic.targets" />
   <Target Name="AfterClean">
-    <Delete Files="$(AppData)\Autodesk\REVIT\Addins\2015\IntroVb.addin" />
+    <Delete Files="$(AppData)\Autodesk\REVIT\Addins\2016\IntroVb.addin" />
   </Target>
   <PropertyGroup>
     <PostBuildEvent>

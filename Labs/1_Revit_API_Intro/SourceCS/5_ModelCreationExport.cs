@@ -1,6 +1,6 @@
 ﻿#region "Copyright"
 //
-// Copyright (C) 2010-2014 by Autodesk, Inc.
+// Copyright (C) 2009-2015 by Autodesk, Inc.
 //
 // Permission to use, copy, modify, and distribute this software in
 // object code form for any purpose and without fee is hereby granted,
@@ -52,7 +52,7 @@ using IntroCs;
 
 namespace IntroCs
 {
-  [Transaction(TransactionMode.Automatic)]
+  [Transaction(TransactionMode.Manual)]
   public class ModelCreationExport : IExternalCommand
   {
     // Member variables 
@@ -67,9 +67,15 @@ namespace IntroCs
       _app = rvtUIApp.Application;
       _doc = uiDoc.Document;
 
-      // Let's make a simple "house" composed of four walls, a window 
-      // and a door. 
-      CreateHouse(_doc);
+      using (Transaction transaction = new Transaction(_doc))
+      {
+          transaction.Start("Create House");
+          // Let's make a simple "house" composed of four walls, a window 
+          // and a door. 
+          CreateHouse(_doc);
+
+          transaction.Commit();
+      }
 
       return Result.Succeeded;
 
@@ -422,7 +428,7 @@ namespace IntroCs
         Level level2 = rvtDoc.GetElement(idLevel2) as Level; // since 2013
 
       // Footprint to morel curve mapping  
-      ModelCurveArray mapping = new ModelCurveArray();
+      ModelCurveArray mapping;
 
       // Create a roof.
       FootPrintRoof aRoof = rvtDoc.Create.NewFootPrintRoof(footPrint, level2, roofType, out mapping);
