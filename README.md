@@ -2,7 +2,7 @@
 
 This repository contains the ADN Revit API Labs, the material used for Revit API training classes. 
 
-Tip: For easiest set up of the labs exercises, extract to the following folder:
+Tip: For easiest set-up of the labs exercises, extract to the following folder:
 
     C:\Revit 2016 API Training
 
