@@ -44,7 +44,7 @@ namespace IntroCs
   /// <summary>
   /// Hello World #1 - A minimum Revit external command. 
   /// </summary>
-  [Autodesk.Revit.Attributes.Transaction(Autodesk.Revit.Attributes.TransactionMode.Automatic)]
+  [Autodesk.Revit.Attributes.Transaction(Autodesk.Revit.Attributes.TransactionMode.Manual)]
   public class HelloWorld : Autodesk.Revit.UI.IExternalCommand
   {
     public Autodesk.Revit.UI.Result Execute(
@@ -63,7 +63,7 @@ namespace IntroCs
   /// <summary>
   /// Hello World #2 - simplified without full namespace.
   /// </summary>
-  [Transaction(TransactionMode.Automatic)]
+  [Transaction(TransactionMode.Manual)]
   public class HelloWorldSimple : IExternalCommand
   {
     public Result Execute(
@@ -109,7 +109,7 @@ namespace IntroCs
   /// commandData is the topmost object and 
   /// provides the entry point to the Revit model. 
   /// </summary>
-  [Transaction(TransactionMode.Automatic)]
+  [Transaction(TransactionMode.Manual)]
   public class CommandData : IExternalCommand
   {
     public Result Execute(
@@ -141,7 +141,7 @@ namespace IntroCs
 
       //WallTypeSet wallTypes = rvtDoc.WallTypes; // 2013, deprecated in 2014
 
-      FilteredElementCollector wallTypes // since 2014
+      FilteredElementCollector wallTypes // 2014
         = new FilteredElementCollector( rvtDoc )
           .OfClass( typeof( WallType ) );
 

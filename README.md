@@ -1,11 +1,11 @@
-Revit 2015 API Training
+Revit 2016 API Training
 =======================
 
-This repository contains material used for Revit 2015 API Training. 
+This repository contains material used for Revit 2016 API Training. 
 
 Tip: For easiest set up for the labs exercises, extract to the following folder:
 
-    C:\Revit 2015 API Training
+    C:\Revit 2016 API Training
 
 
 Labs
@@ -28,7 +28,7 @@ RevitAPI and RevitAPIUI assemblies are referenced:
 
 There was a mismatch between the processor architecture of the project 
 being built "MSIL" and the processor architecture of the reference 
-"RevitAPI, Version=2015.0.0.0, Culture=neutral, processorArchitecture=x86", 
+"RevitAPI, Version=2016.0.0.0, Culture=neutral, processorArchitecture=x86", 
 "AMD64". This mismatch may cause runtime failures. Please consider changing 
 the targeted processor architecture of your project through the 
 Configuration Manager so as to align the processor architectures between 
@@ -73,13 +73,13 @@ AEC workgroup
 Developer Technical Services  
 Autodesk Developer Network  
 
-May 2014 
+March 2015 
 
 
 Copyright
 ---------
 
-(C) Copyright 2013-2014 by Autodesk, Inc. 
+(C) Copyright 2015-2016 by Autodesk, Inc. 
 
 Permission to use, copy, modify, and distribute this software in
 object code form for any purpose and without fee is hereby granted, 

@@ -1,6 +1,6 @@
 ﻿#region Copyright
 //
-// Copyright (C) 2010-2014 by Autodesk, Inc.
+// Copyright (C) 2009-2015 by Autodesk, Inc.
 //
 // Permission to use, copy, modify, and distribute this software in
 // object code form for any purpose and without fee is hereby granted,
@@ -44,7 +44,7 @@ namespace IntroCs
   /// In this example, we store a fire rating value on all doors.
   /// Please also look at the FireRating Revit SDK sample.
   /// </summary>
-  [Transaction(TransactionMode.Automatic)]
+  [Transaction(TransactionMode.Manual)]
   class SharedParameter : IExternalCommand
   {
     const string kSharedParamsGroupAPI = "API Parameters";
@@ -110,17 +110,23 @@ namespace IntroCs
         return Result.Failed;
       }
 
-      // Bind the param
-      try
+      using (Transaction transaction = new Transaction(doc))
       {
-        Binding binding = app.Create.NewInstanceBinding(catSet);
-        // We could check if already bound, but looks like Insert will just ignore it in such case
-        doc.ParameterBindings.Insert(fireRatingParamDef, binding);
-      }
-      catch (Exception ex)
-      {
-        message = ex.Message;
-        return Result.Failed;
+          transaction.Start("Bind parameter");
+          // Bind the param
+          try
+          {
+              Binding binding = app.Create.NewInstanceBinding(catSet);
+              // We could check if already bound, but looks like Insert will just ignore it in such case
+              doc.ParameterBindings.Insert(fireRatingParamDef, binding);
+              transaction.Commit();
+          }
+          catch (Exception ex)
+          {
+              message = ex.Message;
+              transaction.RollBack();
+              return Result.Failed;
+          }
       }
 
       return Result.Succeeded;

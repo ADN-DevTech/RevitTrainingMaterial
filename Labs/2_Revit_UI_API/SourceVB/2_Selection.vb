@@ -1,6 +1,6 @@
 ﻿#Region "Copyright"
 '
-' Copyright (C) 2010-2014 by Autodesk, Inc.
+' Copyright (C) 2009-2015 by Autodesk, Inc.
 '
 ' Permission to use, copy, modify, and distribute this software in
 ' object code form for any purpose and without fee is hereby granted,
@@ -372,21 +372,17 @@ Public Class UISelection
   ''' Helper function to display info from a list of elements passed onto. 
   ''' (Same as Revit Intro Lab3.) 
   ''' </summary>
-  Sub ShowElementList(ByVal elems As IEnumerable, ByVal header As String)
-
-    Dim s As String = vbCr + vbCr + " - Class - Category - Name (or Family: Type Name) - Id - " + vbCr
-
-    Dim count As Integer = 0
-    For Each e As Element In elems
-      count += 1
-      s += ElementToString(e)
-    Next
-
-    s = header + "(" + count.ToString() + ")" + s
-
-    TaskDialog.Show("Revit UI Lab", s)
-
-  End Sub
+    Public Sub ShowElementList(elemIds As IEnumerable, header As String)
+        Dim s As String = vbLf & vbLf & " - Class - Category - Name (or Family: Type Name) - Id - " & vbCrLf
+        Dim count As Integer = 0
+        For Each eId As ElementId In elemIds
+            count += 1
+            Dim e As Element = Me._uiDoc.Document.GetElement(eId)
+            s += Me.ElementToString(e)
+        Next
+        s = header + "(" + count.ToString() + ")" + s
+        TaskDialog.Show("Revit UI Lab", s)
+    End Sub
 
   ''' <summary>
   ''' Helper function: summarize an element information as a line of text, 

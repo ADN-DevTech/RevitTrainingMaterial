@@ -1,6 +1,6 @@
 ﻿#region Copyright
 //
-// Copyright (C) 2010-2014 by Autodesk, Inc.
+// Copyright (C) 2009-2015 by Autodesk, Inc.
 //
 // Permission to use, copy, modify, and distribute this software in
 // object code form for any purpose and without fee is hereby granted,
@@ -46,7 +46,7 @@ namespace IntroCs
   /// <summary>
   /// DBElement - identifying element
   /// </summary>
-  [Transaction(TransactionMode.Automatic)]
+  [Transaction(TransactionMode.Manual)]
   public class DBElement : IExternalCommand
   {
     // Member variables 
@@ -217,7 +217,7 @@ namespace IntroCs
     {
       string s = string.Empty;
 
-      foreach (Parameter param in e.Parameters)
+      foreach (Parameter param in e.GetOrderedParameters())
       {
         string name = param.Definition.Name;
         // To get the value, we need to pause the param depending on the storage type 

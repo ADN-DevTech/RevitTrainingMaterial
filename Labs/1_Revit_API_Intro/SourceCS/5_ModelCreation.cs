@@ -1,6 +1,6 @@
 ﻿#region Copyright
 //
-// Copyright (C) 2010-2014 by Autodesk, Inc.
+// Copyright (C) 2009-2015 by Autodesk, Inc.
 //
 // Permission to use, copy, modify, and distribute this software in
 // object code form for any purpose and without fee is hereby granted,
@@ -50,7 +50,7 @@ namespace IntroCs
   /// <summary>
   /// Element Creation. 
   /// </summary>
-  [Transaction(TransactionMode.Automatic)]
+  [Transaction(TransactionMode.Manual)]
   public class ModelCreation : IExternalCommand
   {
     // Member variables 
@@ -320,7 +320,7 @@ namespace IntroCs
 
       // Footprint to morel curve mapping 
 
-      ModelCurveArray mapping = new ModelCurveArray();
+      ModelCurveArray mapping;
 
       // Create a roof. 
 
