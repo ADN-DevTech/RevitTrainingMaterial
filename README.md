@@ -1,6 +1,6 @@
 # Revit 2016 API Training
 
-This repository contains the ADN Revit API Labs, the material used for Revit API training classes. 
+This repository contains the ADN Revit API Labs, the material used for Revit API training classes.
 
 Tip: For easiest set-up of the labs exercises, extract to the following folder:
 
@@ -11,28 +11,28 @@ Tip: For easiest set-up of the labs exercises, extract to the following folder:
 
 Training Labs - a set of hands-on exercises during the class.
 
-## Presentation 
+## Presentation
 
 Slide deck used for the training.
 
 ## Sample Drawing
 
-Sample .RVT Revit models used for labs. 
+Sample .RVT Revit models used for labs.
 
 ## Note about Build Warning
 
-If a Revit Application is built with "Any CPU" build configuration, 
-you will receive a warning similar to the following when and the 
+If a Revit Application is built with "Any CPU" build configuration,
+you will receive a warning similar to the following when and the
 RevitAPI and RevitAPIUI assemblies are referenced:
 
-There was a mismatch between the processor architecture of the project 
-being built "MSIL" and the processor architecture of the reference 
-"RevitAPI, Version=2016.0.0.0, Culture=neutral, processorArchitecture=x86", 
-"AMD64". This mismatch may cause runtime failures. Please consider changing 
-the targeted processor architecture of your project through the 
-Configuration Manager so as to align the processor architectures between 
-your project and references, or take a dependency on references with a 
-processor architecture that matches the targeted processor architecture 
+There was a mismatch between the processor architecture of the project
+being built "MSIL" and the processor architecture of the reference
+"RevitAPI, Version=2016.0.0.0, Culture=neutral, processorArchitecture=x86",
+"AMD64". This mismatch may cause runtime failures. Please consider changing
+the targeted processor architecture of your project through the
+Configuration Manager so as to align the processor architectures between
+your project and references, or take a dependency on references with a
+processor architecture that matches the targeted processor architecture
 of your project.
 
 To overcome the above warning, we modified the Labs .csproj and .vbproj
@@ -51,43 +51,49 @@ http://thebuildingcoder.typepad.com/blog/2013/06/processor-architecture-mismatch
 
 ## About this material
 
-* The material provided here is used for our two-day classroom trainings. 
-  You can also use it for self-learning. 
+* The material provided here is used for our two-day classroom trainings.
+  You can also use it for self-learning.
 
-* This introduces you to the fundamentals of the Revit API to get 
+* This introduces you to the fundamentals of the Revit API to get
   you started. It does not provide a complete coverage of the entire
-  Revit API or .NET Framework. 
+  Revit API or .NET Framework.
 
-* Materials are in both C# and VB.NET. Labs exercises are provided 
-  in two languages. The accompanying PowerPoint presentation is mixed. 
+* Materials are in both C# and VB.NET. Labs exercises are provided
+  in two languages. The accompanying PowerPoint presentation is mixed.
 
-* Disclaimer: We are aware that this material is not completely free of errors. 
-  We correct them as we encounter them. 
+* Disclaimer: We are aware that this material is not completely free of errors.
+  We correct them as we encounter them.
 Please help us by forking this repository, fixing the issues you note and submitting a pull request for us to integrate your fixes back into the main repository. Thank you!
-We hope this will still be useful for you to get 
-started with Revit API programming. 
+We hope this will still be useful for you to get
+started with Revit API programming.
 
-Good luck!  
+Good luck!
 
-AEC workgroup  
-Developer Technical Services  
-Autodesk Developer Network  
+AEC workgroup
+Developer Technical Services
+Autodesk Developer Network
 
-March 2015 
+March 2015
 
-##Copyright
+## Copyright
 
-(C) Copyright 2009-2016 by Autodesk, Inc. 
+(C) Copyright 2009-2016 by Autodesk, Inc.
 
 Permission to use, copy, modify, and distribute this software in
-object code form for any purpose and without fee is hereby granted, 
-provided that the above copyright notice appears in all copies and 
+object code form for any purpose and without fee is hereby granted,
+provided that the above copyright notice appears in all copies and
 that both that copyright notice and the limited warranty and
-restricted rights notice below appear in all supporting 
+restricted rights notice below appear in all supporting
 documentation.
 
-AUTODESK PROVIDES THIS PROGRAM "AS IS" AND WITH ALL FAULTS. 
+AUTODESK PROVIDES THIS PROGRAM "AS IS" AND WITH ALL FAULTS.
 AUTODESK SPECIFICALLY DISCLAIMS ANY IMPLIED WARRANTY OF
-MERCHANTABILITY OR FITNESS FOR A PARTICULAR USE.  AUTODESK, INC. 
+MERCHANTABILITY OR FITNESS FOR A PARTICULAR USE.  AUTODESK, INC.
 DOES NOT WARRANT THAT THE OPERATION OF THE PROGRAM WILL BE
 UNINTERRUPTED OR ERROR FREE.
+
+
+## License
+
+This sample is licensed under the terms of the [MIT License](http://www.apache.org/licenses/LICENSE-2.0).
+Please see the [LICENSE](LICENSE) file for full details.
