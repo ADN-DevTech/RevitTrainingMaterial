@@ -1,27 +1,26 @@
-Revit 2016 API Training
-=======================
+# Revit 2016 API Training
 
-This repository contains material used for Revit 2016 API Training. 
+This repository contains the ADN Revit API Labs, the material used for Revit API training classes. 
 
-Tip: For easiest set up for the labs exercises, extract to the following folder:
+Tip: For easiest set up of the labs exercises, extract to the following folder:
 
     C:\Revit 2016 API Training
 
 
-Labs
-----
+## Labs
+
 Training Labs - a set of hands-on exercises during the class.
 
-Presentation 
-------------
+## Presentation 
+
 Slide deck used for the training.
 
-Sample Drawing
---------------
+## Sample Drawing
+
 Sample .RVT Revit models used for labs. 
 
-Note about Build Warning
-------------------------
+## Note about Build Warning
+
 If a Revit Application is built with "Any CPU" build configuration, 
 you will receive a warning similar to the following when and the 
 RevitAPI and RevitAPIUI assemblies are referenced:
@@ -50,22 +49,23 @@ For more information on this, please look at this blog post:
 http://thebuildingcoder.typepad.com/blog/2013/06/processor-architecture-mismatch-warning.html
 
 
-About this material
--------------------
+## About this material
 
-* Materials provided here are from our two day classroom trainings. 
-  You can also use this for self-learning. 
+* The material provided here is used for our two-day classroom trainings. 
+  You can also use it for self-learning. 
 
-* This is to introduce you to the fundamentals of Revit API to get 
-  you started. (Not meant to provide a complete coverage of 
-  Revit API nor .NET Framework.) 
+* This introduces you to the fundamentals of the Revit API to get 
+  you started. It does not provide a complete coverage of the entire
+  Revit API or .NET Framework. 
 
-* Materials are in C# and VB.NET. Labs exercises are provided 
-  in two languages. Powerpoint presentation is mixed. 
+* Materials are in both C# and VB.NET. Labs exercises are provided 
+  in two languages. The accompanying PowerPoint presentation is mixed. 
 
-* Disclaimer: We are aware that materials is not free of errors. 
-  We intend to correct them as we encounter. We hope this will 
-  be still useful for you to get started with Revit API programming. 
+* Disclaimer: We are aware that this material is not completely free of errors. 
+  We correct them as we encounter them. 
+Please help us by forking this repository, fixing the issues you note and submitting a pull request for us to integrate your fixes back into the main repository. Thank you!
+We hope this will still be useful for you to get 
+started with Revit API programming. 
 
 Good luck!  
 
@@ -75,11 +75,9 @@ Autodesk Developer Network
 
 March 2015 
 
+##Copyright
 
-Copyright
----------
-
-(C) Copyright 2015-2016 by Autodesk, Inc. 
+(C) Copyright 2009-2016 by Autodesk, Inc. 
 
 Permission to use, copy, modify, and distribute this software in
 object code form for any purpose and without fee is hereby granted, 
