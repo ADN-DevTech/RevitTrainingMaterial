@@ -1,5 +1,4 @@
 ﻿#Region "Copyright"
-'
 ' Copyright (C) 2009-2015 by Autodesk, Inc.
 '
 ' Permission to use, copy, modify, and distribute this software in
@@ -20,33 +19,33 @@
 ' Software - Restricted Rights) and DFAR 252.227-7013(c)(1)(ii)
 ' (Rights in Technical Data and Computer Software), as applicable.
 '
-' Written by M.Harada 
+' Written by M.Harada
 #End Region
 
 #Region "Imports"
-' Import the following name spaces in the project properties/references. 
-' Note: VB.NET has a slighly different way of recognizing name spaces than C#. 
-' If you explicitely set them in each .vb file, you will need to specify full name spaces. 
+' Import the following name spaces in the project properties/references.
+' Note: VB.NET has a slighly different way of recognizing name spaces than C#.
+' If you explicitely set them in each .vb file, you will need to specify full name spaces.
 
 'Imports System
 'Imports Autodesk.Revit.DB
 'Imports Autodesk.Revit.UI
-'Imports Autodesk.Revit.Attributes ' Specify this if you want to save typing for attributes. 
-'Imports Autodesk.Revit.ApplicationServices  ' This is for Revit Application Services 
+'Imports Autodesk.Revit.Attributes ' Specify this if you want to save typing for attributes.
+'Imports Autodesk.Revit.ApplicationServices  ' This is for Revit Application Services
 #End Region
 
 #Region "Description"
-' Revit Intro Lab - 1 
+' Revit Intro Lab - 1
 '
-' In this lab, you will learn how to "hook" your add-on program to Revit. 
+' In this lab, you will learn how to "hook" your add-on program to Revit.
 ' This command defines a minimum external command.
-' 
-' Explain about addin manifest. How to create GUID. 
-' Hello World in VB.NET is from page 367 of Developer Guide. 
+'
+' Explain about addin manifest. How to create GUID.
+' Hello World in VB.NET is from page 367 of Developer Guide.
 #End Region
 
 ''' <summary>
-''' Hello World #1 - A minimum Revit external command. 
+''' Hello World #1 - A minimum Revit external command.
 ''' </summary>
 <Autodesk.Revit.Attributes.Transaction(Autodesk.Revit.Attributes.TransactionMode.Manual)> _
 Public Class HelloWorld
@@ -69,7 +68,7 @@ End Class
 
 ''' <summary>
 ''' Hello World #2 - simplified without full namespace
-''' and use ReadOnly attribute.   
+''' and use ReadOnly attribute.
 ''' </summary>
 <Transaction(TransactionMode.ReadOnly)> _
 Public Class HelloWorldSimple
@@ -90,14 +89,14 @@ Public Class HelloWorldSimple
 End Class
 
 ''' <summary>
-''' Hello World #3 - minimum external application 
-''' difference: IExternalApplication instead of IExternalCommand. in addin manifest. 
-''' Use addin type "Application", use <Name/> instead of <Text/>. 
+''' Hello World #3 - minimum external application
+''' difference: IExternalApplication instead of IExternalCommand. in addin manifest.
+''' Use addin type "Application", use <Name/> instead of <Text/>.
 ''' </summary>
 Public Class HelloWorldApp
   Implements IExternalApplication
 
-  ' OnShutdown() - called when Revit ends. 
+  ' OnShutdown() - called when Revit ends.
 
   Public Function OnShutdown(ByVal app As UIControlledApplication) _
     As Result _
@@ -107,7 +106,7 @@ Public Class HelloWorldApp
 
   End Function
 
-  ' OnStartup() - called when Revit starts. 
+  ' OnStartup() - called when Revit starts.
 
   Public Function OnStartup(ByVal app As UIControlledApplication) _
     As Result _
@@ -123,7 +122,7 @@ End Class
 ''' <summary>
 ''' Command Arguments
 ''' Take a look at the command arguments. commandData is the top most
-''' object and the entry point to the Revit model. 
+''' object and the entry point to the Revit model.
 ''' </summary>
 
 <Transaction(TransactionMode.ReadOnly)> _
@@ -138,17 +137,17 @@ Public Class CommandData
     Implements IExternalCommand.Execute
 
     ' The first argument, commandData, is the top most in the object model.
-    ' You will get the necessary information from commandData. 
-    ' To see what's in there, print out a few data accessed from commandData 
-    ' 
-    ' Exercise: Place a break point at commandData and drill down the data. 
+    ' You will get the necessary information from commandData.
+    ' To see what's in there, print out a few data accessed from commandData
+    '
+    ' Exercise: Place a break point at commandData and drill down the data.
 
     Dim uiApp As UIApplication = commandData.Application
     Dim rvtApp As Application = uiApp.Application
     Dim uiDoc As UIDocument = uiApp.ActiveUIDocument
     Dim rvtDoc As Document = uiDoc.Document
 
-    ' Print out a few information that you can get from commandData 
+    ' Print out a few information that you can get from commandData
     Dim versionName As String = rvtApp.VersionName
     Dim documentTitle As String = rvtDoc.Title
 
@@ -157,7 +156,7 @@ Public Class CommandData
         "Version Name = " + versionName _
         + vbCr + "Document Title = " + documentTitle)
 
-    ' Print out a list of wall types available in the current rvt project. 
+    ' Print out a list of wall types available in the current rvt project.
 
     'Dim wallTypes As WallTypeSet = rvtDoc.WallTypes ' 2013, deprecated in 2014
 
@@ -177,9 +176,9 @@ Public Class CommandData
       "Revit Intro Lab",
       "Wall Types (in main instruction):" + vbCr + vbCr + s)
 
-    ' 2nd and 3rd arguments are when the command fails.  
-    ' 2nd - set a message to the user.   
-    ' 3rd - set elements to highlight. 
+    ' 2nd and 3rd arguments are when the command fails.
+    ' 2nd - set a message to the user.
+    ' 3rd - set elements to highlight.
 
     Return Result.Succeeded
 

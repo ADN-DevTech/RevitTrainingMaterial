@@ -1,5 +1,4 @@
 ﻿#region Copyright
-//
 // Copyright (C) 2009-2015 by Autodesk, Inc.
 //
 // Permission to use, copy, modify, and distribute this software in
@@ -20,8 +19,7 @@
 // Software - Restricted Rights) and DFAR 252.227-7013(c)(1)(ii)
 // (Rights in Technical Data and Computer Software), as applicable.
 //
-// Migrated to C# by Adam Nagy 
-// 
+// Migrated to C# by Adam Nagy
 #endregion // Copyright
 
 #region Namespaces
@@ -34,10 +32,10 @@ using Autodesk.Revit.UI.Selection;
 #endregion
 
 #region Description
-// Revit Intro Lab - 2 
-// 
-// In this lab, you will learn how an element is represended in Revit. 
-// Disclaimer: minimum error checking to focus on the main topic. 
+// Revit Intro Lab - 2
+//
+// In this lab, you will learn how an element is represended in Revit.
+// Disclaimer: minimum error checking to focus on the main topic.
 #endregion
 
 namespace IntroCs
@@ -48,7 +46,7 @@ namespace IntroCs
   [Transaction( TransactionMode.Manual )]
   public class DBElement : IExternalCommand
   {
-    // Member variables 
+    // Member variables
     Application _app;
     Document _doc;
 
@@ -57,81 +55,81 @@ namespace IntroCs
       ref string message,
       ElementSet elements )
     {
-      // Get the access to the top most objects. 
-      // Notice that we have UI and DB versions for application and Document. 
-      // (We list them both here to show two versions.) 
+      // Get the access to the top most objects.
+      // Notice that we have UI and DB versions for application and Document.
+      // (We list them both here to show two versions.)
 
       UIApplication uiApp = commandData.Application;
       UIDocument uiDoc = uiApp.ActiveUIDocument;
       _app = uiApp.Application;
       _doc = uiDoc.Document;
 
-      // (1) select an object on a screen. (We'll come back to the selection in the UI Lab later.) 
+      // (1) select an object on a screen. (We'll come back to the selection in the UI Lab later.)
       Reference r = uiDoc.Selection.PickObject( ObjectType.Element, "Pick an element" );
 
-      // We have picked something. 
+      // We have picked something.
       Element e = uiDoc.Document.GetElement( r );
 
-      // (2) let's see what kind of element we got. 
-      // Key properties that we need to check are: Class, Category and if an element is ElementType or not. 
+      // (2) let's see what kind of element we got.
+      // Key properties that we need to check are: Class, Category and if an element is ElementType or not.
 
       ShowBasicElementInfo( e );
 
-      // (3) now, we are going to identify each major types of element. 
+      // (3) now, we are going to identify each major types of element.
       IdentifyElement( e );
 
-      // Now look at other properties - important ones are parameters, locations and geometry. 
+      // Now look at other properties - important ones are parameters, locations and geometry.
 
-      // (4) first parameters. 
+      // (4) first parameters.
 
       ShowParameters( e, "Element Parameters: " );
 
-      // Check to see its type parameter as well 
+      // Check to see its type parameter as well
 
       ElementId elemTypeId = e.GetTypeId();
       //ElementType elemType = (ElementType)_doc.get_Element(elemTypeId); // 2012
       ElementType elemType = (ElementType) _doc.GetElement( elemTypeId ); // since 2013
       ShowParameters( elemType, "Type Parameters: " );
 
-      // Okay. we saw a set or parameters for a given element or element type. 
-      // How can we access to each parameters. For example, how can we get the value of "length" information? 
-      // Here is how: 
+      // Okay. we saw a set or parameters for a given element or element type.
+      // How can we access to each parameters. For example, how can we get the value of "length" information?
+      // Here is how:
 
       RetrieveParameter( e, "Element Parameter (by Name and BuiltInParameter): " );
-      // The same logic applies to the type parameter. 
+      // The same logic applies to the type parameter.
       RetrieveParameter( elemType, "Type Parameter (by Name and BuiltInParameter): " );
 
-      // (5) location 
+      // (5) location
       ShowLocation( e );
 
-      // (6) geometry - the last piece. (Optional) 
+      // (6) geometry - the last piece. (Optional)
       ShowGeometry( e );
 
-      // These are the common proerties. 
-      // There may be more properties specific to the given element class, 
-      // such as Wall.Width, .Flipped and Orientation. Expore using RevitLookup and RevitAPI.chm. 
+      // These are the common proerties.
+      // There may be more properties specific to the given element class,
+      // such as Wall.Width, .Flipped and Orientation. Expore using RevitLookup and RevitAPI.chm.
 
-      // We are done. 
+      // We are done.
 
       return Result.Succeeded;
     }
 
     /// <summary>
-    /// Show basic information about the given element. 
-    /// Note: we are intentionally including both element and element type 
-    /// here to compare the output on the same dialog. 
-    /// Compare, for example, the categories of element and element type. 
+    /// Show basic information about the given element.
+    /// Note: we are intentionally including both element and element type
+    /// here to compare the output on the same dialog.
+    /// Compare, for example, the categories of element and element type.
     /// </summary>
     public void ShowBasicElementInfo( Element e )
     {
-      // Let's see what kind of element we got. 
+      // Let's see what kind of element we got.
 
       string s = "You picked:"
         + "\r\nClass name = " + e.GetType().Name
         + "\r\nCategory = " + e.Category.Name
         + "\r\nElement id = " + e.Id.ToString();
 
-      // And check its type info. 
+      // And check its type info.
 
       //ElementType elemType = e.ObjectType; // in 2010
       ElementId elemTypeId = e.GetTypeId(); // since 2011
@@ -144,18 +142,18 @@ namespace IntroCs
         + " Category = " + elemType.Category.Name
         + " Element type id = " + elemType.Id.ToString();
 
-      // Show what we got. 
+      // Show what we got.
       TaskDialog.Show( "Basic Element Info", s );
     }
 
     /// <summary>
-    /// Identify the type of the element known to the UI. 
+    /// Identify the type of the element known to the UI.
     /// </summary>
     public void IdentifyElement( Element e )
     {
-      // An instance of a system family has a designated class. 
-      // You can use it identify the type of element. 
-      // e.g., walls, floors, roofs. 
+      // An instance of a system family has a designated class.
+      // You can use it identify the type of element.
+      // e.g., walls, floors, roofs.
 
       string s = "";
 
@@ -173,9 +171,9 @@ namespace IntroCs
       }
       else if( e is FamilyInstance )
       {
-        // An instance of a component family is all FamilyInstance. 
-        // We'll need to further check its category. 
-        // e.g., Doors, Windows, Furnitures. 
+        // An instance of a component family is all FamilyInstance.
+        // We'll need to further check its category.
+        // e.g., Doors, Windows, Furnitures.
         if( e.Category.Id.IntegerValue == (int) BuiltInCategory.OST_Doors )
         {
           s = "Door";
@@ -190,11 +188,11 @@ namespace IntroCs
         }
         else
         {
-          // e.g. Plant 
+          // e.g. Plant
           s = "Component family instance";
         }
       }
-      // Check the base class. e.g., CeilingAndFloor. 
+      // Check the base class. e.g., CeilingAndFloor.
       else if( e is HostObject )
       {
         s = "System family instance";
@@ -219,8 +217,8 @@ namespace IntroCs
       foreach( Parameter param in e.GetOrderedParameters() )
       {
         string name = param.Definition.Name;
-        // To get the value, we need to pause the param depending on the storage type 
-        // see the helper function below 
+        // To get the value, we need to pause the param depending on the storage type
+        // see the helper function below
         string val = ParameterToString( param );
         s += "\r\n" + name + " = " + val;
       }
@@ -240,7 +238,7 @@ namespace IntroCs
         return val;
       }
 
-      // To get to the parameter value, we need to pause it depending on its storage type 
+      // To get to the parameter value, we need to pause it depending on its storage type
 
       switch( param.StorageType )
       {
@@ -267,31 +265,31 @@ namespace IntroCs
     }
 
     /// <summary>
-    /// Examples of retrieving a specific parameter indivisually 
-    /// (hard coded for simplicity; This function works best 
+    /// Examples of retrieving a specific parameter indivisually
+    /// (hard coded for simplicity; This function works best
     /// with walls and doors).
     /// </summary>
     public void RetrieveParameter( Element e, string header )
     {
       string s = string.Empty;
 
-      // As an experiment, let's pick up some arbitrary parameters. 
-      // Comments - most of instance has this parameter 
+      // As an experiment, let's pick up some arbitrary parameters.
+      // Comments - most of instance has this parameter
 
-      // (1) by BuiltInParameter. 
+      // (1) by BuiltInParameter.
       Parameter param = e.get_Parameter( BuiltInParameter.ALL_MODEL_INSTANCE_COMMENTS );
       if( param != null )
       {
         s += "Comments (by BuiltInParameter) = " + ParameterToString( param ) + "\n";
       }
 
-      // (2) by name. (Mark - most of instance has this parameter.) if you use this method, it will language specific. 
+      // (2) by name. (Mark - most of instance has this parameter.) if you use this method, it will language specific.
       // param = e.get_Parameter("Mark");
 
-      // 'Autodesk.Revit.DB.Element.get_Parameter(string)' is obsolete: 
-      // 'This property is obsolete in Revit 2015, as more than one parameter can have the same name on a given element. 
-      // Use Element.Parameters to obtain a complete list of parameters on this Element, 
-      // or Element.GetParameters(String) to get a list of all parameters by name, 
+      // 'Autodesk.Revit.DB.Element.get_Parameter(string)' is obsolete:
+      // 'This property is obsolete in Revit 2015, as more than one parameter can have the same name on a given element.
+      // Use Element.Parameters to obtain a complete list of parameters on this Element,
+      // or Element.GetParameters(String) to get a list of all parameters by name,
       // or Element.LookupParameter(String) to return the first available parameter with the given name.'
       //
       //
@@ -305,13 +303,13 @@ namespace IntroCs
 
 
 
-      // Though the first one is the most commonly used, other possible methods are: 
-      // (3) by definition 
-      // param = e.Parameter(Definition) 
-      // (4) and for shared parameters, you can also use GUID. 
-      // parameter = Parameter(GUID) 
+      // Though the first one is the most commonly used, other possible methods are:
+      // (3) by definition
+      // param = e.Parameter(Definition)
+      // (4) and for shared parameters, you can also use GUID.
+      // parameter = Parameter(GUID)
 
-      // The following should be in most of type parameter 
+      // The following should be in most of type parameter
 
       param = e.get_Parameter( BuiltInParameter.ALL_MODEL_TYPE_COMMENTS );
       if( param != null )
@@ -329,8 +327,8 @@ namespace IntroCs
         s += "Fire Rating (by Name) = " + ParameterToString( param ) + "\n";
       }
 
-      // Using the BuiltInParameter, you can sometimes access one that is not in the parameters set. 
-      // Note: this works only for element type. 
+      // Using the BuiltInParameter, you can sometimes access one that is not in the parameters set.
+      // Note: this works only for element type.
 
       param = e.get_Parameter( BuiltInParameter.SYMBOL_FAMILY_AND_TYPE_NAMES_PARAM );
       if( param != null )
@@ -346,14 +344,14 @@ namespace IntroCs
             + ParameterToString( param ) + "\n";
       }
 
-      // Show it. 
+      // Show it.
 
       TaskDialog.Show( header, s );
     }
 
     /// <summary>
     /// Show the location information of the given element.
-    /// The location can be a LocationPoint (e.g., furniture) 
+    /// The location can be a LocationPoint (e.g., furniture)
     /// or LocationCurve (e.g., wall).
     /// </summary>
     public void ShowLocation( Element e )
@@ -363,7 +361,7 @@ namespace IntroCs
 
       if( loc is LocationPoint )
       {
-        // (1) we have a location point 
+        // (1) we have a location point
 
         LocationPoint locPoint = (LocationPoint) loc;
         XYZ pt = locPoint.Point;
@@ -375,7 +373,7 @@ namespace IntroCs
       }
       else if( loc is LocationCurve )
       {
-        // (2) we have a location curve 
+        // (2) we have a location curve
 
         LocationCurve locCurve = (LocationCurve) loc;
         Curve crv = locCurve.Curve;
@@ -385,7 +383,7 @@ namespace IntroCs
         s += "EndPoint(1)/End point = " + PointToString( crv.GetEndPoint( 1 ) ) + "\n";
         s += "Length = " + crv.Length.ToString() + "\n";
 
-        // Location Curve also has property JoinType at the end 
+        // Location Curve also has property JoinType at the end
 
         s += "JoinType(0) = " + locCurve.get_JoinType( 0 ).ToString() + "\n";
         s += "JoinType(1) = " + locCurve.get_JoinType( 1 ).ToString() + "\n";
@@ -393,7 +391,7 @@ namespace IntroCs
       TaskDialog.Show( "Show Location", s );
     }
 
-    // Helper function: returns XYZ in a string form. 
+    // Helper function: returns XYZ in a string form.
 
     public static string PointToString( XYZ p )
     {
@@ -408,23 +406,23 @@ namespace IntroCs
     }
 
     /// <summary>
-    /// This is lengthy, so optional: 
-    /// show the geometry information of the given element. 
-    /// Here is how to access it. 
-    /// You can also go through tis using RevitLookup instead. 
+    /// This is lengthy, so optional:
+    /// show the geometry information of the given element.
+    /// Here is how to access it.
+    /// You can also go through tis using RevitLookup instead.
     /// </summary>
     public void ShowGeometry( Element e )
     {
-      // Set a geometry option 
+      // Set a geometry option
 
       Options opt = _app.Create.NewGeometryOptions();
       //opt.DetailLevel = DetailLevels.Fine; // 2012
       opt.DetailLevel = ViewDetailLevel.Fine; // since 2013
 
-      // Get the geometry from the element 
+      // Get the geometry from the element
       GeometryElement geomElem = e.get_Geometry( opt );
 
-      // If there is a geometry data, retrieve it as a string to show it.  
+      // If there is a geometry data, retrieve it as a string to show it.
       string s = ( geomElem == null ) ?
         "no data" :
         GeometryElementToString( geomElem );
@@ -435,7 +433,7 @@ namespace IntroCs
     /// <summary>
     /// Helper Function: parse the geometry element by geometry type.
     /// Geometry informaion can easily go into depth. Here we look at the top level.
-    /// See RevitCommands in the SDK sample for complete implementation. 
+    /// See RevitCommands in the SDK sample for complete implementation.
     /// </summary>
     public static string GeometryElementToString( GeometryElement geomElem )
     {
@@ -446,16 +444,16 @@ namespace IntroCs
 
         if( geomObj is Solid )
         {
-          // ex. wall 
+          // ex. wall
 
           Solid solid = (Solid) geomObj;
-          //str += GeometrySolidToString(solid); 
+          //str += GeometrySolidToString(solid);
 
           str += "Solid" + "\n";
         }
         else if( geomObj is GeometryInstance )
         {
-          // ex. door/window 
+          // ex. door/window
 
           str += " -- Geometry.Instance -- " + "\n";
           GeometryInstance geomInstance = (GeometryInstance) geomObj;
@@ -466,14 +464,14 @@ namespace IntroCs
         else if( geomObj is Curve )
         {
           Curve curv = (Curve) geomObj;
-          //str += GeometryCurveToString(curv); 
+          //str += GeometryCurveToString(curv);
 
           str += "Curve" + "\n";
         }
         else if( geomObj is Mesh )
         {
           Mesh mesh = (Mesh) geomObj;
-          //str += GeometryMeshToString(mesh); 
+          //str += GeometryMeshToString(mesh);
 
           str += "Mesh" + "\n";
         }
