@@ -89,227 +89,248 @@ using Autodesk.Revit.ApplicationServices;
 
 namespace FamilyCs
 {
-  [Autodesk.Revit.Attributes.Transaction(Autodesk.Revit.Attributes.TransactionMode.Automatic)]
-  class RvtCmd_FamilyCreateColumnLShape : IExternalCommand
-  {
-    // member variables for top level access to the Revit database
-    //
-    Application _app;
-    Document _doc;
-
-    // command main
-    //
-    public Result Execute(
-      ExternalCommandData commandData,
-      ref string message,
-      ElementSet elements)
+    [Autodesk.Revit.Attributes.Transaction(Autodesk.Revit.Attributes.TransactionMode.Manual)]
+    class RvtCmd_FamilyCreateColumnLShape : IExternalCommand
     {
-      // objects for the top level access
-      //
-      _app = commandData.Application.Application;
-      _doc = commandData.Application.ActiveUIDocument.Document;
+        // member variables for top level access to the Revit database
+        //
+        Application _app;
+        Document _doc;
 
-      // (0) This command works in the context of family editor only.
-      //     We also check if the template is for an appropriate category if needed.
-      //     Here we use a Column(i.e., Metric Column.rft) template.
-      //     Although there is no specific checking about metric or imperial, our lab only works in metric for now.
-      //
-      if (!isRightTemplate(BuiltInCategory.OST_Columns))
-      {
-        Util.ErrorMsg("Please open Metric Column.rft");
-        return Result.Failed;
-      }
+        // command main
+        //
+        public Result Execute(
+          ExternalCommandData commandData,
+          ref string message,
+          ElementSet elements)
+        {
+            // objects for the top level access
+            //
+            _app = commandData.Application.Application;
+            _doc = commandData.Application.ActiveUIDocument.Document;
 
-      // (1.1) add reference planes
-      addReferencePlanes();
+            // (0) This command works in the context of family editor only.
+            //     We also check if the template is for an appropriate category if needed.
+            //     Here we use a Column(i.e., Metric Column.rft) template.
+            //     Although there is no specific checking about metric or imperial, our lab only works in metric for now.
+            //
+            if (!isRightTemplate(BuiltInCategory.OST_Columns))
+            {
+                Util.ErrorMsg("Please open Metric Column.rft");
+                return Result.Failed;
+            }
+            using (Transaction transaction = new Transaction(_doc))
+            {
+                try
+                {
+                    if (transaction.Start("CreateFamily") == TransactionStatus.Started)
+                    {
+                        // (1.1) add reference planes
+                        addReferencePlanes();
 
-      // (1.2) create a simple extrusion. This time we create a L-shape.
-      Extrusion pSolid = createSolid();
-      _doc.Regenerate();
+                        // (1.2) create a simple extrusion. This time we create a L-shape.
+                        Extrusion pSolid = createSolid();
+                        _doc.Regenerate();
 
-      // (2) add alignment
-      addAlignments(pSolid);
+                        // (2) add alignment
+                        addAlignments(pSolid);
 
-      // (3.1) add parameters
-      addParameters();
+                        // (3.1) add parameters
+                        addParameters();
 
-      // (3.2) add dimensions
-      addDimensions();
+                        // (3.2) add dimensions
+                        addDimensions();
 
-      // (3.3) add types
-      addTypes();
+                        // (3.3) add types
+                        addTypes();
 
-      // test family parameter value modification:
-      //modifyFamilyParamValue();
+                        // test family parameter value modification:
+                        //modifyFamilyParamValue();
+                        transaction.Commit();
+                    }
+                    else
+                    {
+                        TaskDialog.Show("ERROR", "Start transaction failed!");
+                        return Result.Failed;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    TaskDialog.Show("ERROR", ex.ToString());
+                    if (transaction.GetStatus() == TransactionStatus.Started)
+                        transaction.RollBack();
+                    return Result.Failed;
+                }
+            }
+            // finally, return
+            return Result.Succeeded;
+        }
 
-      // finally, return
-      return Result.Succeeded;
-    }
+        // ============================================
+        //   (0) check if we have a correct template
+        // ============================================
+        bool isRightTemplate(BuiltInCategory targetCategory)
+        {
+            // This command works in the context of family editor only.
+            //
+            if (!_doc.IsFamilyDocument)
+            {
+                Util.ErrorMsg("This command works only in the family editor.");
+                return false;
+            }
 
-    // ============================================
-    //   (0) check if we have a correct template
-    // ============================================
-    bool isRightTemplate(BuiltInCategory targetCategory)
-    {
-      // This command works in the context of family editor only.
-      //
-      if (!_doc.IsFamilyDocument)
-      {
-        Util.ErrorMsg("This command works only in the family editor.");
-        return false;
-      }
+            // Check the template for an appropriate category here if needed.
+            //
+            Category cat = _doc.Settings.Categories.get_Item(targetCategory);
+            if (_doc.OwnerFamily == null)
+            {
+                Util.ErrorMsg("This command only works in the family context.");
+                return false;
+            }
+            if (!cat.Id.Equals(_doc.OwnerFamily.FamilyCategory.Id))
+            {
+                Util.ErrorMsg("Category of this family document does not match the context required by this command.");
+                return false;
+            }
 
-      // Check the template for an appropriate category here if needed.
-      //
-      Category cat = _doc.Settings.Categories.get_Item(targetCategory);
-      if (_doc.OwnerFamily == null)
-      {
-        Util.ErrorMsg("This command only works in the family context.");
-        return false;
-      }
-      if (!cat.Id.Equals(_doc.OwnerFamily.FamilyCategory.Id))
-      {
-        Util.ErrorMsg("Category of this family document does not match the context required by this command.");
-        return false;
-      }
+            // if we come here, we should have a right one.
+            return true;
+        }
 
-      // if we come here, we should have a right one.
-      return true;
-    }
+        // ==============================
+        //   (1.1) add reference planes
+        // ==============================
+        void addReferencePlanes()
+        {
+            //
+            // we are defining a simple L-shape profile like the following:
+            //
+            //  5 tw 4
+            //   +-+
+            //   | | 3          h = height
+            // d | +---+ 2
+            //   +-----+ td
+            //  0        1
+            //  6  w
+            //
+            //
+            // we want to add ref planes along (1) 2-3 and (2)3-4.
+            // Name them "OffsetH" and "OffsetV" respectively. (H for horizontal, V for vertical).
+            //
+            double tw = mmToFeet(150.0);  // thickness added for Lab2.  Hard-coding for simplicity.
+            double td = mmToFeet(150.0);
 
-    // ==============================
-    //   (1.1) add reference planes
-    // ==============================
-    void addReferencePlanes()
-    {
-      //
-      // we are defining a simple L-shape profile like the following:
-      //
-      //  5 tw 4
-      //   +-+
-      //   | | 3          h = height
-      // d | +---+ 2
-      //   +-----+ td
-      //  0        1
-      //  6  w
-      //
-      //
-      // we want to add ref planes along (1) 2-3 and (2)3-4.
-      // Name them "OffsetH" and "OffsetV" respectively. (H for horizontal, V for vertical).
-      //
-      double tw = mmToFeet(150.0);  // thickness added for Lab2.  Hard-coding for simplicity.
-      double td = mmToFeet(150.0);
+            //
+            // (1) add a horizonal ref plane 2-3.
+            //
+            // get a plan view
+            View pViewPlan = findElement(typeof(ViewPlan), "Lower Ref. Level") as View;
 
-      //
-      // (1) add a horizonal ref plane 2-3.
-      //
-      // get a plan view
-      View pViewPlan = findElement(typeof(ViewPlan), "Lower Ref. Level") as View;
+            // we have predefined ref plane: Left/Right/Front/Back
+            // get the ref plane at Front, which is aligned to line 2-3
+            ReferencePlane refFront = findElement(typeof(ReferencePlane), "Front") as ReferencePlane;
 
-      // we have predefined ref plane: Left/Right/Front/Back
-      // get the ref plane at Front, which is aligned to line 2-3
-      ReferencePlane refFront = findElement(typeof(ReferencePlane), "Front") as ReferencePlane;
+            // get the bubble and free ends from front ref plane and offset by td.
+            //
+            XYZ p1 = refFront.BubbleEnd;
+            XYZ p2 = refFront.FreeEnd;
+            XYZ pBubbleEnd = new XYZ(p1.X, p1.Y + td, p1.Z);
+            XYZ pFreeEnd = new XYZ(p2.X, p2.Y + td, p2.Z);
 
-      // get the bubble and free ends from front ref plane and offset by td.
-      //
-      XYZ p1 = refFront.BubbleEnd;
-      XYZ p2 = refFront.FreeEnd;
-      XYZ pBubbleEnd = new XYZ(p1.X, p1.Y + td, p1.Z);
-      XYZ pFreeEnd = new XYZ(p2.X, p2.Y + td, p2.Z);
+            // create a new one reference plane and name it "OffsetH"
+            //
+            ReferencePlane refPlane = _doc.FamilyCreate.NewReferencePlane(pBubbleEnd, pFreeEnd, XYZ.BasisZ, pViewPlan);
+            refPlane.Name = "OffsetH";
 
-      // create a new one reference plane and name it "OffsetH"
-      //
-      ReferencePlane refPlane = _doc.FamilyCreate.NewReferencePlane(pBubbleEnd, pFreeEnd, XYZ.BasisZ, pViewPlan);
-      refPlane.Name = "OffsetH";
+            //
+            // (2) do the same to add a vertical reference plane.
+            //
 
-      //
-      // (2) do the same to add a vertical reference plane.
-      //
+            // find the ref plane at left, which is aligned to line 3-4
+            ReferencePlane refLeft = findElement(typeof(ReferencePlane), "Left") as ReferencePlane;
 
-      // find the ref plane at left, which is aligned to line 3-4
-      ReferencePlane refLeft = findElement(typeof(ReferencePlane), "Left") as ReferencePlane;
+            // get the bubble and free ends from front ref plane and offset by td.
+            //
+            p1 = refLeft.BubbleEnd;
+            p2 = refLeft.FreeEnd;
+            pBubbleEnd = new XYZ(p1.X + tw, p1.Y, p1.Z);
+            pFreeEnd = new XYZ(p2.X + tw, p2.Y, p2.Z);
 
-      // get the bubble and free ends from front ref plane and offset by td.
-      //
-      p1 = refLeft.BubbleEnd;
-      p2 = refLeft.FreeEnd;
-      pBubbleEnd = new XYZ(p1.X + tw, p1.Y, p1.Z);
-      pFreeEnd = new XYZ(p2.X + tw, p2.Y, p2.Z);
+            // create a new reference plane and name it "OffsetV"
+            //
+            refPlane = _doc.FamilyCreate.NewReferencePlane(pBubbleEnd, pFreeEnd, XYZ.BasisZ, pViewPlan);
+            refPlane.Name = "OffsetV";
+        }
 
-      // create a new reference plane and name it "OffsetV"
-      //
-      refPlane = _doc.FamilyCreate.NewReferencePlane(pBubbleEnd, pFreeEnd, XYZ.BasisZ, pViewPlan);
-      refPlane.Name = "OffsetV";
-    }
+        // =================================================================
+        //   (1.2) create a simple solid by extrusion with L-shape profile
+        // =================================================================
+        Extrusion createSolid()
+        {
+            //
+            // (1) define a simple L-shape profile
+            //
+            //CurveArrArray  pProflie = createBox();
+            CurveArrArray pProfile = createProfileLShape();  // Lab2
 
-    // =================================================================
-    //   (1.2) create a simple solid by extrusion with L-shape profile
-    // =================================================================
-    Extrusion createSolid()
-    {
-      //
-      // (1) define a simple L-shape profile
-      //
-      //CurveArrArray  pProflie = createBox();
-      CurveArrArray pProfile = createProfileLShape();  // Lab2
+            //
+            // (2) create a sketch plane
+            //
+            // we need to know the template. If you look at the template (Metric Column.rft) and "Front" view,
+            // you will see "Reference Plane" at "Lower Ref. Level". We are going to create an extrusion there.
+            // findElement() is a helper function that find an element of the given type and name.  see below.
+            //
+            ReferencePlane pRefPlane = findElement(typeof(ReferencePlane), "Reference Plane") as ReferencePlane;  // need to know from the template
+            //SketchPlane pSketchPlane = _doc.FamilyCreate.NewSketchPlane(pRefPlane.Plane);  // Revit 2013
+            //SketchPlane pSketchPlane = SketchPlane.Create(_doc, pRefPlane.Plane);  // Revit 2014
+            SketchPlane pSketchPlane = SketchPlane.Create(_doc, pRefPlane.GetPlane());  // Revit 2016
 
-      //
-      // (2) create a sketch plane
-      //
-      // we need to know the template. If you look at the template (Metric Column.rft) and "Front" view,
-      // you will see "Reference Plane" at "Lower Ref. Level". We are going to create an extrusion there.
-      // findElement() is a helper function that find an element of the given type and name.  see below.
-      //
-      ReferencePlane pRefPlane = findElement(typeof(ReferencePlane), "Reference Plane") as ReferencePlane;  // need to know from the template
-      //SketchPlane pSketchPlane = _doc.FamilyCreate.NewSketchPlane(pRefPlane.Plane);  // Revit 2013
-      SketchPlane pSketchPlane = SketchPlane.Create(_doc, pRefPlane.Plane);  // Revit 2014
+            // (3) height of the extrusion
+            //
+            // same as profile, you will need to know your template. unlike UI, the alightment will not adjust the geometry.
+            // You will need to have the exact location in order to set alignment.
+            // Here we hard code for simplicity. 4000 is the distance between Lower and Upper Ref. Level.
+            // as an exercise, try changing those values and see how it behaves.
+            //
+            double dHeight = mmToFeet(4000.0);
 
-      // (3) height of the extrusion
-      //
-      // same as profile, you will need to know your template. unlike UI, the alightment will not adjust the geometry.
-      // You will need to have the exact location in order to set alignment.
-      // Here we hard code for simplicity. 4000 is the distance between Lower and Upper Ref. Level.
-      // as an exercise, try changing those values and see how it behaves.
-      //
-      double dHeight = mmToFeet(4000.0);
+            // (4) create an extrusion here. at this point. just an box, nothing else.
+            //
+            bool bIsSolid = true;  // as oppose to void.
+            return _doc.FamilyCreate.NewExtrusion(bIsSolid, pProfile, pSketchPlane, dHeight);
+        }
 
-      // (4) create an extrusion here. at this point. just an box, nothing else.
-      //
-      bool bIsSolid = true;  // as oppose to void.
-      return _doc.FamilyCreate.NewExtrusion(bIsSolid, pProfile, pSketchPlane, dHeight);
-    }
+        // ===========================================
+        //   (1.2a) create a simple L-shaped profile
+        // ===========================================
+        CurveArrArray createProfileLShape()
+        {
+            //
+            // define a simple L-shape profile
+            //
+            //  5 tw 4
+            //   +-+
+            //   | | 3          h = height
+            // d | +---+ 2
+            //   +-----+ td
+            //  0        1
+            //  6  w
+            //
 
-    // ===========================================
-    //   (1.2a) create a simple L-shaped profile
-    // ===========================================
-    CurveArrArray createProfileLShape()
-    {
-      //
-      // define a simple L-shape profile
-      //
-      //  5 tw 4
-      //   +-+
-      //   | | 3          h = height
-      // d | +---+ 2
-      //   +-----+ td
-      //  0        1
-      //  6  w
-      //
+            // sizes (hard coded for simplicity)
+            // note: these need to match reference plane. otherwise, alignment won't work.
+            // as an exercise, try changing those values and see how it behaves.
+            //
+            double w = mmToFeet(600.0); // those are hard coded for simplicity here. in practice, you may want to find out from the references)
+            double d = mmToFeet(600.0);
+            double tw = mmToFeet(150.0); // thickness added for Lab2
+            double td = mmToFeet(150.0);
 
-      // sizes (hard coded for simplicity)
-      // note: these need to match reference plane. otherwise, alignment won't work.
-      // as an exercise, try changing those values and see how it behaves.
-      //
-      double w = mmToFeet(600.0); // those are hard coded for simplicity here. in practice, you may want to find out from the references)
-      double d = mmToFeet(600.0);
-      double tw = mmToFeet(150.0); // thickness added for Lab2
-      double td = mmToFeet(150.0);
+            // define vertices
+            //
+            const int nVerts = 6; // the number of vertices
 
-      // define vertices
-      //
-      const int nVerts = 6; // the number of vertices
-
-      XYZ[] pts = new XYZ[] {
+            XYZ[] pts = new XYZ[] {
         new XYZ(-w / 2.0, -d / 2.0, 0.0),
         new XYZ(w / 2.0, -d / 2.0, 0.0),
         new XYZ(w / 2.0, (-d / 2.0) + td, 0.0),
@@ -318,519 +339,519 @@ namespace FamilyCs
         new XYZ(-w / 2.0, d / 2.0, 0.0),
         new XYZ(-w / 2.0, -d / 2.0, 0.0) };  // the last one is to make the loop simple
 
-      // define a loop. define individual edges and put them in a curveArray
-      //
-      CurveArray pLoop = _app.Create.NewCurveArray();
-      for (int i = 0; i < nVerts; ++i)
-      {
-        //Line line = _app.Create.NewLineBound(pts[i], pts[i + 1]);  // Revit 2013
-        Line line = Line.CreateBound(pts[i], pts[i + 1]);  // Revit 2014
-        pLoop.Append(line);
-      }
+            // define a loop. define individual edges and put them in a curveArray
+            //
+            CurveArray pLoop = _app.Create.NewCurveArray();
+            for (int i = 0; i < nVerts; ++i)
+            {
+                //Line line = _app.Create.NewLineBound(pts[i], pts[i + 1]);  // Revit 2013
+                Line line = Line.CreateBound(pts[i], pts[i + 1]);  // Revit 2014
+                pLoop.Append(line);
+            }
 
-      // then, put the loop in the curveArrArray as a profile
-      //
-      CurveArrArray pProfile = _app.Create.NewCurveArrArray();
-      pProfile.Append(pLoop);
-      // if we come here, we have a profile now.
+            // then, put the loop in the curveArrArray as a profile
+            //
+            CurveArrArray pProfile = _app.Create.NewCurveArrArray();
+            pProfile.Append(pLoop);
+            // if we come here, we have a profile now.
 
-      return pProfile;
-    }
+            return pProfile;
+        }
 
-    // ==============================================
-    //   (1.2b) create a simple rectangular profile
-    // ==============================================
-    CurveArrArray createProfileRectangle()
-    {
-      //
-      // define a simple rectangular profile
-      //
-      //  3     2
-      //   +---+
-      //   |   | d    h = height
-      //   +---+
-      //  0     1
-      //  4  w
-      //
+        // ==============================================
+        //   (1.2b) create a simple rectangular profile
+        // ==============================================
+        CurveArrArray createProfileRectangle()
+        {
+            //
+            // define a simple rectangular profile
+            //
+            //  3     2
+            //   +---+
+            //   |   | d    h = height
+            //   +---+
+            //  0     1
+            //  4  w
+            //
 
-      // sizes (hard coded for simplicity)
-      // note: these need to match reference plane. otherwise, alignment won't work.
-      // as an exercise, try changing those values and see how it behaves.
-      //
-      double w = mmToFeet(600.0);
-      double d = mmToFeet(600.0);
+            // sizes (hard coded for simplicity)
+            // note: these need to match reference plane. otherwise, alignment won't work.
+            // as an exercise, try changing those values and see how it behaves.
+            //
+            double w = mmToFeet(600.0);
+            double d = mmToFeet(600.0);
 
-      // define vertices
-      //
-      const int nVerts = 4; // the number of vertices
+            // define vertices
+            //
+            const int nVerts = 4; // the number of vertices
 
-      XYZ[] pts = new XYZ[] {
+            XYZ[] pts = new XYZ[] {
         new XYZ(-w / 2.0, -d / 2.0, 0.0),
         new XYZ(w / 2.0, -d / 2.0, 0.0),
         new XYZ(w / 2.0, d / 2.0, 0.0),
         new XYZ(-w / 2.0, d / 2.0, 0.0),
         new XYZ(-w / 2.0, -d / 2.0, 0.0) };
 
-      // define a loop. define individual edges and put them in a curveArray
-      //
-      CurveArray pLoop = _app.Create.NewCurveArray();
-      for (int i = 0; i < nVerts; ++i)
-      {
-        //Line line = _app.Create.NewLineBound(pts[i], pts[i + 1]);  // Revit 2013
-        Line line = Line.CreateBound(pts[i], pts[i + 1]);  // Revit 2014
-        pLoop.Append(line);
-      }
+            // define a loop. define individual edges and put them in a curveArray
+            //
+            CurveArray pLoop = _app.Create.NewCurveArray();
+            for (int i = 0; i < nVerts; ++i)
+            {
+                //Line line = _app.Create.NewLineBound(pts[i], pts[i + 1]);  // Revit 2013
+                Line line = Line.CreateBound(pts[i], pts[i + 1]);  // Revit 2014
+                pLoop.Append(line);
+            }
 
-      // then, put the loop in the curveArrArray as a profile
-      //
-      CurveArrArray pProfile = _app.Create.NewCurveArrArray();
-      pProfile.Append(pLoop);
-      // if we come here, we have a profile now.
+            // then, put the loop in the curveArrArray as a profile
+            //
+            CurveArrArray pProfile = _app.Create.NewCurveArrArray();
+            pProfile.Append(pLoop);
+            // if we come here, we have a profile now.
 
-      return pProfile;
-    }
+            return pProfile;
+        }
 
-    // ======================================
-    //   (2.1) add alignments
-    // ======================================
-    void addAlignments(Extrusion pBox)
-    {
-      //
-      // (1) we want to constrain the upper face of the column to the "Upper Ref Level"
-      //
+        // ======================================
+        //   (2.1) add alignments
+        // ======================================
+        void addAlignments(Extrusion pBox)
+        {
+            //
+            // (1) we want to constrain the upper face of the column to the "Upper Ref Level"
+            //
 
-      // which direction are we looking at?
-      //
-      View pView = findElement(typeof(View), "Front") as View;
+            // which direction are we looking at?
+            //
+            View pView = findElement(typeof(View), "Front") as View;
 
-      // find the upper ref level
-      // findElement() is a helper function. see below.
-      //
-      Level upperLevel = findElement(typeof(Level), "Upper Ref Level") as Level;
-      Reference ref1 = upperLevel.PlaneReference;
+            // find the upper ref level
+            // findElement() is a helper function. see below.
+            //
+            Level upperLevel = findElement(typeof(Level), "Upper Ref Level") as Level;
+            Reference ref1 = upperLevel.GetPlaneReference();
 
-      // find the face of the box
-      // findFace() is a helper function. see below.
-      //
-      PlanarFace upperFace = findFace(pBox, new XYZ(0.0, 0.0, 1.0)); // find a face whose normal is z-up.
-      Reference ref2 = upperFace.Reference;
+            // find the face of the box
+            // findFace() is a helper function. see below.
+            //
+            PlanarFace upperFace = findFace(pBox, new XYZ(0.0, 0.0, 1.0)); // find a face whose normal is z-up.
+            Reference ref2 = upperFace.Reference;
 
-      // create alignments
-      //
-      _doc.FamilyCreate.NewAlignment(pView, ref1, ref2);
+            // create alignments
+            //
+            _doc.FamilyCreate.NewAlignment(pView, ref1, ref2);
 
-      //
-      // (2) do the same for the lower level
-      //
+            //
+            // (2) do the same for the lower level
+            //
 
-      // find the lower ref level
-      // findElement() is a helper function. see below.
-      //
-      Level lowerLevel = findElement(typeof(Level), "Lower Ref. Level") as Level;
-      Reference ref3 = lowerLevel.PlaneReference;
+            // find the lower ref level
+            // findElement() is a helper function. see below.
+            //
+            Level lowerLevel = findElement(typeof(Level), "Lower Ref. Level") as Level;
+            Reference ref3 = lowerLevel.GetPlaneReference();
 
-      // find the face of the box
-      // findFace() is a helper function. see below.
-      PlanarFace lowerFace = findFace(pBox, new XYZ(0.0, 0.0, -1.0)); // find a face whose normal is z-down.
-      Reference ref4 = lowerFace.Reference;
+            // find the face of the box
+            // findFace() is a helper function. see below.
+            PlanarFace lowerFace = findFace(pBox, new XYZ(0.0, 0.0, -1.0)); // find a face whose normal is z-down.
+            Reference ref4 = lowerFace.Reference;
 
-      // create alignments
-      //
-      _doc.FamilyCreate.NewAlignment(pView, ref3, ref4);
+            // create alignments
+            //
+            _doc.FamilyCreate.NewAlignment(pView, ref3, ref4);
 
-      //
-      // (3)  same idea for the Right/Left/Front/Back
-      //
-      // get the plan view
-      // note: same name maybe used for different view types. either one should work.
-      View pViewPlan = findElement(typeof(ViewPlan), "Lower Ref. Level") as View;
+            //
+            // (3)  same idea for the Right/Left/Front/Back
+            //
+            // get the plan view
+            // note: same name maybe used for different view types. either one should work.
+            View pViewPlan = findElement(typeof(ViewPlan), "Lower Ref. Level") as View;
 
-      // find reference planes
-      ReferencePlane refRight = findElement(typeof(ReferencePlane), "Right") as ReferencePlane;
-      ReferencePlane refLeft = findElement(typeof(ReferencePlane), "Left") as ReferencePlane;
-      ReferencePlane refFront = findElement(typeof(ReferencePlane), "Front") as ReferencePlane;
-      ReferencePlane refBack = findElement(typeof(ReferencePlane), "Back") as ReferencePlane;
-      ReferencePlane refOffsetV = findElement(typeof(ReferencePlane), "OffsetV") as ReferencePlane; // added for L-shape
-      ReferencePlane refOffsetH = findElement(typeof(ReferencePlane), "OffsetH") as ReferencePlane; // added for L-shape
+            // find reference planes
+            ReferencePlane refRight = findElement(typeof(ReferencePlane), "Right") as ReferencePlane;
+            ReferencePlane refLeft = findElement(typeof(ReferencePlane), "Left") as ReferencePlane;
+            ReferencePlane refFront = findElement(typeof(ReferencePlane), "Front") as ReferencePlane;
+            ReferencePlane refBack = findElement(typeof(ReferencePlane), "Back") as ReferencePlane;
+            ReferencePlane refOffsetV = findElement(typeof(ReferencePlane), "OffsetV") as ReferencePlane; // added for L-shape
+            ReferencePlane refOffsetH = findElement(typeof(ReferencePlane), "OffsetH") as ReferencePlane; // added for L-shape
 
-      // find the face of the box
-      // Note: findFace need to be enhanced for this as face normal is not enough to determine the face.
-      //
-      PlanarFace faceRight = findFace(pBox, new XYZ(1.0, 0.0, 0.0), refRight); // modified for L-shape
-      PlanarFace faceLeft = findFace(pBox, new XYZ(-1.0, 0.0, 0.0));
-      PlanarFace faceFront = findFace(pBox, new XYZ(0.0, -1.0, 0.0));
-      PlanarFace faceBack = findFace(pBox, new XYZ(0.0, 1.0, 0.0), refBack); // modified for L-shape
-      PlanarFace faceOffsetV = findFace(pBox, new XYZ(1.0, 0.0, 0.0), refOffsetV); // added for L-shape
-      PlanarFace faceOffsetH = findFace(pBox, new XYZ(0.0, 1.0, 0.0), refOffsetH); // added for L-shape
+            // find the face of the box
+            // Note: findFace need to be enhanced for this as face normal is not enough to determine the face.
+            //
+            PlanarFace faceRight = findFace(pBox, new XYZ(1.0, 0.0, 0.0), refRight); // modified for L-shape
+            PlanarFace faceLeft = findFace(pBox, new XYZ(-1.0, 0.0, 0.0));
+            PlanarFace faceFront = findFace(pBox, new XYZ(0.0, -1.0, 0.0));
+            PlanarFace faceBack = findFace(pBox, new XYZ(0.0, 1.0, 0.0), refBack); // modified for L-shape
+            PlanarFace faceOffsetV = findFace(pBox, new XYZ(1.0, 0.0, 0.0), refOffsetV); // added for L-shape
+            PlanarFace faceOffsetH = findFace(pBox, new XYZ(0.0, 1.0, 0.0), refOffsetH); // added for L-shape
 
-      // create alignments
-      //
-      _doc.FamilyCreate.NewAlignment(pViewPlan, refRight.Reference, faceRight.Reference);
-      _doc.FamilyCreate.NewAlignment(pViewPlan, refLeft.Reference, faceLeft.Reference);
-      _doc.FamilyCreate.NewAlignment(pViewPlan, refFront.Reference, faceFront.Reference);
-      _doc.FamilyCreate.NewAlignment(pViewPlan, refBack.Reference, faceBack.Reference);
-      _doc.FamilyCreate.NewAlignment(pViewPlan, refOffsetV.Reference, faceOffsetV.Reference); // added for L-shape
-      _doc.FamilyCreate.NewAlignment(pViewPlan, refOffsetH.Reference, faceOffsetH.Reference); // added for L-shape
-    }
+            // create alignments
+            //
+            _doc.FamilyCreate.NewAlignment(pViewPlan, refRight.GetReference(), faceRight.Reference);
+            _doc.FamilyCreate.NewAlignment(pViewPlan, refLeft.GetReference(), faceLeft.Reference);
+            _doc.FamilyCreate.NewAlignment(pViewPlan, refFront.GetReference(), faceFront.Reference);
+            _doc.FamilyCreate.NewAlignment(pViewPlan, refBack.GetReference(), faceBack.Reference);
+            _doc.FamilyCreate.NewAlignment(pViewPlan, refOffsetV.GetReference(), faceOffsetV.Reference); // added for L-shape
+            _doc.FamilyCreate.NewAlignment(pViewPlan, refOffsetH.GetReference(), faceOffsetH.Reference); // added for L-shape
+        }
 
-    // ======================================
-    //   (3.1) add parameters
-    // ======================================
-    void addParameters()
-    {
-      FamilyManager mgr = _doc.FamilyManager;
+        // ======================================
+        //   (3.1) add parameters
+        // ======================================
+        void addParameters()
+        {
+            FamilyManager mgr = _doc.FamilyManager;
 
-      // API parameter group for Dimension is PG_GEOMETRY:
-      //
-      FamilyParameter paramTw = mgr.AddParameter(
-        "Tw", BuiltInParameterGroup.PG_GEOMETRY,
-        ParameterType.Length, false);
+            // API parameter group for Dimension is PG_GEOMETRY:
+            //
+            FamilyParameter paramTw = mgr.AddParameter(
+              "Tw", BuiltInParameterGroup.PG_GEOMETRY,
+              ParameterType.Length, false);
 
-      FamilyParameter paramTd = mgr.AddParameter(
-        "Td", BuiltInParameterGroup.PG_GEOMETRY,
-        ParameterType.Length, false);
+            FamilyParameter paramTd = mgr.AddParameter(
+              "Td", BuiltInParameterGroup.PG_GEOMETRY,
+              ParameterType.Length, false);
 
-      // set initial values:
-      //
-      double tw = mmToFeet(150.0);
-      double td = mmToFeet(150.0);
-      mgr.Set(paramTw, tw);
-      mgr.Set(paramTd, td);
-    }
+            // set initial values:
+            //
+            double tw = mmToFeet(150.0);
+            double td = mmToFeet(150.0);
+            mgr.Set(paramTw, tw);
+            mgr.Set(paramTd, td);
+        }
 
-    // ======================================
-    //   (3.2) add dimensions
-    // ======================================
-    void addDimensions()
-    {
-      // find the plan view
-      //
-      View pViewPlan = findElement(typeof(ViewPlan), "Lower Ref. Level") as View;
+        // ======================================
+        //   (3.2) add dimensions
+        // ======================================
+        void addDimensions()
+        {
+            // find the plan view
+            //
+            View pViewPlan = findElement(typeof(ViewPlan), "Lower Ref. Level") as View;
 
-      // find reference planes
-      //
-      ReferencePlane refLeft = findElement(typeof(ReferencePlane), "Left") as ReferencePlane;
-      ReferencePlane refFront = findElement(typeof(ReferencePlane), "Front") as ReferencePlane;
-      ReferencePlane refOffsetV = findElement(typeof(ReferencePlane), "OffsetV") as ReferencePlane; // OffsetV is added for L-shape
-      ReferencePlane refOffsetH = findElement(typeof(ReferencePlane), "OffsetH") as ReferencePlane; // OffsetH is added for L-shape
+            // find reference planes
+            //
+            ReferencePlane refLeft = findElement(typeof(ReferencePlane), "Left") as ReferencePlane;
+            ReferencePlane refFront = findElement(typeof(ReferencePlane), "Front") as ReferencePlane;
+            ReferencePlane refOffsetV = findElement(typeof(ReferencePlane), "OffsetV") as ReferencePlane; // OffsetV is added for L-shape
+            ReferencePlane refOffsetH = findElement(typeof(ReferencePlane), "OffsetH") as ReferencePlane; // OffsetH is added for L-shape
 
-      //
-      // (1)  add dimension between the reference planes 'Left' and 'OffsetV', and label it as 'Tw'
-      //
+            //
+            // (1)  add dimension between the reference planes 'Left' and 'OffsetV', and label it as 'Tw'
+            //
 
-      // define a dimension line
-      //
-      XYZ p0 = refLeft.FreeEnd;
-      XYZ p1 = refOffsetV.FreeEnd;
-      // Line pLine = _app.Create.NewLineBound(p0, p1);  // Revit 2013
-      Line pLine = Line.CreateBound(p0, p1);  // Revit 2014
+            // define a dimension line
+            //
+            XYZ p0 = refLeft.FreeEnd;
+            XYZ p1 = refOffsetV.FreeEnd;
+            // Line pLine = _app.Create.NewLineBound(p0, p1);  // Revit 2013
+            Line pLine = Line.CreateBound(p0, p1);  // Revit 2014
 
-      // define references
-      //
-      ReferenceArray pRefArray = new ReferenceArray();
-      pRefArray.Append(refLeft.Reference);
-      pRefArray.Append(refOffsetV.Reference);
+            // define references
+            //
+            ReferenceArray pRefArray = new ReferenceArray();
+            pRefArray.Append(refLeft.GetReference());
+            pRefArray.Append(refOffsetV.GetReference());
 
-      // create a dimension
-      //
-      Dimension pDimTw = _doc.FamilyCreate.NewDimension(pViewPlan, pLine, pRefArray);
+            // create a dimension
+            //
+            Dimension pDimTw = _doc.FamilyCreate.NewDimension(pViewPlan, pLine, pRefArray);
 
-      // add label to the dimension
-      //
-      FamilyParameter paramTw = _doc.FamilyManager.get_Parameter("Tw");
-      // pDimTw.Label = paramTw;  //Revit 2013
-      pDimTw.FamilyLabel = paramTw;  // Revit 2014
+            // add label to the dimension
+            //
+            FamilyParameter paramTw = _doc.FamilyManager.get_Parameter("Tw");
+            // pDimTw.Label = paramTw;  //Revit 2013
+            pDimTw.FamilyLabel = paramTw;  // Revit 2014
 
-      //
-      // (2)  do the same for dimension between 'Front' and 'OffsetH', and lable it as 'Td'
-      //
+            //
+            // (2)  do the same for dimension between 'Front' and 'OffsetH', and lable it as 'Td'
+            //
 
-      // define a dimension line
-      //
-      p0 = refFront.FreeEnd;
-      p1 = refOffsetH.FreeEnd;
-      //pLine = _app.Create.NewLineBound(p0, p1);  // Revit 2013
-      pLine = Line.CreateBound(p0, p1);  // Revit 2014
+            // define a dimension line
+            //
+            p0 = refFront.FreeEnd;
+            p1 = refOffsetH.FreeEnd;
+            //pLine = _app.Create.NewLineBound(p0, p1);  // Revit 2013
+            pLine = Line.CreateBound(p0, p1);  // Revit 2014
 
-      // define references
-      //
-      pRefArray = new ReferenceArray();
-      pRefArray.Append(refFront.Reference);
-      pRefArray.Append(refOffsetH.Reference);
+            // define references
+            //
+            pRefArray = new ReferenceArray();
+            pRefArray.Append(refFront.GetReference());
+            pRefArray.Append(refOffsetH.GetReference());
 
-      // create a dimension
-      //
-      Dimension pDimTd = _doc.FamilyCreate.NewDimension(pViewPlan, pLine, pRefArray);
+            // create a dimension
+            //
+            Dimension pDimTd = _doc.FamilyCreate.NewDimension(pViewPlan, pLine, pRefArray);
 
-      // add label to the dimension
-      //
-      FamilyParameter paramTd = _doc.FamilyManager.get_Parameter("Td");
-      // pDimTd.Label = paramTd;  // Revit 2013
-      pDimTd.FamilyLabel = paramTd;  // Revit 2014
-    }
+            // add label to the dimension
+            //
+            FamilyParameter paramTd = _doc.FamilyManager.get_Parameter("Td");
+            // pDimTd.Label = paramTd;  // Revit 2013
+            pDimTd.FamilyLabel = paramTd;  // Revit 2014
+        }
 
-    // ======================================
-    //  (3.3) add types
-    // ======================================
-    void addTypes()
-    {
-      // addType(name, Width, Depth)
-      //
-      //addType("600x900", 600.0, 900.0)
-      //addType("1000x300", 1000.0, 300.0)
-      //addType("600x600", 600.0, 600.0)
+        // ======================================
+        //  (3.3) add types
+        // ======================================
+        void addTypes()
+        {
+            // addType(name, Width, Depth)
+            //
+            //addType("600x900", 600.0, 900.0)
+            //addType("1000x300", 1000.0, 300.0)
+            //addType("600x600", 600.0, 600.0)
 
-      // addType(name, Width, Depth, Tw, Td)
-      //
-      addType("600x900", 600.0, 900.0, 150.0, 225.0);
-      addType("1000x300", 1000.0, 300.0, 250.0, 75.0);
-      addType("600x600", 600.0, 600.0, 150.0, 150.0);
-    }
+            // addType(name, Width, Depth, Tw, Td)
+            //
+            addType("600x900", 600.0, 900.0, 150.0, 225.0);
+            addType("1000x300", 1000.0, 300.0, 250.0, 75.0);
+            addType("600x600", 600.0, 600.0, 150.0, 150.0);
+        }
 
-    // add one type (version 2)
-    //
-    void addType(string name, double w, double d, double tw, double td)
-    {
-      // get the family manager from the current doc
-      FamilyManager pFamilyMgr = _doc.FamilyManager;
+        // add one type (version 2)
+        //
+        void addType(string name, double w, double d, double tw, double td)
+        {
+            // get the family manager from the current doc
+            FamilyManager pFamilyMgr = _doc.FamilyManager;
 
-      // add new types with the given name
-      //
-      FamilyType type1 = pFamilyMgr.NewType(name);
+            // add new types with the given name
+            //
+            FamilyType type1 = pFamilyMgr.NewType(name);
 
-      // look for 'Width' and 'Depth' parameters and set them to the given value
-      //
+            // look for 'Width' and 'Depth' parameters and set them to the given value
+            //
 
-      // first 'Width'
-      //
-      FamilyParameter paramW = pFamilyMgr.get_Parameter("Width");
-      double valW = mmToFeet(w);
-      if (paramW != null)
-      {
-        pFamilyMgr.Set(paramW, valW);
-      }
+            // first 'Width'
+            //
+            FamilyParameter paramW = pFamilyMgr.get_Parameter("Width");
+            double valW = mmToFeet(w);
+            if (paramW != null)
+            {
+                pFamilyMgr.Set(paramW, valW);
+            }
 
-      // same idea for 'Depth'
-      //
-      FamilyParameter paramD = pFamilyMgr.get_Parameter("Depth");
-      double valD = mmToFeet(d);
-      if (paramD != null)
-      {
-        pFamilyMgr.Set(paramD, valD);
-      }
+            // same idea for 'Depth'
+            //
+            FamilyParameter paramD = pFamilyMgr.get_Parameter("Depth");
+            double valD = mmToFeet(d);
+            if (paramD != null)
+            {
+                pFamilyMgr.Set(paramD, valD);
+            }
 
-      // let's set "Tw' and 'Td'
-      //
-      FamilyParameter paramTw = pFamilyMgr.get_Parameter("Tw");
-      double valTw = mmToFeet(tw);
-      if (paramTw != null)
-      {
-        pFamilyMgr.Set(paramTw, valTw);
-      }
-      FamilyParameter paramTd = pFamilyMgr.get_Parameter("Td");
-      double valTd = mmToFeet(td);
-      if (paramTd != null)
-      {
-        pFamilyMgr.Set(paramTd, valTd);
-      }
-    }
+            // let's set "Tw' and 'Td'
+            //
+            FamilyParameter paramTw = pFamilyMgr.get_Parameter("Tw");
+            double valTw = mmToFeet(tw);
+            if (paramTw != null)
+            {
+                pFamilyMgr.Set(paramTw, valTw);
+            }
+            FamilyParameter paramTd = pFamilyMgr.get_Parameter("Td");
+            double valTd = mmToFeet(td);
+            if (paramTd != null)
+            {
+                pFamilyMgr.Set(paramTd, valTd);
+            }
+        }
 
 
-    // add one type (version 1)
-    //
-    void addType(string name, double w, double d)
-    {
-      // get the family manager from the current doc
-      FamilyManager pFamilyMgr = _doc.FamilyManager;
+        // add one type (version 1)
+        //
+        void addType(string name, double w, double d)
+        {
+            // get the family manager from the current doc
+            FamilyManager pFamilyMgr = _doc.FamilyManager;
 
-      // add new types with the given name
-      //
-      FamilyType type1 = pFamilyMgr.NewType(name);
+            // add new types with the given name
+            //
+            FamilyType type1 = pFamilyMgr.NewType(name);
 
-      // look for 'Width' and 'Depth' parameters and set them to the given value
-      //
-      // first 'Width'
-      //
-      FamilyParameter paramW = pFamilyMgr.get_Parameter("Width");
-      double valW = mmToFeet(w);
-      if (paramW != null)
-      {
-        pFamilyMgr.Set(paramW, valW);
-      }
+            // look for 'Width' and 'Depth' parameters and set them to the given value
+            //
+            // first 'Width'
+            //
+            FamilyParameter paramW = pFamilyMgr.get_Parameter("Width");
+            double valW = mmToFeet(w);
+            if (paramW != null)
+            {
+                pFamilyMgr.Set(paramW, valW);
+            }
 
-      // same idea for 'Depth'
-      //
-      FamilyParameter paramD = pFamilyMgr.get_Parameter("Depth");
-      double valD = mmToFeet(d);
-      if (paramD != null)
-      {
-        pFamilyMgr.Set(paramD, valD);
-      }
-    }
+            // same idea for 'Depth'
+            //
+            FamilyParameter paramD = pFamilyMgr.get_Parameter("Depth");
+            double valD = mmToFeet(d);
+            if (paramD != null)
+            {
+                pFamilyMgr.Set(paramD, valD);
+            }
+        }
 
-    void modifyFamilyParamValue()
-    {
-      FamilyManager mgr = _doc.FamilyManager;
+        void modifyFamilyParamValue()
+        {
+            FamilyManager mgr = _doc.FamilyManager;
 
-      FamilyParameter[] a = new FamilyParameter[] {
+            FamilyParameter[] a = new FamilyParameter[] {
         mgr.get_Parameter( "Width" ),
         mgr.get_Parameter( "Depth" )
       };
 
-      foreach (FamilyType t in mgr.Types)
-      {
-        mgr.CurrentType = t;
-        foreach (FamilyParameter fp in a)
-        {
-          if (t.HasValue(fp))
-          {
-            double x = (double)t.AsDouble(fp);
-            mgr.Set(fp, 2.0 * x);
-          }
-        }
-      }
-    }
-
-    #region Helper Functions
-
-    // ===============================================================
-    // helper function: given a solid, find a planar 
-    // face with the given normal (version 2)
-    // this is a slightly enhaced version of the previous 
-    // version and checks if the face is on the given reference plane.
-    // ===============================================================
-    PlanarFace findFace(Extrusion pBox, XYZ normal, ReferencePlane refPlane)
-    {
-      // get the geometry object of the given element
-      //
-      Options op = new Options();
-      op.ComputeReferences = true;
-      GeometryElement geomElem = pBox.get_Geometry(op);
-
-      // loop through the array and find a face with the given normal
-      //
-      foreach (GeometryObject geomObj in geomElem)
-      {
-        if (geomObj is Solid)  // solid is what we are interested in.
-        {
-          Solid pSolid = geomObj as Solid;
-          FaceArray faces = pSolid.Faces;
-          foreach (Face pFace in faces)
-          {
-            PlanarFace pPlanarFace = (PlanarFace)pFace;
-            // check to see if they have same normal
-            if ((pPlanarFace != null) && pPlanarFace.Normal.IsAlmostEqualTo(normal))
+            foreach (FamilyType t in mgr.Types)
             {
-              // additionally, we want to check if the face is on the reference plane
-              //
-              XYZ p0 = refPlane.BubbleEnd;
-              XYZ p1 = refPlane.FreeEnd;
-              //Line pCurve = _app.Create.NewLineBound(p0, p1);  // Revit 2013
-              Line pCurve = Line.CreateBound(p0, p1);  // Revit 2014
-              if (pPlanarFace.Intersect(pCurve) == SetComparisonResult.Subset)
-              {
-                return pPlanarFace; // we found the face
-              }
+                mgr.CurrentType = t;
+                foreach (FamilyParameter fp in a)
+                {
+                    if (t.HasValue(fp))
+                    {
+                        double x = (double)t.AsDouble(fp);
+                        mgr.Set(fp, 2.0 * x);
+                    }
+                }
             }
-          }
         }
 
-        // will come back later as needed.
-        //
-        //else if (geomObj is Instance)
-        //{
-        //}
-        //else if (geomObj is Curve)
-        //{
-        //}
-        //else if (geomObj is Mesh)
-        //{
-        //}
-      }
+        #region Helper Functions
 
-      // if we come here, we did not find any.
-      return null;
-    }
-
-    // =============================================================
-    //   helper function: find a planar face with the given normal
-    // =============================================================
-    PlanarFace findFace(Extrusion pBox, XYZ normal)
-    {
-      // get the geometry object of the given element
-      //
-      Options op = new Options();
-      op.ComputeReferences = true;
-      GeometryElement geomElem = pBox.get_Geometry(op);
-
-      // loop through the array and find a face with the given normal
-      //
-      foreach (GeometryObject geomObj in geomElem)
-      {
-        if (geomObj is Solid)  // solid is what we are interested in.
+        // ===============================================================
+        // helper function: given a solid, find a planar 
+        // face with the given normal (version 2)
+        // this is a slightly enhaced version of the previous 
+        // version and checks if the face is on the given reference plane.
+        // ===============================================================
+        PlanarFace findFace(Extrusion pBox, XYZ normal, ReferencePlane refPlane)
         {
-          Solid pSolid = geomObj as Solid;
-          FaceArray faces = pSolid.Faces;
-          foreach (Face pFace in faces)
-          {
-            PlanarFace pPlanarFace = (PlanarFace)pFace;
-            if ((pPlanarFace != null) && pPlanarFace.Normal.IsAlmostEqualTo(normal)) // we found the face
+            // get the geometry object of the given element
+            //
+            Options op = new Options();
+            op.ComputeReferences = true;
+            GeometryElement geomElem = pBox.get_Geometry(op);
+
+            // loop through the array and find a face with the given normal
+            //
+            foreach (GeometryObject geomObj in geomElem)
             {
-              return pPlanarFace;
+                if (geomObj is Solid)  // solid is what we are interested in.
+                {
+                    Solid pSolid = geomObj as Solid;
+                    FaceArray faces = pSolid.Faces;
+                    foreach (Face pFace in faces)
+                    {
+                        PlanarFace pPlanarFace = (PlanarFace)pFace;
+                        // check to see if they have same normal
+                        if ((pPlanarFace != null) && pPlanarFace.FaceNormal.IsAlmostEqualTo(normal))
+                        {
+                            // additionally, we want to check if the face is on the reference plane
+                            //
+                            XYZ p0 = refPlane.BubbleEnd;
+                            XYZ p1 = refPlane.FreeEnd;
+                            //Line pCurve = _app.Create.NewLineBound(p0, p1);  // Revit 2013
+                            Line pCurve = Line.CreateBound(p0, p1);  // Revit 2014
+                            if (pPlanarFace.Intersect(pCurve) == SetComparisonResult.Subset)
+                            {
+                                return pPlanarFace; // we found the face
+                            }
+                        }
+                    }
+                }
+
+                // will come back later as needed.
+                //
+                //else if (geomObj is Instance)
+                //{
+                //}
+                //else if (geomObj is Curve)
+                //{
+                //}
+                //else if (geomObj is Mesh)
+                //{
+                //}
             }
-          }
+
+            // if we come here, we did not find any.
+            return null;
         }
-        // will come back later as needed.
-        //
-        //else if (geomObj is Instance)
-        //{
-        //}
-        //else if (geomObj is Curve)
-        //{
-        //}
-        //else if (geomObj is Mesh)
-        //{
-        //}
-      }
 
-      // if we come here, we did not find any.
-      return null;
+        // =============================================================
+        //   helper function: find a planar face with the given normal
+        // =============================================================
+        PlanarFace findFace(Extrusion pBox, XYZ normal)
+        {
+            // get the geometry object of the given element
+            //
+            Options op = new Options();
+            op.ComputeReferences = true;
+            GeometryElement geomElem = pBox.get_Geometry(op);
+
+            // loop through the array and find a face with the given normal
+            //
+            foreach (GeometryObject geomObj in geomElem)
+            {
+                if (geomObj is Solid)  // solid is what we are interested in.
+                {
+                    Solid pSolid = geomObj as Solid;
+                    FaceArray faces = pSolid.Faces;
+                    foreach (Face pFace in faces)
+                    {
+                        PlanarFace pPlanarFace = (PlanarFace)pFace;
+                        if ((pPlanarFace != null) && pPlanarFace.FaceNormal.IsAlmostEqualTo(normal)) // we found the face
+                        {
+                            return pPlanarFace;
+                        }
+                    }
+                }
+                // will come back later as needed.
+                //
+                //else if (geomObj is Instance)
+                //{
+                //}
+                //else if (geomObj is Curve)
+                //{
+                //}
+                //else if (geomObj is Mesh)
+                //{
+                //}
+            }
+
+            // if we come here, we did not find any.
+            return null;
+        }
+
+        // ==================================================================================
+        //   helper function: find an element of the given type and the name.
+        //   You can use this, for example, to find Reference or Level with the given name.
+        // ==================================================================================
+        Element findElement(Type targetType, string targetName)
+        {
+            // get the elements of the given type
+            //
+            FilteredElementCollector collector = new FilteredElementCollector(_doc);
+            collector.WherePasses(new ElementClassFilter(targetType));
+
+            // parse the collection for the given name
+            // using LINQ query here. 
+            // 
+            var targetElems = from element in collector where element.Name.Equals(targetName) select element;
+            List<Element> elems = targetElems.ToList<Element>();
+
+            if (elems.Count > 0)
+            {  // we should have only one with the given name. 
+                return elems[0];
+            }
+
+            // cannot find it.
+            return null;
+        }
+
+        // ===============================================
+        //   helper function: convert millimeter to feet
+        // ===============================================
+        double mmToFeet(double mmVal)
+        {
+            return mmVal / 304.8;
+        }
+
+        #endregion // Helper Functions
     }
-
-    // ==================================================================================
-    //   helper function: find an element of the given type and the name.
-    //   You can use this, for example, to find Reference or Level with the given name.
-    // ==================================================================================
-    Element findElement(Type targetType, string targetName)
-    {
-      // get the elements of the given type
-      //
-      FilteredElementCollector collector = new FilteredElementCollector(_doc);
-      collector.WherePasses(new ElementClassFilter(targetType));
-
-      // parse the collection for the given name
-      // using LINQ query here. 
-      // 
-      var targetElems = from element in collector where element.Name.Equals(targetName) select element;
-      List<Element> elems = targetElems.ToList<Element>();
-
-      if (elems.Count > 0)
-      {  // we should have only one with the given name. 
-        return elems[0];
-      }
-
-      // cannot find it.
-      return null;
-    }
-
-    // ===============================================
-    //   helper function: convert millimeter to feet
-    // ===============================================
-    double mmToFeet(double mmVal)
-    {
-      return mmVal / 304.8;
-    }
-
-    #endregion // Helper Functions
-  }
 }

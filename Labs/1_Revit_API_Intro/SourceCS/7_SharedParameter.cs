@@ -214,10 +214,8 @@ namespace IntroCs
           ExternalDefinitionCreationOptions opt
             = new ExternalDefinitionCreationOptions(
               defName, defType );
-
           opt.Visible = true;
           definition = defGroup.Definitions.Create( opt );
-
         }
         catch( Exception )
         {
