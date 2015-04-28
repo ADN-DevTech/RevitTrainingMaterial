@@ -210,7 +210,7 @@ namespace IntroCs
 	
           // Modified code for Revit 2015
 
-          ExternalDefinitonCreationOptions extDefCrOptns = new ExternalDefinitonCreationOptions(defName, defType);
+          ExternalDefinitionCreationOptions extDefCrOptns = new ExternalDefinitionCreationOptions(defName, defType);
           extDefCrOptns.Visible = true;
           definition = defGroup.Definitions.Create(extDefCrOptns);
 

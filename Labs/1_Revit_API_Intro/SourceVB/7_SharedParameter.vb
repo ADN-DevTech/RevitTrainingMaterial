@@ -169,7 +169,7 @@ Class SharedParameter
                 'definition = defGroup.Definitions.Create(defName, defType, visible)
 
                 ' updated for Revit 2015
-                Dim extDefCrOptions As ExternalDefinitonCreationOptions = New ExternalDefinitonCreationOptions(defName, defType)
+                Dim extDefCrOptions As ExternalDefinitionCreationOptions = New ExternalDefinitionCreationOptions(defName, defType)
                 extDefCrOptions.Visible = True
                 definition = defGroup.Definitions.Create(extDefCrOptions)
 

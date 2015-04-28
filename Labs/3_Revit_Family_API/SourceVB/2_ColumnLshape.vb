@@ -87,12 +87,12 @@
 ''' </summary>
 #End Region
 
-<Autodesk.Revit.Attributes.Transaction(Autodesk.Revit.Attributes.TransactionMode.Automatic)> _
+<Autodesk.Revit.Attributes.Transaction(Autodesk.Revit.Attributes.TransactionMode.Manual)> _
 Public Class RvtCmd_FamilyCreateColumnLShape
-    Implements IExternalCommand
+  Implements IExternalCommand
 
-    '' member variables for top level access to the Revit database
-    ''
+  '' member variables for top level access to the Revit database
+  ''
   Dim _app As Application
   Dim _doc As Document
 
@@ -120,25 +120,39 @@ Public Class RvtCmd_FamilyCreateColumnLShape
       Return Result.Failed
     End If
 
-    '' (1.1) add reference planes
-    addReferencePlanes()
+    Using transaction As Transaction = New Transaction(_doc)
+      Try
+        If transaction.Start("CreateFamily") <> TransactionStatus.Started Then
+          TaskDialog.Show("ERROR", "Start transaction failed!")
+          Return Result.Failed
+        End If
+        '' (1.1) add reference planes
+        addReferencePlanes()
 
-    '' (1.2) create a simple extrusion. This time we create a L-shape.
-    Dim pSolid As Extrusion = createSolid()
-    _doc.Regenerate()
+        '' (1.2) create a simple extrusion. This time we create a L-shape.
+        Dim pSolid As Extrusion = createSolid()
+        _doc.Regenerate()
 
-    '' (2.1) add alignment
-    addAlignments(pSolid)
+        '' (2.1) add alignment
+        addAlignments(pSolid)
 
-    '' (3.1) add parameters
-    addParameters()
+        '' (3.1) add parameters
+        addParameters()
 
-    '' (3.2) add dimensions
-    addDimensions()
+        '' (3.2) add dimensions
+        addDimensions()
 
-    '' (3.3) add types
-    addTypes()
-
+        '' (3.3) add types
+        addTypes()
+        transaction.Commit()
+      Catch ex As Exception
+        TaskDialog.Show("ERROR", ex.ToString())
+        If transaction.GetStatus() = TransactionStatus.Started Then
+          transaction.RollBack()
+        End If
+        Return Result.Failed
+      End Try
+    End Using
     '' finally, return
     Return Result.Succeeded
 
@@ -258,8 +272,8 @@ Public Class RvtCmd_FamilyCreateColumnLShape
     ''  findElement() is a helper function that find an element of the given type and name.  see below.
     ''
     Dim pRefPlane As ReferencePlane = findElement(GetType(ReferencePlane), "Reference Plane") ' need to know from the template
-        'Dim pSketchPlane As SketchPlane = _doc.FamilyCreate.NewSketchPlane(pRefPlane.Plane)  ' Revit 2013
-        Dim pSketchPlane As SketchPlane = SketchPlane.Create(_doc, pRefPlane.Plane)  ' Revit 2014
+    'Dim pSketchPlane As SketchPlane = _doc.FamilyCreate.NewSketchPlane(pRefPlane.Plane)  ' Revit 2013
+    Dim pSketchPlane As SketchPlane = SketchPlane.Create(_doc, pRefPlane.GetPlane())  ' Revit 2014
 
     ''  (3) height of the extrusion
     ''
@@ -317,8 +331,8 @@ Public Class RvtCmd_FamilyCreateColumnLShape
     Dim pLoop As CurveArray = _app.Create.NewCurveArray
     Dim lines(nVerts - 1) As Line
     For i As Integer = 0 To nVerts - 1
-            'lines(i) = _app.Create.NewLineBound(pts(i), pts(i + 1))  ' Revit 2013
-            lines(i) = Line.CreateBound(pts(i), pts(i + 1))  ' Revit 2014
+      'lines(i) = _app.Create.NewLineBound(pts(i), pts(i + 1))  ' Revit 2013
+      lines(i) = Line.CreateBound(pts(i), pts(i + 1))  ' Revit 2014
       pLoop.Append(lines(i))
     Next
 
@@ -365,8 +379,8 @@ Public Class RvtCmd_FamilyCreateColumnLShape
     Dim pLoop As CurveArray = _app.Create.NewCurveArray
     Dim lines(nVerts - 1) As Line
     For i As Integer = 0 To nVerts - 1
-            'lines(i) = _app.Create.NewLineBound(pts(i), pts(i + 1))  ' Revit 2013
-            lines(i) = Line.CreateBound(pts(i), pts(i + 1))  ' Revit 2014
+      'lines(i) = _app.Create.NewLineBound(pts(i), pts(i + 1))  ' Revit 2013
+      lines(i) = Line.CreateBound(pts(i), pts(i + 1))  ' Revit 2014
       pLoop.Append(lines(i))
     Next
 
@@ -397,7 +411,7 @@ Public Class RvtCmd_FamilyCreateColumnLShape
     ''  findElement() is a helper function. see below.
     ''
     Dim upperLevel As Level = findElement(GetType(Level), "Upper Ref Level")
-    Dim ref1 As Reference = upperLevel.PlaneReference
+    Dim ref1 As Reference = upperLevel.GetPlaneReference()
 
     ''  find the face of the box
     ''  findFace() is a helper function. see below.
@@ -417,7 +431,7 @@ Public Class RvtCmd_FamilyCreateColumnLShape
     ''  findElement() is a helper function. see below.
     ''
     Dim lowerLevel As Level = findElement(GetType(Level), "Lower Ref. Level")
-    Dim ref3 As Reference = lowerLevel.PlaneReference
+    Dim ref3 As Reference = lowerLevel.GetPlaneReference()
 
     ''  find the face of the box
     ''  findFace() is a helper function. see below.
@@ -458,12 +472,12 @@ Public Class RvtCmd_FamilyCreateColumnLShape
 
     '' create alignments
     ''
-    _doc.FamilyCreate.NewAlignment(pViewPlan, refRight.Reference, faceRight.Reference)
-    _doc.FamilyCreate.NewAlignment(pViewPlan, refLeft.Reference, faceLeft.Reference)
-    _doc.FamilyCreate.NewAlignment(pViewPlan, refFront.Reference, faceFront.Reference)
-    _doc.FamilyCreate.NewAlignment(pViewPlan, refBack.Reference, faceBack.Reference)
-    _doc.FamilyCreate.NewAlignment(pViewPlan, refOffsetV.Reference, faceOffsetV.Reference)
-    _doc.FamilyCreate.NewAlignment(pViewPlan, refOffsetH.Reference, faceOffsetH.Reference)
+    _doc.FamilyCreate.NewAlignment(pViewPlan, refRight.GetReference(), faceRight.Reference)
+    _doc.FamilyCreate.NewAlignment(pViewPlan, refLeft.GetReference(), faceLeft.Reference)
+    _doc.FamilyCreate.NewAlignment(pViewPlan, refFront.GetReference(), faceFront.Reference)
+    _doc.FamilyCreate.NewAlignment(pViewPlan, refBack.GetReference(), faceBack.Reference)
+    _doc.FamilyCreate.NewAlignment(pViewPlan, refOffsetV.GetReference(), faceOffsetV.Reference)
+    _doc.FamilyCreate.NewAlignment(pViewPlan, refOffsetH.GetReference(), faceOffsetH.Reference)
 
 
   End Sub
@@ -511,14 +525,14 @@ Public Class RvtCmd_FamilyCreateColumnLShape
     ''
     Dim p0 As XYZ = refLeft.FreeEnd
     Dim p1 As XYZ = refOffsetV.FreeEnd
-        'Dim pLine As Line = _app.Create.NewLineBound(p0, p1)  ' Revit 2013
-        Dim pLine As Line = Line.CreateBound(p0, p1)  ' Revit 2014
+    'Dim pLine As Line = _app.Create.NewLineBound(p0, p1)  ' Revit 2013
+    Dim pLine As Line = Line.CreateBound(p0, p1)  ' Revit 2014
 
     ''  define references
     ''
     Dim pRefArray As New ReferenceArray
-    pRefArray.Append(refLeft.Reference)
-    pRefArray.Append(refOffsetV.Reference)
+    pRefArray.Append(refLeft.GetReference())
+    pRefArray.Append(refOffsetV.GetReference())
 
     ''  create a dimension
     ''
@@ -527,8 +541,8 @@ Public Class RvtCmd_FamilyCreateColumnLShape
     ''  add label to the dimension
     ''
     Dim paramTw As FamilyParameter = _doc.FamilyManager.Parameter("Tw")
-        'pDimTw.Label = paramTw  ' Revit 2013
-        pDimTw.FamilyLabel = paramTw  ' Revit 2014
+    'pDimTw.Label = paramTw  ' Revit 2013
+    pDimTw.FamilyLabel = paramTw  ' Revit 2014
 
     ''
     ''  (2)  do the same for dimension between 'Front' and 'OffsetH', and lable it as 'Td
@@ -538,14 +552,14 @@ Public Class RvtCmd_FamilyCreateColumnLShape
     ''
     p0 = refFront.FreeEnd
     p1 = refOffsetH.FreeEnd
-        'pLine = _app.Create.NewLineBound(p0, p1)  ' Revit 2013
-        pLine = Line.CreateBound(p0, p1)  ' Revit 2014
+    'pLine = _app.Create.NewLineBound(p0, p1)  ' Revit 2013
+    pLine = Line.CreateBound(p0, p1)  ' Revit 2014
 
     ''  define references
     ''
     pRefArray = New ReferenceArray
-    pRefArray.Append(refFront.Reference)
-    pRefArray.Append(refOffsetH.Reference)
+    pRefArray.Append(refFront.GetReference())
+    pRefArray.Append(refOffsetH.GetReference())
 
     ''  create a dimension
     ''
@@ -554,8 +568,8 @@ Public Class RvtCmd_FamilyCreateColumnLShape
     ''  add label to the dimension
     ''
     Dim paramTd As FamilyParameter = _doc.FamilyManager.Parameter("Td")
-        'pDimTd.Label = paramTd  ' Revit 2013
-        pDimTd.FamilyLabel = paramTd  ' Revit 2014
+    'pDimTd.Label = paramTd  ' Revit 2013
+    pDimTd.FamilyLabel = paramTd  ' Revit 2014
 
   End Sub
 
@@ -672,55 +686,55 @@ Public Class RvtCmd_FamilyCreateColumnLShape
     ''
     Dim op As New Options
     op.ComputeReferences = True
-        Dim geomElem As GeometryElement = pBox.Geometry(op)
+    Dim geomElem As GeometryElement = pBox.Geometry(op)
 
     '' loop through the array and find a face with the given normal
     ''
-        For Each geomObj As GeometryObject In geomElem
+    For Each geomObj As GeometryObject In geomElem
 
-            If TypeOf geomObj Is Solid Then  ''  solid is what we are interested in.
+      If TypeOf geomObj Is Solid Then  ''  solid is what we are interested in.
 
-                Dim pSolid As Solid = geomObj
-                Dim faces As FaceArray = pSolid.Faces
+        Dim pSolid As Solid = geomObj
+        Dim faces As FaceArray = pSolid.Faces
 
-                For Each pFace As Face In faces
-                    Dim pPlanarFace As PlanarFace = pFace
-                    If Not (pPlanarFace Is Nothing) Then
-                        ''  check to see if they have same normal
-                        If pPlanarFace.Normal.IsAlmostEqualTo(normal) Then
+        For Each pFace As Face In faces
+          Dim pPlanarFace As PlanarFace = pFace
+          If Not (pPlanarFace Is Nothing) Then
+            ''  check to see if they have same normal
+            If pPlanarFace.FaceNormal.IsAlmostEqualTo(normal) Then
 
-                            '' additionally, we want to check if the face is on the reference plane
-                            ''
-                            Dim p0 As XYZ = refPlane.BubbleEnd
-                            Dim p1 As XYZ = refPlane.FreeEnd
-                            'Dim pCurve As Line = _app.Create.NewLineBound(p0, p1)  ' Revit 2013
-                            Dim pCurve As Line = Line.CreateBound(p0, p1)  ' Revit 2014
-                            Dim res As SetComparisonResult = pPlanarFace.Intersect(pCurve)
-                            If res = SetComparisonResult.Subset Then
-                                Return (pPlanarFace) '' we found the face
-                            End If
-
-                        End If
-                    End If
-                Next
-
-            ElseIf TypeOf geomObj Is GeometryInstance Then
-
-                '' will come back later as needed.
-
-            ElseIf TypeOf geomObj Is Curve Then
-
-                '' will come nack later as needed.
-
-            ElseIf TypeOf geomObj Is Mesh Then
-
-                '' will come back later as needed.
-
-            Else
-                '' what else do we have?
+              '' additionally, we want to check if the face is on the reference plane
+              ''
+              Dim p0 As XYZ = refPlane.BubbleEnd
+              Dim p1 As XYZ = refPlane.FreeEnd
+              'Dim pCurve As Line = _app.Create.NewLineBound(p0, p1)  ' Revit 2013
+              Dim pCurve As Line = Line.CreateBound(p0, p1)  ' Revit 2014
+              Dim res As SetComparisonResult = pPlanarFace.Intersect(pCurve)
+              If res = SetComparisonResult.Subset Then
+                Return (pPlanarFace) '' we found the face
+              End If
 
             End If
+          End If
         Next
+
+      ElseIf TypeOf geomObj Is GeometryInstance Then
+
+        '' will come back later as needed.
+
+      ElseIf TypeOf geomObj Is Curve Then
+
+        '' will come nack later as needed.
+
+      ElseIf TypeOf geomObj Is Mesh Then
+
+        '' will come back later as needed.
+
+      Else
+        '' what else do we have?
+
+      End If
+    Next
 
     '' if we come here, we did not find any.
     Return Nothing
@@ -737,43 +751,43 @@ Public Class RvtCmd_FamilyCreateColumnLShape
     ''
     Dim op As New Options
     op.ComputeReferences = True
-        Dim geomElem As GeometryElement = pBox.Geometry(op)
+    Dim geomElem As GeometryElement = pBox.Geometry(op)
 
     '' loop through the array and find a face with the given normal
     ''
-        For Each geomObj As GeometryObject In geomElem
+    For Each geomObj As GeometryObject In geomElem
 
-            If TypeOf geomObj Is Solid Then  ''  solid is what we are interested in.
+      If TypeOf geomObj Is Solid Then  ''  solid is what we are interested in.
 
-                Dim pSolid As Solid = geomObj
-                Dim faces As FaceArray = pSolid.Faces
+        Dim pSolid As Solid = geomObj
+        Dim faces As FaceArray = pSolid.Faces
 
-                For Each pFace As Face In faces
-                    Dim pPlanarFace As PlanarFace = pFace
-                    If Not (pPlanarFace Is Nothing) Then
-                        If pPlanarFace.Normal.IsAlmostEqualTo(normal) Then '' we found the face
-                            Return (pPlanarFace)
-                        End If
-                    End If
-                Next
-
-            ElseIf TypeOf geomObj Is GeometryInstance Then
-
-                '' will come back later as needed.
-
-            ElseIf TypeOf geomObj Is Curve Then
-
-                '' will come nack later as needed.
-
-            ElseIf TypeOf geomObj Is Mesh Then
-
-                '' will come back later as needed.
-
-            Else
-                '' what else do we have?
-
+        For Each pFace As Face In faces
+          Dim pPlanarFace As PlanarFace = pFace
+          If Not (pPlanarFace Is Nothing) Then
+            If pPlanarFace.FaceNormal.IsAlmostEqualTo(normal) Then '' we found the face
+              Return (pPlanarFace)
             End If
+          End If
         Next
+
+      ElseIf TypeOf geomObj Is GeometryInstance Then
+
+        '' will come back later as needed.
+
+      ElseIf TypeOf geomObj Is Curve Then
+
+        '' will come nack later as needed.
+
+      ElseIf TypeOf geomObj Is Mesh Then
+
+        '' will come back later as needed.
+
+      Else
+        '' what else do we have?
+
+      End If
+    Next
 
     '' if we come here, we did not find any.
     Return Nothing

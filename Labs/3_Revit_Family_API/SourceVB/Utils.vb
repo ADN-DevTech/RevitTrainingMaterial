@@ -113,24 +113,24 @@ Public Class Utils
                     Dim pPlanarFace As PlanarFace = pFace
                     If Not (pPlanarFace Is Nothing) Then
                         ''  check to see if they have same normal
-                        If pPlanarFace.Normal.IsAlmostEqualTo(normal) Then
+            If pPlanarFace.FaceNormal.IsAlmostEqualTo(normal) Then
 
-                            ' '' additionally, we want to check if the face is on the reference plane
-                            ' ''
-                            'Dim p0 As XYZ = refPlane.BubbleEnd
-                            'Dim p1 As XYZ = refPlane.FreeEnd
-                            'Dim pCurve As Line = _rvtApp.Create.NewLineBound(p0, p1)
-                            'Dim res As SetComparisonResult = pPlanarFace.Intersect(pCurve)
-                            'If res = SetComparisonResult.Subset Then
-                            '    Return (pPlanarFace) '' we found the face
-                            'End If
+              ' '' additionally, we want to check if the face is on the reference plane
+              ' ''
+              'Dim p0 As XYZ = refPlane.BubbleEnd
+              'Dim p1 As XYZ = refPlane.FreeEnd
+              'Dim pCurve As Line = _rvtApp.Create.NewLineBound(p0, p1)
+              'Dim res As SetComparisonResult = pPlanarFace.Intersect(pCurve)
+              'If res = SetComparisonResult.Subset Then
+              '    Return (pPlanarFace) '' we found the face
+              'End If
 
-                            '' get a point on the face. Any point will do.
-                            Dim pEdge As Edge = pPlanarFace.EdgeLoops.Item(0).Item(0)
-                            Dim pt As XYZ = pEdge.Evaluate(0.0)
-                            Dim res As Boolean = IsPointOnPlane(pt, refPlane)
+              '' get a point on the face. Any point will do.
+              Dim pEdge As Edge = pPlanarFace.EdgeLoops.Item(0).Item(0)
+              Dim pt As XYZ = pEdge.Evaluate(0.0)
+              Dim res As Boolean = IsPointOnPlane(pt, refPlane)
 
-                        End If
+            End If
                     End If
                 Next
 
@@ -175,23 +175,23 @@ Public Class Utils
                     Dim pPlanarFace As PlanarFace = pFace
                     If Not (pPlanarFace Is Nothing) Then
                         ''  check to see if they have same normal
-                        If pPlanarFace.Normal.IsAlmostEqualTo(normal) Then
+            If pPlanarFace.FaceNormal.IsAlmostEqualTo(normal) Then
 
-                            If refPlane Is Nothing Then
-                                Return pPlanarFace  '' we found the face. 
-                            Else
-                                ''  additionally, we want to check if the face is on the reference plane
-                                ''  get a point on the face. Any point will do.
-                                Dim pEdge As Edge = pPlanarFace.EdgeLoops.Item(0).Item(0)
-                                Dim pt As XYZ = pEdge.Evaluate(0.0)
-                                ''  is the point on the reference plane? 
-                                Dim res As Boolean = IsPointOnPlane(pt, refPlane)
-                                If res Then
-                                    Return pPlanarFace  '' we found the face 
-                                End If
-                            End If
+              If refPlane Is Nothing Then
+                Return pPlanarFace  '' we found the face. 
+              Else
+                ''  additionally, we want to check if the face is on the reference plane
+                ''  get a point on the face. Any point will do.
+                Dim pEdge As Edge = pPlanarFace.EdgeLoops.Item(0).Item(0)
+                Dim pt As XYZ = pEdge.Evaluate(0.0)
+                ''  is the point on the reference plane? 
+                Dim res As Boolean = IsPointOnPlane(pt, refPlane)
+                If res Then
+                  Return pPlanarFace  '' we found the face 
+                End If
+              End If
 
-                        End If
+            End If
                     End If
                 Next
 
@@ -224,7 +224,7 @@ Public Class Utils
 
         ''  get the plane equation 
         Dim n As XYZ = plane.Normal
-        Dim p0 As XYZ = plane.Plane.Origin
+    Dim p0 As XYZ = plane.GetPlane().Origin
 
         Dim dt As Double = n.DotProduct(p1 - p0)
 

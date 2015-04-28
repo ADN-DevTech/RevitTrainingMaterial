@@ -77,12 +77,12 @@
 ''' </summary>
 #End Region
 
-<Autodesk.Revit.Attributes.Transaction(Autodesk.Revit.Attributes.TransactionMode.Automatic)> _
+<Autodesk.Revit.Attributes.Transaction(Autodesk.Revit.Attributes.TransactionMode.Manual)> _
 Public Class RvtCmd_FamilyCreateColumnRectangle
-    Implements IExternalCommand
+  Implements IExternalCommand
 
-    '' member variables for top level access to the Revit database
-    ''
+  '' member variables for top level access to the Revit database
+  ''
   Dim _app As Application
   Dim _doc As Document
 
@@ -109,25 +109,38 @@ Public Class RvtCmd_FamilyCreateColumnRectangle
       MsgBox("Please open Metric Column.rft")
       Return Result.Failed
     End If
+    Using transaction As Transaction = New Transaction(_doc)
+      Try
+        If transaction.Start("CreateFamily") <> TransactionStatus.Started Then
+          TaskDialog.Show("ERROR", "Start transaction failed!")
+          Return Result.Failed
+        End If
+        '' (1) create a simple extrusion. just a simple box for now.
+        Dim pSolid As Extrusion = createSolid()
 
-    '' (1) create a simple extrusion. just a simple box for now.
-    Dim pSolid As Extrusion = createSolid()
+        '' We need to regenerate so that we can build on this new geometry
+        _doc.Regenerate()
 
-    '' We need to regenerate so that we can build on this new geometry
-    _doc.Regenerate()
+        ''  try this:
+        ''  if you comment addAlignment and addTypes calls below and execute only up to here,
+        ''  you will see the column's top will not follow the upper level.
 
-    ''  try this:
-    ''  if you comment addAlignment and addTypes calls below and execute only up to here,
-    ''  you will see the column's top will not follow the upper level.
+        '' (2) add alignment
+        addAlignments(pSolid)
 
-    '' (2) add alignment
-    addAlignments(pSolid)
+        ''  try this: at each stage of adding a function here, you should be able to see the result in UI.
 
-    ''  try this: at each stage of adding a function here, you should be able to see the result in UI.
-
-    '' (3) add types
-    addTypes()
-
+        '' (3) add types
+        addTypes()
+        transaction.Commit()
+      Catch ex As Exception
+        TaskDialog.Show("ERROR", ex.ToString())
+        If transaction.GetStatus() = TransactionStatus.Started Then
+          transaction.RollBack()
+        End If
+        Return Result.Failed
+      End Try
+    End Using
     ''  finally, return
     Return Result.Succeeded
 
@@ -188,8 +201,8 @@ Public Class RvtCmd_FamilyCreateColumnRectangle
     ''  findElement() is a helper function that find an element of the given type and name.  see below.
     ''
     Dim pRefPlane As ReferencePlane = findElement(GetType(ReferencePlane), "Reference Plane") ' need to know from the template
-        'Dim pSketchPlane As SketchPlane = _doc.FamilyCreate.NewSketchPlane(pRefPlane.Plane)  ' Revit 2013
-        Dim pSketchPlane As SketchPlane = SketchPlane.Create(_doc, pRefPlane.Plane)  ' Revit 2014
+    'Dim pSketchPlane As SketchPlane = _doc.FamilyCreate.NewSketchPlane(pRefPlane.Plane)  ' Revit 2013
+    Dim pSketchPlane As SketchPlane = SketchPlane.Create(_doc, pRefPlane.GetPlane())  ' Revit 2014
 
     ''  (3) height of the extrusion
     ''
@@ -242,8 +255,8 @@ Public Class RvtCmd_FamilyCreateColumnRectangle
     Dim pLoop As CurveArray = _app.Create.NewCurveArray
     Dim lines(nVerts - 1) As Line
     For i As Integer = 0 To nVerts - 1
-            'lines(i) = _app.Create.NewLineBound(pts(i), pts(i + 1))  ' Revit 2013
-            lines(i) = Line.CreateBound(pts(i), pts(i + 1))  ' Revit 2014
+      'lines(i) = _app.Create.NewLineBound(pts(i), pts(i + 1))  ' Revit 2013
+      lines(i) = Line.CreateBound(pts(i), pts(i + 1))  ' Revit 2014
       pLoop.Append(lines(i))
     Next
 
@@ -274,7 +287,7 @@ Public Class RvtCmd_FamilyCreateColumnRectangle
     ''  findElement() is a helper function. see below.
     ''
     Dim upperLevel As Level = findElement(GetType(Level), "Upper Ref Level")
-    Dim ref1 As Reference = upperLevel.PlaneReference
+    Dim ref1 As Reference = upperLevel.GetPlaneReference()
 
     ''  find the face of the box
     ''  findFace() is a helper function. see below.
@@ -294,7 +307,7 @@ Public Class RvtCmd_FamilyCreateColumnRectangle
     ''  findElement() is a helper function. see below.
     ''
     Dim lowerLevel As Level = findElement(GetType(Level), "Lower Ref. Level")
-    Dim ref3 As Reference = lowerLevel.PlaneReference
+    Dim ref3 As Reference = lowerLevel.GetPlaneReference()
 
     ''  find the face of the box
     ''  findFace() is a helper function. see below.
@@ -327,10 +340,10 @@ Public Class RvtCmd_FamilyCreateColumnRectangle
 
     ''  create alignments
     ''
-    _doc.FamilyCreate.NewAlignment(pViewPlan, refRight.Reference, faceRight.Reference)
-    _doc.FamilyCreate.NewAlignment(pViewPlan, refLeft.Reference, faceLeft.Reference)
-    _doc.FamilyCreate.NewAlignment(pViewPlan, refFront.Reference, faceFront.Reference)
-    _doc.FamilyCreate.NewAlignment(pViewPlan, refBack.Reference, faceBack.Reference)
+    _doc.FamilyCreate.NewAlignment(pViewPlan, refRight.GetReference(), faceRight.Reference)
+    _doc.FamilyCreate.NewAlignment(pViewPlan, refLeft.GetReference(), faceLeft.Reference)
+    _doc.FamilyCreate.NewAlignment(pViewPlan, refFront.GetReference(), faceFront.Reference)
+    _doc.FamilyCreate.NewAlignment(pViewPlan, refBack.GetReference(), faceBack.Reference)
 
   End Sub
 
@@ -395,43 +408,43 @@ Public Class RvtCmd_FamilyCreateColumnRectangle
     ''
     Dim op As New Options
     op.ComputeReferences = True
-        Dim geomElem As GeometryElement = pBox.Geometry(op)
+    Dim geomElem As GeometryElement = pBox.Geometry(op)
 
     '' loop through the array and find a face with the given normal
     ''
-        For Each geomObj As GeometryObject In geomElem
+    For Each geomObj As GeometryObject In geomElem
 
-            If TypeOf geomObj Is Solid Then  ''  solid is what we are interested in.
+      If TypeOf geomObj Is Solid Then  ''  solid is what we are interested in.
 
-                Dim pSolid As Solid = geomObj
-                Dim faces As FaceArray = pSolid.Faces
+        Dim pSolid As Solid = geomObj
+        Dim faces As FaceArray = pSolid.Faces
 
-                For Each pFace As Face In faces
-                    Dim pPlanarFace As PlanarFace = pFace
-                    If Not (pPlanarFace Is Nothing) Then
-                        If pPlanarFace.Normal.IsAlmostEqualTo(normal) Then '' we found the face
-                            Return (pPlanarFace)
-                        End If
-                    End If
-                Next
-
-            ElseIf TypeOf geomObj Is GeometryInstance Then
-
-                '' will come back later as needed.
-
-            ElseIf TypeOf geomObj Is Curve Then
-
-                '' will come nack later as needed.
-
-            ElseIf TypeOf geomObj Is Mesh Then
-
-                '' will come back later as needed.
-
-            Else
-                '' what else do we have?
-
+        For Each pFace As Face In faces
+          Dim pPlanarFace As PlanarFace = pFace
+          If Not (pPlanarFace Is Nothing) Then
+            If pPlanarFace.FaceNormal.IsAlmostEqualTo(normal) Then '' we found the face
+              Return (pPlanarFace)
             End If
+          End If
         Next
+
+      ElseIf TypeOf geomObj Is GeometryInstance Then
+
+        '' will come back later as needed.
+
+      ElseIf TypeOf geomObj Is Curve Then
+
+        '' will come nack later as needed.
+
+      ElseIf TypeOf geomObj Is Mesh Then
+
+        '' will come back later as needed.
+
+      Else
+        '' what else do we have?
+
+      End If
+    Next
 
     '' if we come here, we did not find any.
     Return Nothing
