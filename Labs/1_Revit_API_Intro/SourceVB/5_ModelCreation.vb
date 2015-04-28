@@ -323,8 +323,9 @@ Public Class ModelCreation
         walls(0).Parameter(BuiltInParameter.WALL_HEIGHT_TYPE).AsElementId
     Dim level2 As Level = _doc.GetElement(idLevel2)
 
-    ' Footprint to morel curve mapping  
-    Dim mapping
+    ' Footprint to model curve mapping
+
+    Dim mapping = Nothing
 
     ' Create a roof.
 
