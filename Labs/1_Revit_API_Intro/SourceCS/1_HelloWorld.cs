@@ -44,36 +44,37 @@ namespace IntroCs
   /// <summary>
   /// Hello World #1 - A minimum Revit external command. 
   /// </summary>
-  [Autodesk.Revit.Attributes.Transaction(Autodesk.Revit.Attributes.TransactionMode.Manual)]
+  [Autodesk.Revit.Attributes.Transaction( Autodesk.Revit.Attributes.TransactionMode.Manual )]
   public class HelloWorld : Autodesk.Revit.UI.IExternalCommand
   {
     public Autodesk.Revit.UI.Result Execute(
       Autodesk.Revit.UI.ExternalCommandData commandData,
       ref string message,
-      Autodesk.Revit.DB.ElementSet elements)
+      Autodesk.Revit.DB.ElementSet elements )
     {
       Autodesk.Revit.UI.TaskDialog.Show(
         "My Dialog Title",
-        "Hello World!");
+        "Hello World!" );
 
       return Autodesk.Revit.UI.Result.Succeeded;
     }
   }
 
   /// <summary>
-  /// Hello World #2 - simplified without full namespace.
+  /// Hello World #2 - simplified without full namespace 
+  /// and use ReadOnly attribute.
   /// </summary>
-  [Transaction(TransactionMode.Manual)]
+  [Transaction( TransactionMode.ReadOnly )]
   public class HelloWorldSimple : IExternalCommand
   {
     public Result Execute(
       ExternalCommandData commandData,
       ref string message,
-      ElementSet elements)
+      ElementSet elements )
     {
       TaskDialog.Show(
         "My Dialog Title",
-        "Hello World Simple!");
+        "Hello World Simple!" );
 
       return Result.Succeeded;
     }
@@ -88,16 +89,16 @@ namespace IntroCs
   {
     // OnStartup() - called when Revit starts. 
 
-    public Result OnStartup(UIControlledApplication app)
+    public Result OnStartup( UIControlledApplication app )
     {
-      TaskDialog.Show("My Dialog Title", "Hello World from App!");
+      TaskDialog.Show( "My Dialog Title", "Hello World from App!" );
 
       return Result.Succeeded;
     }
 
     // OnShutdown() - called when Revit ends. 
 
-    public Result OnShutdown(UIControlledApplication app)
+    public Result OnShutdown( UIControlledApplication app )
     {
       return Result.Succeeded;
     }
@@ -109,13 +110,13 @@ namespace IntroCs
   /// commandData is the topmost object and 
   /// provides the entry point to the Revit model. 
   /// </summary>
-  [Transaction(TransactionMode.Manual)]
+  [Transaction( TransactionMode.ReadOnly )]
   public class CommandData : IExternalCommand
   {
     public Result Execute(
       ExternalCommandData commandData,
       ref string message,
-      ElementSet elements)
+      ElementSet elements )
     {
       // The first argument, commandData, provides access to the top most object model. 
       // You will get the necessary information from commandData. 
@@ -126,7 +127,7 @@ namespace IntroCs
       UIApplication uiApp = commandData.Application;
       Application rvtApp = uiApp.Application;
       UIDocument uiDoc = uiApp.ActiveUIDocument;
-      Document rvtDoc = uiDoc.Document; 
+      Document rvtDoc = uiDoc.Document;
 
       // Print out a few information that you can get from commandData 
       string versionName = rvtApp.VersionName;
@@ -135,7 +136,7 @@ namespace IntroCs
       TaskDialog.Show(
         "Revit Intro Lab",
         "Version Name = " + versionName
-        + "\nDocument Title = " + documentTitle);
+        + "\nDocument Title = " + documentTitle );
 
       // Print out a list of wall types available in the current rvt project:
 
@@ -155,7 +156,7 @@ namespace IntroCs
 
       TaskDialog.Show(
         "Revit Intro Lab",
-        "Wall Types (in main instruction):\n\n" + s);
+        "Wall Types (in main instruction):\n\n" + s );
 
       // 2nd and 3rd arguments are when the command fails. 
       // 2nd - set a message to the user. 
@@ -165,4 +166,3 @@ namespace IntroCs
     }
   }
 }
-

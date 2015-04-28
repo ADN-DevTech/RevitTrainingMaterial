@@ -50,41 +50,42 @@
 ''' </summary>
 <Autodesk.Revit.Attributes.Transaction(Autodesk.Revit.Attributes.TransactionMode.Manual)> _
 Public Class HelloWorld
-    Implements Autodesk.Revit.UI.IExternalCommand
+  Implements Autodesk.Revit.UI.IExternalCommand
 
-    Public Function Execute( _
-      ByVal commandData As Autodesk.Revit.UI.ExternalCommandData, _
-      ByRef message As String, _
-      ByVal elements As Autodesk.Revit.DB.ElementSet) _
-      As Autodesk.Revit.UI.Result _
-      Implements Autodesk.Revit.UI.IExternalCommand.Execute
+  Public Function Execute( _
+    ByVal commandData As Autodesk.Revit.UI.ExternalCommandData, _
+    ByRef message As String, _
+    ByVal elements As Autodesk.Revit.DB.ElementSet) _
+    As Autodesk.Revit.UI.Result _
+    Implements Autodesk.Revit.UI.IExternalCommand.Execute
 
-        Autodesk.Revit.UI.TaskDialog.Show("My Dialog Title", "Hello World!")
+    Autodesk.Revit.UI.TaskDialog.Show("My Dialog Title", "Hello World!")
 
-        Return Autodesk.Revit.UI.Result.Succeeded
+    Return Autodesk.Revit.UI.Result.Succeeded
 
-    End Function
+  End Function
 
 End Class
 
 ''' <summary>
-''' Hello World #2 - simplified without full namespace.   
+''' Hello World #2 - simplified without full namespace
+''' and use ReadOnly attribute.   
 ''' </summary>
-<Transaction(TransactionMode.Manual)> _
+<Transaction(TransactionMode.ReadOnly)> _
 Public Class HelloWorldSimple
-    Implements IExternalCommand
+  Implements IExternalCommand
 
-    Public Function Execute( _
-      ByVal commandData As ExternalCommandData, _
-      ByRef message As String, _
-      ByVal elements As ElementSet) _
-      As Result _
-      Implements IExternalCommand.Execute
+  Public Function Execute( _
+    ByVal commandData As ExternalCommandData, _
+    ByRef message As String, _
+    ByVal elements As ElementSet) _
+    As Result _
+    Implements IExternalCommand.Execute
 
-        TaskDialog.Show("My Dialog Title", "Hello World Simple!")
-        Return Result.Succeeded
+    TaskDialog.Show("My Dialog Title", "Hello World Simple!")
+    Return Result.Succeeded
 
-    End Function
+  End Function
 
 End Class
 
@@ -98,13 +99,13 @@ Public Class HelloWorldApp
 
   ' OnShutdown() - called when Revit ends. 
 
-    Public Function OnShutdown(ByVal app As UIControlledApplication) _
-      As Result _
-      Implements IExternalApplication.OnShutdown
+  Public Function OnShutdown(ByVal app As UIControlledApplication) _
+    As Result _
+    Implements IExternalApplication.OnShutdown
 
-        Return Result.Succeeded
+    Return Result.Succeeded
 
-    End Function
+  End Function
 
   ' OnStartup() - called when Revit starts. 
 
@@ -112,7 +113,7 @@ Public Class HelloWorldApp
     As Result _
     Implements IExternalApplication.OnStartup
 
-        TaskDialog.Show("My Dialog Title", "Hello World from App!")
+    TaskDialog.Show("My Dialog Title", "Hello World from App!")
 
     Return Result.Succeeded
 
@@ -125,62 +126,62 @@ End Class
 ''' object and the entry point to the Revit model. 
 ''' </summary>
 
-<Transaction(TransactionMode.Manual)> _
+<Transaction(TransactionMode.ReadOnly)> _
 Public Class CommandData
-    Implements IExternalCommand
+  Implements IExternalCommand
 
-    Public Function Execute( _
-      ByVal commandData As ExternalCommandData, _
-      ByRef message As String, _
-      ByVal elements As ElementSet) _
-      As Result _
-      Implements IExternalCommand.Execute
+  Public Function Execute( _
+    ByVal commandData As ExternalCommandData, _
+    ByRef message As String, _
+    ByVal elements As ElementSet) _
+    As Result _
+    Implements IExternalCommand.Execute
 
-        ' The first argument, commandData, is the top most in the object model.
-        ' You will get the necessary information from commandData. 
-        ' To see what's in there, print out a few data accessed from commandData 
-        ' 
-        ' Exercise: Place a break point at commandData and drill down the data. 
+    ' The first argument, commandData, is the top most in the object model.
+    ' You will get the necessary information from commandData. 
+    ' To see what's in there, print out a few data accessed from commandData 
+    ' 
+    ' Exercise: Place a break point at commandData and drill down the data. 
 
-        Dim uiApp As UIApplication = commandData.Application
-        Dim rvtApp As Application = uiApp.Application
-        Dim uiDoc As UIDocument = uiApp.ActiveUIDocument
-        Dim rvtDoc As Document = uiDoc.Document
+    Dim uiApp As UIApplication = commandData.Application
+    Dim rvtApp As Application = uiApp.Application
+    Dim uiDoc As UIDocument = uiApp.ActiveUIDocument
+    Dim rvtDoc As Document = uiDoc.Document
 
-        ' Print out a few information that you can get from commandData 
-        Dim versionName As String = rvtApp.VersionName
-        Dim documentTitle As String = rvtDoc.Title
+    ' Print out a few information that you can get from commandData 
+    Dim versionName As String = rvtApp.VersionName
+    Dim documentTitle As String = rvtDoc.Title
 
-        TaskDialog.Show( _
-            "Revit Intro Lab", _
-            "Version Name = " + versionName _
-            + vbCr + "Document Title = " + documentTitle)
+    TaskDialog.Show( _
+        "Revit Intro Lab", _
+        "Version Name = " + versionName _
+        + vbCr + "Document Title = " + documentTitle)
 
-        ' Print out a list of wall types available in the current rvt project. 
+    ' Print out a list of wall types available in the current rvt project. 
 
-        'Dim wallTypes As WallTypeSet = rvtDoc.WallTypes ' 2013, deprecated in 2014
+    'Dim wallTypes As WallTypeSet = rvtDoc.WallTypes ' 2013, deprecated in 2014
 
-        Dim wallTypes As FilteredElementCollector _
-          = New FilteredElementCollector(rvtDoc) _
-            .OfClass(GetType(WallType))
+    Dim wallTypes As FilteredElementCollector _
+      = New FilteredElementCollector(rvtDoc) _
+        .OfClass(GetType(WallType))
 
-        Dim s As String = ""
+    Dim s As String = ""
 
-        For Each wallType As WallType In wallTypes
-            s += wallType.Name + vbCr
-        Next
+    For Each wallType As WallType In wallTypes
+      s += wallType.Name + vbCr
+    Next
 
-        ' Show the result:
+    ' Show the result:
 
-        TaskDialog.Show(
-          "Revit Intro Lab",
-          "Wall Types (in main instruction):" + vbCr + vbCr + s)
+    TaskDialog.Show(
+      "Revit Intro Lab",
+      "Wall Types (in main instruction):" + vbCr + vbCr + s)
 
-        ' 2nd and 3rd arguments are when the command fails.  
-        ' 2nd - set a message to the user.   
-        ' 3rd - set elements to highlight. 
+    ' 2nd and 3rd arguments are when the command fails.  
+    ' 2nd - set a message to the user.   
+    ' 3rd - set elements to highlight. 
 
-        Return Result.Succeeded
+    Return Result.Succeeded
 
-    End Function
+  End Function
 End Class
