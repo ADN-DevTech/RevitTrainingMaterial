@@ -401,7 +401,7 @@ Public Class ModelCreationExport
         Dim level2 As Level = rvtDoc.GetElement(idLevel2)
 
         ' Footprint to morel curve mapping  
-        Dim mapping As ModelCurveArray
+    Dim mapping
 
         ' Create a roof.
         Dim aRoof As FootPrintRoof = _
