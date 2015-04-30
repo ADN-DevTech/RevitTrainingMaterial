@@ -41,9 +41,11 @@ using Autodesk.Revit.ApplicationServices; // This is for Revit Application
 namespace IntroCs
 {
   /// <summary>
-  /// Hello World #1 - A minimum Revit external command.
+  /// Hello World #1 - A minimum Revit external command
+  /// with all namespaces fully qualified.
   /// </summary>
-  [Transaction(TransactionMode.ReadOnly)]
+  [Autodesk.Revit.Attributes.Transaction(
+    Autodesk.Revit.Attributes.TransactionMode.ReadOnly)]
   public class HelloWorld : Autodesk.Revit.UI.IExternalCommand
   {
     public Autodesk.Revit.UI.Result Execute(

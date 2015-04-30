@@ -328,13 +328,14 @@ namespace IntroCs
       //Level level2 = (Level)_doc.get_Element(idLevel2); // 2012
       Level level2 = (Level)_doc.GetElement(idLevel2); // since 2013
 
-      // Footprint to morel curve mapping 
+      // Footprint to model curve mapping 
 
       ModelCurveArray mapping = new ModelCurveArray();
 
       // Create a roof. 
 
-      FootPrintRoof aRoof = _doc.Create.NewFootPrintRoof(footPrint, level2, roofType, out mapping);
+      FootPrintRoof aRoof = _doc.Create.NewFootPrintRoof(
+        footPrint, level2, roofType, out mapping);
 
       foreach (ModelCurve modelCurve in mapping)
       {
@@ -342,6 +343,5 @@ namespace IntroCs
         aRoof.set_SlopeAngle(modelCurve, 0.5);
       }
     }
-
   }
 }

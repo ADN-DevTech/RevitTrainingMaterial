@@ -180,6 +180,7 @@ namespace IntroCs
         // Save the wall.
         walls.Add(aWall);
       }
+
       // This is important. we need these lines to have shrinkwrap working. 
       _doc.Regenerate();
       _doc.AutoJoinElements();
@@ -378,7 +379,6 @@ namespace IntroCs
     /// <summary>
     /// Add a roof over the rectangular profile of the walls we created earlier.
     /// </summary>
-
     public static void AddRoof(Document rvtDoc, List<Wall> walls)
     {
       // Hard coding the roof type we will use. 
@@ -426,28 +426,33 @@ namespace IntroCs
         footPrint.Append(line);
       }
 
-      // Get the level2 from the wall
+      // Get the level2 from the wall.
+
       ElementId idLevel2 = walls[0].get_Parameter(BuiltInParameter.WALL_HEIGHT_TYPE).AsElementId();
 
       //Level level2 = (Level)_doc.get_Element(idLevel2); // 2012
       Level level2 = rvtDoc.GetElement(idLevel2) as Level; // since 2013
 
-      // Footprint to morel curve mapping  
+      // Footprint to model curve mapping.
+
       ModelCurveArray mapping = new ModelCurveArray();
 
       // Create a roof.
-      FootPrintRoof aRoof = rvtDoc.Create.NewFootPrintRoof(footPrint, level2, roofType, out mapping);
 
-      //  Set the slope 
+      FootPrintRoof aRoof = rvtDoc.Create.NewFootPrintRoof(
+        footPrint, level2, roofType, out mapping);
+
+      // Set the slope.
+
       foreach (ModelCurve modelCurve in mapping)
       {
         aRoof.set_DefinesSlope(modelCurve, true);
         aRoof.set_SlopeAngle(modelCurve, 0.5);
       }
 
-      // Added. 
-      rvtDoc.Regenerate();
-      rvtDoc.AutoJoinElements();
+      // Performed automatically by transaction commit.
+      //rvtDoc.Regenerate();
+      //rvtDoc.AutoJoinElements();
     }
   }
 }

@@ -425,9 +425,9 @@ Public Class ModelCreationExport
       aRoof.SlopeAngle(modelCurve) = 0.5
     Next
 
-    ' Added. 
-    rvtDoc.Regenerate()
-    rvtDoc.AutoJoinElements()
+    ' Performed automatically by transaction commit.
+    'rvtDoc.Regenerate()
+    'rvtDoc.AutoJoinElements()
 
   End Sub
 End Class
