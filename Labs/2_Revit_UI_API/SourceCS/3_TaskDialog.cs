@@ -41,7 +41,7 @@ namespace UiCs
   /// cf. Developer Guide, Section 3.9 Revit-style Task Dialogs (pp55) 
   /// Appexdix G. API User Interface Guidelines (pp381), Task Dialog (pp404) 
   /// </summary>
-  [Transaction(TransactionMode.Automatic)]
+  [Transaction(TransactionMode.ReadOnly)]
   public class UITaskDialog : IExternalCommand
   {
     // Member variables 
@@ -170,7 +170,7 @@ namespace UiCs
   /// 
   /// Show a task dialog and ask the user if he/she wants to create a house interactively or automatically. 
   /// </summary> 
-  [Transaction(TransactionMode.Automatic)]
+  [Transaction(TransactionMode.ReadOnly)]
   public class UICreateHouseDialog : IExternalCommand
   {
     // Member variables 

@@ -47,7 +47,7 @@
 ''' <summary>
 ''' Hello World #1 - A minimum Revit external command.
 ''' </summary>
-<Autodesk.Revit.Attributes.Transaction(Autodesk.Revit.Attributes.TransactionMode.Manual)> _
+<Transaction(TransactionMode.ReadOnly)> _
 Public Class HelloWorld
   Implements Autodesk.Revit.UI.IExternalCommand
 

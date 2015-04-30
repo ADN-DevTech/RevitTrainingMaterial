@@ -71,11 +71,13 @@ Public Class ModelCreation
     Dim uiDoc As UIDocument = rvtUIApp.ActiveUIDocument
     _app = rvtUIApp.Application
     _doc = uiDoc.Document
-
-    ' Let's make a simple "house" composed of four walls, a window 
-    ' and a door. 
-    CreateHouse()
-
+    Using transaction As Transaction = New Transaction(_doc)
+      transaction.Start("Create House")
+      ' Let's make a simple "house" composed of four walls, a window 
+      ' and a door. 
+      CreateHouse()
+      transaction.Commit()
+    End Using
     Return Result.Succeeded
 
   End Function
@@ -188,6 +190,9 @@ Public Class ModelCreation
         "). Maybe you use a different template? Try with DefaultMetric.rte.")
     End If
 
+    If Not doorType.IsActive Then
+      doorType.Activate()
+    End If
     ' Get the start and end points of the wall.
 
     Dim locCurve As LocationCurve = hostWall.Location
@@ -240,6 +245,9 @@ Public Class ModelCreation
         "). Maybe you use a different template? Try with DefaultMetric.rte.")
     End If
 
+    If Not windowType.IsActive Then
+      windowType.Activate()
+    End If
     ' Get the start and end points of the wall. 
 
     Dim locCurve As LocationCurve = hostWall.Location
@@ -325,7 +333,7 @@ Public Class ModelCreation
 
     ' Footprint to model curve mapping
 
-    Dim mapping = Nothing
+    Dim mapping As ModelCurveArray = New ModelCurveArray()
 
     ' Create a roof.
 

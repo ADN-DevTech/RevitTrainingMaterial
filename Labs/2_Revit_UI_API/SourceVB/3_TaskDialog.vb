@@ -44,7 +44,7 @@
 ''' cf. Developer Guide, Section 3.9 Revit-style Task Dialogs (pp55) 
 ''' Appexdix G. API User Interface Guidelines (pp381), Task Dialog (pp404) 
 ''' </summary>
-<Transaction(TransactionMode.Automatic)> _
+<Transaction(TransactionMode.ReadOnly)> _
 Public Class UITaskDialog
   Implements IExternalCommand
 
@@ -178,7 +178,7 @@ End Class
 ''' 
 ''' Show a task dialog and ask the user if he/she wants to create a house interactively or automatically. 
 ''' </summary> 
-<Transaction(TransactionMode.Automatic)> _
+<Transaction(TransactionMode.ReadOnly)> _
 Public Class UICreateHouseDialog
   Implements IExternalCommand
 

@@ -52,7 +52,7 @@ namespace IntroCs
   /// <summary>
   /// ElementFiltering
   /// </summary>
-  [Transaction(TransactionMode.Manual)]
+  [Transaction(TransactionMode.ReadOnly)]
   public class ElementFiltering : IExternalCommand
   {
     // Member variables 
@@ -107,7 +107,7 @@ namespace IntroCs
       // e.g., _doc.WallTypes 
 
       //WallTypeSet wallTypes = _doc.WallTypes; // 2013
-      
+
 
       FilteredElementCollector wallTypes
         = new FilteredElementCollector(_doc) // 2014
@@ -122,9 +122,9 @@ namespace IntroCs
         s += "\r\n" + wType.Kind.ToString() + " : " + wType.Name;
         //++n;
       }
-      TaskDialog.Show( n.ToString() 
+      TaskDialog.Show(n.ToString()
         + " Wall Types:",
-        s );
+        s);
 
       // (1.1) Same idea applies to other system family, such as Floors, Roofs. 
 
@@ -242,7 +242,7 @@ namespace IntroCs
       ElementType wallType1 = (ElementType)FindFamilyType_Wall_v1(wallFamilyName, wallTypeName);
 
       // Show the result. 
-      msg += ShowFamilyTypeAndId("Find wall family type (using LINQ): ", 
+      msg += ShowFamilyTypeAndId("Find wall family type (using LINQ): ",
         wallFamilyAndTypeName, wallType1) + "\r\n";
 
       // (1.2) Another way is to use iterator. (cf. look for example, Developer guide 87) 
@@ -470,7 +470,7 @@ namespace IntroCs
       if (doorFamily != null)
       {
         // If we have a family, then proceed with finding a type under Symbols property. 
-        
+
         //FamilySymbolSet doorFamilySymbolSet = doorFamily.Symbols;       // 'Autodesk.Revit.DB.Family.Symbols' is obsolete: 
         // 'This property is obsolete in Revit 2015.  Use Family.GetFamilySymbolIds() instead.'
 
@@ -485,12 +485,12 @@ namespace IntroCs
         //    break;
         //  }
         //}
-        
+
         /// Following part is modified code for Revit 2015
 
         ISet<ElementId> familySymbolIds = doorFamily.GetFamilySymbolIds();
 
-        if (familySymbolIds.Count > 0)        
+        if (familySymbolIds.Count > 0)
         {
           // Get family symbols which is contained in this family
           foreach (ElementId id in familySymbolIds)
@@ -505,7 +505,7 @@ namespace IntroCs
         }
 
         /// End of modified code for Revit 2015          
-        
+
       }
       return doorType2;
     }
@@ -719,7 +719,7 @@ namespace IntroCs
     /// FindFamilyType(_doc, GetType(WallType), "Basic Wall", "Generic - 200mm") 
     /// FindFamilyType(_doc, GetType(FamilySymbol), "M_Single-Flush", "0915 x 2134mm", BuiltInCategory.OST_Doors) 
     /// </summary>
-    public static Element FindFamilyType(Document rvtDoc, Type targetType, 
+    public static Element FindFamilyType(Document rvtDoc, Type targetType,
         string targetFamilyName, string targetTypeName, Nullable<BuiltInCategory> targetCategory)
     {
       // First, narrow down to the elements of the given type and category 

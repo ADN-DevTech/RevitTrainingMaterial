@@ -48,7 +48,6 @@ namespace UiCs
   /// External application to register/unregister document changed event. 
   /// Simply reports what has been changed  
   /// </summary>
-  [Transaction(TransactionMode.Automatic)]
   public class UIEventApp : IExternalApplication
   {
     // Flag to indicate if we want to show a message at each object modified events. 
@@ -139,7 +138,7 @@ namespace UiCs
   /// <summary>
   /// External command to toggle event message on/off 
   /// </summary> 
-  [Transaction(TransactionMode.Automatic)]
+  [Transaction(TransactionMode.ReadOnly)]
   public class UIEvent : IExternalCommand
   {
     public Result Execute(
@@ -154,7 +153,7 @@ namespace UiCs
 
   }
 
-  [Transaction(TransactionMode.Automatic)]
+  [Transaction(TransactionMode.ReadOnly)]
   public class UIEventOn : IExternalCommand
   {
     public Result Execute(
@@ -168,7 +167,7 @@ namespace UiCs
     }
   }
 
-  [Transaction(TransactionMode.Automatic)]
+  [Transaction(TransactionMode.ReadOnly)]
   public class UIEventOff : IExternalCommand
   {
     public Result Execute(
@@ -325,7 +324,7 @@ namespace UiCs
   /// <summary>
   /// External command to toggle windowDoor updater on/off 
   /// </summary> 
-  [Transaction(TransactionMode.Automatic)]
+  [Transaction(TransactionMode.ReadOnly)]
   public class UIDynamicModelUpdate : IExternalCommand
   {
     public Result Execute(
@@ -345,7 +344,7 @@ namespace UiCs
     }
   }
 
-  [Transaction(TransactionMode.Automatic)]
+  [Transaction(TransactionMode.ReadOnly)]
   public class UIDynamicModelUpdateOn : IExternalCommand
   {
     public Result Execute(
@@ -359,7 +358,7 @@ namespace UiCs
     }
   }
 
-  [Transaction(TransactionMode.Automatic)]
+  [Transaction(TransactionMode.ReadOnly)]
   public class UIDynamicModelUpdateOff : IExternalCommand
   {
     public Result Execute(

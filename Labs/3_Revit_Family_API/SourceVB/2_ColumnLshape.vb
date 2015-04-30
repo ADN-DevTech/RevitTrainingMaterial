@@ -87,7 +87,7 @@
 ''' </summary>
 #End Region
 
-<Autodesk.Revit.Attributes.Transaction(Autodesk.Revit.Attributes.TransactionMode.Manual)> _
+<Transaction(TransactionMode.Manual)> _
 Public Class RvtCmd_FamilyCreateColumnLShape
   Implements IExternalCommand
 

@@ -50,7 +50,6 @@
 ''' you can use your own. Any command will do for this ribbon exercise. 
 ''' cf. Developer Guide, Section 3.8: Ribbon Panels and Controls. (pp 46). 
 ''' </summary>
-<Transaction(TransactionMode.Automatic)> _
 Public Class UIRibbon
   Implements IExternalApplication
 
@@ -275,7 +274,7 @@ Public Class UIRibbon
     pushButtonData1.LargeImage = NewBitmapImage("ImgHelloWorld.png")
 
     ' #2 
-        Dim pushButtonData2 As New PushButtonData("SplitDbElement", "DB Element", _introLabPath, _introLabName + ".DBElement")
+    Dim pushButtonData2 As New PushButtonData("SplitDbElement", "DB Element", _introLabPath, _introLabName + ".DBElement")
     pushButtonData2.LargeImage = NewBitmapImage("ImgHelloWorld.png")
 
     ' #3  
@@ -302,7 +301,7 @@ Public Class UIRibbon
     pushButtonData1.LargeImage = NewBitmapImage("Basics.ico")
 
     ' #2 
-        Dim pushButtonData2 As New PushButtonData("PulldownDbElement", "DB Element", _introLabPath, _introLabName + ".DBElement")
+    Dim pushButtonData2 As New PushButtonData("PulldownDbElement", "DB Element", _introLabPath, _introLabName + ".DBElement")
     pushButtonData2.LargeImage = NewBitmapImage("Basics.ico")
 
     ' #3  
@@ -329,7 +328,7 @@ Public Class UIRibbon
     toggleButtonData1.LargeImage = NewBitmapImage("Basics.ico")
 
     ' #2 
-        Dim toggleButtonData2 As New ToggleButtonData("RadioDbElement", "DB" + vbCr + "Element", _introLabPath, _introLabName + ".DBElement")
+    Dim toggleButtonData2 As New ToggleButtonData("RadioDbElement", "DB" + vbCr + "Element", _introLabPath, _introLabName + ".DBElement")
     toggleButtonData2.LargeImage = NewBitmapImage("Basics.ico")
 
     ' #3  
@@ -454,7 +453,7 @@ Public Class UIRibbon
     pushButtonData1.Image = NewBitmapImage("ImgHelloWorldSmall.png")
 
     ' #2 
-        Dim pushButtonData2 As New PushButtonData("StackSimpleDbElement", "DB Element", _introLabPath, _introLabName + ".DBElement")
+    Dim pushButtonData2 As New PushButtonData("StackSimpleDbElement", "DB Element", _introLabPath, _introLabName + ".DBElement")
     pushButtonData2.Image = NewBitmapImage("ImgHelloWorldSmall.png")
 
     ' #3  
@@ -488,7 +487,7 @@ Public Class UIRibbon
     pushButtonData1.Image = NewBitmapImage("Basics.ico")
 
     ' #2 
-        Dim pushButtonData2 As New PushButtonData("StackComplexDbElement", "DB Element", _introLabPath, _introLabName + ".DBElement")
+    Dim pushButtonData2 As New PushButtonData("StackComplexDbElement", "DB Element", _introLabPath, _introLabName + ".DBElement")
     'pushButtonData2.Image = NewBitmapImage( "ImgHelloWorldSmall.png")
 
     ' #3  
@@ -701,7 +700,7 @@ End Class
 ''' If you prefer to use a dummy command instead, you can do so. 
 ''' Providing a command template here. 
 ''' </summary>
-<Transaction(TransactionMode.Automatic)> _
+<Transaction(TransactionMode.ReadOnly)> _
 Public Class DummyCommand1
   Implements IExternalCommand
 

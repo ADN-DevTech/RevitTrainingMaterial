@@ -68,9 +68,14 @@ namespace IntroCs
       _app = rvtUIApp.Application;
       _doc = uiDoc.Document;
 
-      // Let's make a simple "house" composed of four walls, a window 
-      // and a door. 
-      CreateHouse();
+      using (Transaction transaction = new Transaction(_doc))
+      {
+        transaction.Start("Create House");
+        // Let's make a simple "house" composed of four walls, a window 
+        // and a door. 
+        CreateHouse();
+        transaction.Commit();
+      }
 
       return Result.Succeeded;
     }
@@ -148,7 +153,7 @@ namespace IntroCs
         // Create a wall using the one of overloaded methods. 
 
         //Wall aWall = _doc.Create.NewWall(baseCurve, level1, isStructural); // 2012
-          Wall aWall = Wall.Create(_doc, baseCurve, level1.Id, isStructural); // since 2013
+        Wall aWall = Wall.Create(_doc, baseCurve, level1.Id, isStructural); // since 2013
         // Set the Top Constraint to Level 2 
         aWall.get_Parameter(BuiltInParameter.WALL_HEIGHT_TYPE).Set(level2.Id);
         // Save the wall. 
@@ -187,6 +192,8 @@ namespace IntroCs
           doorFamilyAndTypeName +
           "). Maybe you use a different template? Try with DefaultMetric.rte.");
       }
+      if (!doorType.IsActive)
+        doorType.Activate();
 
       // Get the start and end points of the wall. 
 
@@ -202,7 +209,7 @@ namespace IntroCs
         hostWall.get_Parameter(BuiltInParameter.WALL_BASE_CONSTRAINT).AsElementId();
 
       //Level level1 = (Level)_doc.get_Element(idLevel1); // 2012
-        Level level1 = (Level)_doc.GetElement(idLevel1); // since 2013
+      Level level1 = (Level)_doc.GetElement(idLevel1); // since 2013
 
       // Finally, create a door. 
 
@@ -238,6 +245,9 @@ namespace IntroCs
           "). Maybe you use a different template? Try with DefaultMetric.rte.");
       }
 
+      if (!windowType.IsActive)
+        windowType.Activate();
+
       // Get the start and end points of the wall. 
 
       LocationCurve locCurve = (LocationCurve)hostWall.Location;
@@ -250,7 +260,7 @@ namespace IntroCs
 
       ElementId idLevel1 = hostWall.get_Parameter(BuiltInParameter.WALL_BASE_CONSTRAINT).AsElementId();
       //Level level1 = (Level)_doc.get_Element(idLevel1); // 2012
-        Level level1 = (Level)_doc.GetElement(idLevel1); // since 2013
+      Level level1 = (Level)_doc.GetElement(idLevel1); // since 2013
 
       // Finally create a window. 
 
@@ -316,11 +326,11 @@ namespace IntroCs
 
       ElementId idLevel2 = walls[0].get_Parameter(BuiltInParameter.WALL_HEIGHT_TYPE).AsElementId();
       //Level level2 = (Level)_doc.get_Element(idLevel2); // 2012
-        Level level2 = (Level)_doc.GetElement(idLevel2); // since 2013
+      Level level2 = (Level)_doc.GetElement(idLevel2); // since 2013
 
       // Footprint to morel curve mapping 
 
-      ModelCurveArray mapping;
+      ModelCurveArray mapping = new ModelCurveArray();
 
       // Create a roof. 
 
