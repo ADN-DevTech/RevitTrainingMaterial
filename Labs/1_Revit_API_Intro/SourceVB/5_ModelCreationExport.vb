@@ -76,10 +76,13 @@ Public Class ModelCreationExport
     Dim uiDoc As UIDocument = rvtUIApp.ActiveUIDocument
     _app = rvtUIApp.Application
     _doc = uiDoc.Document
-
-    ' Let's make a simple "house" composed of four walls, a window 
-    ' and a door. 
-    CreateHouse(_doc)
+    Using transaction As Transaction = New Transaction(_doc)
+      transaction.Start("Create House")
+      ' Let's make a simple "house" composed of four walls, a window 
+      ' and a door. 
+      CreateHouse(_doc)
+      transaction.Commit()
+    End Using
 
     Return Result.Succeeded
 
@@ -289,6 +292,10 @@ Public Class ModelCreationExport
         doorFamilyAndTypeName + "). Maybe you use a different template? Try with DefaultMetric.rte.")
     End If
 
+    If Not doorType.IsActive Then
+      doorType.Activate()
+    End If
+
     ' Get the start and end points of the wall. 
     Dim locCurve As LocationCurve = hostWall.Location
     Dim pt1 As XYZ = locCurve.Curve.GetEndPoint(0)
@@ -327,6 +334,10 @@ Public Class ModelCreationExport
     If windowType Is Nothing Then
       TaskDialog.Show("Add window", "Cannot find (" + _
         windowFamilyAndTypeName + "). Maybe you use a different template? Try with DefaultMetric.rte.")
+    End If
+
+    If Not windowType.IsActive Then
+      windowType.Activate()
     End If
 
     ' Get the start and end points of the wall. 
@@ -402,7 +413,7 @@ Public Class ModelCreationExport
 
     ' Footprint to model curve mapping  
 
-    Dim mapping = Nothing
+    Dim mapping As ModelCurveArray = New ModelCurveArray()
 
     ' Create a roof.
     Dim aRoof As FootPrintRoof = _

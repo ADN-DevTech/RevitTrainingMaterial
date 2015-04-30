@@ -69,12 +69,12 @@ namespace IntroCs
 
       using (Transaction transaction = new Transaction(_doc))
       {
-          transaction.Start("Create House");
-          // Let's make a simple "house" composed of four walls, a window 
-          // and a door. 
-          CreateHouse(_doc);
+        transaction.Start("Create House");
+        // Let's make a simple "house" composed of four walls, a window 
+        // and a door. 
+        CreateHouse(_doc);
 
-          transaction.Commit();
+        transaction.Commit();
       }
 
       return Result.Succeeded;
@@ -305,6 +305,8 @@ namespace IntroCs
           "). Maybe you use a different template? Try with DefaultMetric.rte."
         );
       }
+      if (!doorType.IsActive)
+        doorType.Activate();
 
       // Get the start and end points of the wall. 
       LocationCurve locCurve = (LocationCurve)hostWall.Location;
@@ -316,7 +318,7 @@ namespace IntroCs
       // One more thing - we want to set the reference as a bottom of the wall or level1. 
       ElementId idLevel1 = hostWall.get_Parameter(BuiltInParameter.WALL_BASE_CONSTRAINT).AsElementId();
       //Level level1 = (Level)_doc.get_Element(idLevel1); // 2012
-        Level level1 = rvtDoc.GetElement(idLevel1) as Level; // since 2013
+      Level level1 = rvtDoc.GetElement(idLevel1) as Level; // since 2013
 
       // Finally, create a door. 
       FamilyInstance aDoor = rvtDoc.Create.NewFamilyInstance(pt, doorType, hostWall, level1, StructuralType.NonStructural);
@@ -350,6 +352,9 @@ namespace IntroCs
           "). Maybe you use a different template? Try with DefaultMetric.rte.");
       }
 
+      if (!windowType.IsActive)
+        windowType.Activate();
+
       // Get the start and end points of the wall. 
       LocationCurve locCurve = (LocationCurve)hostWall.Location;
       XYZ pt1 = locCurve.Curve.GetEndPoint(0);
@@ -361,7 +366,7 @@ namespace IntroCs
       ElementId idLevel1 = hostWall.get_Parameter(BuiltInParameter.WALL_BASE_CONSTRAINT).AsElementId();
 
       //Level level1 = (Level)_doc.get_Element(idLevel1); // 2012
-        Level level1 = rvtDoc.GetElement(idLevel1) as Level; // since 2013
+      Level level1 = rvtDoc.GetElement(idLevel1) as Level; // since 2013
 
       // Finally create a window. 
       FamilyInstance aWindow = rvtDoc.Create.NewFamilyInstance(pt, windowType, hostWall, level1, StructuralType.NonStructural);
@@ -425,10 +430,10 @@ namespace IntroCs
       ElementId idLevel2 = walls[0].get_Parameter(BuiltInParameter.WALL_HEIGHT_TYPE).AsElementId();
 
       //Level level2 = (Level)_doc.get_Element(idLevel2); // 2012
-        Level level2 = rvtDoc.GetElement(idLevel2) as Level; // since 2013
+      Level level2 = rvtDoc.GetElement(idLevel2) as Level; // since 2013
 
       // Footprint to morel curve mapping  
-      ModelCurveArray mapping;
+      ModelCurveArray mapping = new ModelCurveArray();
 
       // Create a roof.
       FootPrintRoof aRoof = rvtDoc.Create.NewFootPrintRoof(footPrint, level2, roofType, out mapping);

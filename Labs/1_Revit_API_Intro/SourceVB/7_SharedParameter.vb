@@ -99,15 +99,21 @@ Class SharedParameter
       Return Result.Failed
     End Try
 
-    ' Bind the param
-    Try
-      Dim binding As Binding = app.Create.NewInstanceBinding(catSet)
-      ' We could check if already bound, but looks like Insert will just ignore it in such case
-      doc.ParameterBindings.Insert(fireRatingParamDef, binding)
-    Catch ex As Exception
-      message = ex.Message
-      Return Result.Failed
-    End Try
+    Using transaction As Transaction = New Transaction(doc)
+      transaction.Start("Bind parameter")
+      ' Bind the param
+      Try
+        Dim binding As Binding = app.Create.NewInstanceBinding(catSet)
+        ' We could check if already bound, but looks like Insert will just ignore it in such case
+        doc.ParameterBindings.Insert(fireRatingParamDef, binding)
+      Catch ex As Exception
+        message = ex.Message
+        Return Result.Failed
+      End Try
+      transaction.Commit()
+    End Using
+
+
 
     Return Result.Succeeded
   End Function
@@ -126,6 +132,8 @@ Class SharedParameter
     End Try
 
     If 0 = sharedParamsFileName.Length Or Not System.IO.File.Exists(sharedParamsFileName) Then
+      Directory.CreateDirectory(Path.GetDirectoryName(kSharedParamsPath))
+
       Dim stream As StreamWriter
       stream = New StreamWriter(kSharedParamsPath)
       stream.Close()
@@ -196,60 +204,66 @@ Public Class PerDocParameter
     Dim uiDoc As UIDocument = commandData.Application.ActiveUIDocument
     Dim app As Application = commandData.Application.Application
     Dim doc As Document = uiDoc.Document
+    Using transaction As Transaction = New Transaction(doc)
+      transaction.Start("PerDocParameter")
 
-    ' get the current shared params definition file
-    Dim sharedParamsFile As DefinitionFile = SharedParameter.GetSharedParamsFile(app)
-    If sharedParamsFile Is Nothing Then
-      TaskDialog.Show("Per document parameter", "Error getting the shared params file.")
-      Return Result.Failed
-    End If
-    ' get or create the shared params group
-    Dim sharedParamsGroup As DefinitionGroup = SharedParameter.GetOrCreateSharedParamsGroup(sharedParamsFile, kParamGroupName)
-    If sharedParamsGroup Is Nothing Then
-      TaskDialog.Show("Per document parameter", "Error getting the shared params group.")
-      Return Result.Failed
-    End If
-    ' visible param
-    Dim docParamDefVisible As Definition = SharedParameter.GetOrCreateSharedParamsDefinition(sharedParamsGroup, ParameterType.[Integer], kParamNameVisible, True)
-    If docParamDefVisible Is Nothing Then
-      TaskDialog.Show("Per document parameter", "Error creating visible per-doc parameter.")
-      Return Result.Failed
-    End If
-    ' invisible param
-    Dim docParamDefInvisible As Definition = SharedParameter.GetOrCreateSharedParamsDefinition(sharedParamsGroup, ParameterType.[Integer], kParamNameInvisible, False)
-    If docParamDefInvisible Is Nothing Then
-      TaskDialog.Show("Per document parameter", "Error creating invisible per-doc parameter.")
-      Return Result.Failed
-    End If
-    ' bind the param
-    Try
-      Dim catSet As CategorySet = app.Create.NewCategorySet()
-      catSet.Insert(doc.Settings.Categories.Item(BuiltInCategory.OST_ProjectInformation))
-      Dim binding As Binding = app.Create.NewInstanceBinding(catSet)
-      doc.ParameterBindings.Insert(docParamDefVisible, binding)
-      doc.ParameterBindings.Insert(docParamDefInvisible, binding)
-    Catch e As Exception
-      TaskDialog.Show("Per document parameter", "Error binding shared parameter: " + e.Message)
-      Return Result.Failed
-    End Try
-    ' set the initial values
-    ' get the singleton project info element
-    Dim projInfoElem As Element = GetProjectInfoElem(doc)
+      ' get the current shared params definition file
+      Dim sharedParamsFile As DefinitionFile = SharedParameter.GetSharedParamsFile(app)
+      If sharedParamsFile Is Nothing Then
+        TaskDialog.Show("Per document parameter", "Error getting the shared params file.")
+        Return Result.Failed
+      End If
+      ' get or create the shared params group
+      Dim sharedParamsGroup As DefinitionGroup = SharedParameter.GetOrCreateSharedParamsGroup(sharedParamsFile, kParamGroupName)
+      If sharedParamsGroup Is Nothing Then
+        TaskDialog.Show("Per document parameter", "Error getting the shared params group.")
+        Return Result.Failed
+      End If
+      ' visible param
+      Dim docParamDefVisible As Definition = SharedParameter.GetOrCreateSharedParamsDefinition(sharedParamsGroup, ParameterType.[Integer], kParamNameVisible, True)
+      If docParamDefVisible Is Nothing Then
+        TaskDialog.Show("Per document parameter", "Error creating visible per-doc parameter.")
+        Return Result.Failed
+      End If
+      ' invisible param
+      Dim docParamDefInvisible As Definition = SharedParameter.GetOrCreateSharedParamsDefinition(sharedParamsGroup, ParameterType.[Integer], kParamNameInvisible, False)
+      If docParamDefInvisible Is Nothing Then
+        TaskDialog.Show("Per document parameter", "Error creating invisible per-doc parameter.")
+        Return Result.Failed
+      End If
+      ' bind the param
+      Try
+        Dim catSet As CategorySet = app.Create.NewCategorySet()
+        catSet.Insert(doc.Settings.Categories.Item(BuiltInCategory.OST_ProjectInformation))
+        Dim binding As Binding = app.Create.NewInstanceBinding(catSet)
+        doc.ParameterBindings.Insert(docParamDefVisible, binding)
+        doc.ParameterBindings.Insert(docParamDefInvisible, binding)
+      Catch e As Exception
+        TaskDialog.Show("Per document parameter", "Error binding shared parameter: " + e.Message)
+        Return Result.Failed
+      End Try
+      ' set the initial values
+      ' get the singleton project info element
+      Dim projInfoElem As Element = GetProjectInfoElem(doc)
 
-    If projInfoElem Is Nothing Then
-      TaskDialog.Show("Per document parameter", "No project info elem found. Aborting command...")
-      Return Result.Failed
-    End If
-    ' for simplicity, access params by name rather than by GUID:
+      If projInfoElem Is Nothing Then
+        TaskDialog.Show("Per document parameter", "No project info elem found. Aborting command...")
+        Return Result.Failed
+      End If
+      ' for simplicity, access params by name rather than by GUID:
 
-    '' 'Get' accessor of 'Public ReadOnly Property Parameter(paramName As String) As Autodesk.Revit.DB.Parameter' is obsolete: 
-    'This property is obsolete in Revit 2015
+      '' 'Get' accessor of 'Public ReadOnly Property Parameter(paramName As String) As Autodesk.Revit.DB.Parameter' is obsolete: 
+      'This property is obsolete in Revit 2015
 
-    'projInfoElem.Parameter(kParamNameVisible).Set(55)  ' Revit 2014 or earlier
-    'projInfoElem.Parameter(kParamNameInvisible).Set(0) ' Revit 2014 or earlier
+      'projInfoElem.Parameter(kParamNameVisible).Set(55)  ' Revit 2014 or earlier
+      'projInfoElem.Parameter(kParamNameInvisible).Set(0) ' Revit 2014 or earlier
 
-    projInfoElem.LookupParameter(kParamNameVisible).Set(55)
-    projInfoElem.LookupParameter(kParamNameInvisible).Set(0)
+      projInfoElem.LookupParameter(kParamNameVisible).Set(55)
+      projInfoElem.LookupParameter(kParamNameInvisible).Set(0)
+      transaction.Commit()
+    End Using
+
+
 
     Return Result.Succeeded
   End Function

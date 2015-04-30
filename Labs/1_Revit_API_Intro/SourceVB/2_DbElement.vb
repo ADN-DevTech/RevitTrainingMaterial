@@ -47,7 +47,7 @@
 ''' DBElement - identifying element
 ''' </summary>
 
-<Transaction(TransactionMode.Manual)> _
+<Transaction(TransactionMode.ReadOnly)> _
 Public Class DBElement
   Implements IExternalCommand
 

@@ -46,7 +46,7 @@ namespace UiCs
   /// 
   /// cf. Developer Guide, Section 7: Selection (pp 89) 
   /// </summary>
-  [Transaction(TransactionMode.Automatic)]
+  [Transaction(TransactionMode.ReadOnly)]
   public class UISelection : IExternalCommand
   {
     // Member variables
@@ -541,7 +541,7 @@ namespace UiCs
   /// Ask the user to pick two corner points of walls
   /// then ask to choose a wall to add a front door. 
   /// </summary>
-  [Transaction(TransactionMode.Automatic)]
+  [Transaction(TransactionMode.Manual)]
   public class UICreateHouse : IExternalCommand
   {
     UIApplication _uiApp;
@@ -558,7 +558,12 @@ namespace UiCs
       _uiDoc = _uiApp.ActiveUIDocument;
       _doc = _uiDoc.Document;
 
-      CreateHouseInteractive(_uiDoc);
+      using (Transaction transaction = new Transaction(_doc))
+      {
+        transaction.Start("Create House");
+        CreateHouseInteractive(_uiDoc);
+        transaction.Commit();
+      }
 
       return Result.Succeeded;
     }

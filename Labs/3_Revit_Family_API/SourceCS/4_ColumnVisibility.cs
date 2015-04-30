@@ -41,6 +41,7 @@ using Autodesk.Revit;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
 using Autodesk.Revit.ApplicationServices;
+using Autodesk.Revit.Attributes;
 
 #endregion // Namespaces
 
@@ -97,7 +98,7 @@ using Autodesk.Revit.ApplicationServices;
 
 namespace FamilyCs
 {
-    [Autodesk.Revit.Attributes.Transaction(Autodesk.Revit.Attributes.TransactionMode.Manual)]
+    [Transaction(TransactionMode.Manual)]
     class RvtCmd_FamilyCreateColumnVisibility : IExternalCommand
     {
         // member variables for top level access to the Revit database

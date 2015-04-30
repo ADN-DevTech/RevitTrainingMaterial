@@ -45,7 +45,6 @@ namespace UiCs
   /// you can use your own. Any command will do for this ribbon exercise. 
   /// cf. Developer Guide, Section 3.8: Ribbon Panels and Controls. (pp 46). 
   /// </summary>
-  [Transaction(TransactionMode.Automatic)]
   public class UIRibbon : IExternalApplication
   {
     /// <summary>
@@ -697,7 +696,7 @@ namespace UiCs
   /// If you prefer to use a dummy command instead, you can do so. 
   /// Providing a command template here. 
   /// </summary>
-  [Transaction(TransactionMode.Automatic)]
+  [Transaction(TransactionMode.ReadOnly)]
   public class DummyCommand1 : IExternalCommand
   {
     public Result Execute(

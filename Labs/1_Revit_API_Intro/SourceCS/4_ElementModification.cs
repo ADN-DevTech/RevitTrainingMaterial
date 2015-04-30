@@ -78,22 +78,22 @@ namespace IntroCs
 
       using (Transaction transaction = new Transaction(_doc))
       {
-          transaction.Start("Modify Element");
-          // (1) element level modification 
-          // Modify element's properties, parameters, location. 
+        transaction.Start("Modify Element");
+        // (1) element level modification 
+        // Modify element's properties, parameters, location. 
 
-          ModifyElementPropertiesWall(e);
-          //ModifyElementPropertiesDoor(e);
-          _doc.Regenerate();
+        ModifyElementPropertiesWall(e);
+        //ModifyElementPropertiesDoor(e);
+        _doc.Regenerate();
 
-          // Select an object on a screen. (We'll come back to the selection in the UI Lab later.) 
-          Reference r2 = uiDoc.Selection.PickObject(ObjectType.Element, "Pick another element");
-          // We have picked something. 
-          Element e2 = _doc.GetElement(r2);
+        // Select an object on a screen. (We'll come back to the selection in the UI Lab later.) 
+        Reference r2 = uiDoc.Selection.PickObject(ObjectType.Element, "Pick another element");
+        // We have picked something. 
+        Element e2 = _doc.GetElement(r2);
 
-          // (2) you can also use transformation utility to move and rotate. 
-          ModifyElementByTransformUtilsMethods(e2);
-          transaction.Commit();
+        // (2) you can also use transformation utility to move and rotate. 
+        ModifyElementByTransformUtilsMethods(e2);
+        transaction.Commit();
       }
 
       return Result.Succeeded;
@@ -270,6 +270,6 @@ namespace IntroCs
       TaskDialog.Show("Modify element by utils methods", msg);
     }
 
-  }  
+  }
 
-}  
+}
