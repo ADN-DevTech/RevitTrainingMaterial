@@ -544,35 +544,40 @@ Public Class UICreateHouse
   ''' </summary>
   Public Shared Sub CreateHouseInteractive(ByVal uiDoc As UIDocument)
 
-    ' (1) Walls 
-    ' Pick two corners to place a house with an orthogonal rectangular footprint 
-    Dim pt1 As XYZ = uiDoc.Selection.PickPoint("Pick the first corner of walls")
-    Dim pt2 As XYZ = uiDoc.Selection.PickPoint("Pick the second corner")
+    Using transaction As Transaction = New Transaction(uiDoc.Document)
+      transaction.Start("Create House Interactive")
+      ' (1) Walls 
+      ' Pick two corners to place a house with an orthogonal rectangular footprint 
+      Dim pt1 As XYZ = uiDoc.Selection.PickPoint("Pick the first corner of walls")
+      Dim pt2 As XYZ = uiDoc.Selection.PickPoint("Pick the second corner")
 
-    ' Simply create four walls with orthogonal rectangular profile from the two points picked.  
-    Dim walls As List(Of Wall) = IntroVb.ModelCreationExport.CreateWalls(uiDoc.Document, pt1, pt2)
+      ' Simply create four walls with orthogonal rectangular profile from the two points picked.  
+      Dim walls As List(Of Wall) = IntroVb.ModelCreationExport.CreateWalls(uiDoc.Document, pt1, pt2)
 
-    ' (2) Door 
-    ' Pick a wall to add a front door to
-    Dim selFilterWall As New SelectionFilterWall
-    Dim r As Reference = uiDoc.Selection.PickObject( _
-        ObjectType.Element, selFilterWall, "Select a wall to place a front door")
-    Dim wallFront As Wall = uiDoc.Document.GetElement(r)
+      ' (2) Door 
+      ' Pick a wall to add a front door to
+      Dim selFilterWall As New SelectionFilterWall
+      Dim r As Reference = uiDoc.Selection.PickObject( _
+          ObjectType.Element, selFilterWall, "Select a wall to place a front door")
+      Dim wallFront As Wall = uiDoc.Document.GetElement(r)
 
-    ' Add a door to the selected wall
-    IntroVb.ModelCreationExport.AddDoor(uiDoc.Document, wallFront)
+      ' Add a door to the selected wall
+      IntroVb.ModelCreationExport.AddDoor(uiDoc.Document, wallFront)
 
-    ' (3) Windows 
-    ' Add windows to the rest of the walls. 
-    For i As Integer = 0 To 3
-      If Not (walls(i).Id.IntegerValue = wallFront.Id.IntegerValue) Then
-        IntroVb.ModelCreationExport.AddWindow(uiDoc.Document, walls(i))
-      End If
-    Next
+      ' (3) Windows 
+      ' Add windows to the rest of the walls. 
+      For i As Integer = 0 To 3
+        If Not (walls(i).Id.IntegerValue = wallFront.Id.IntegerValue) Then
+          IntroVb.ModelCreationExport.AddWindow(uiDoc.Document, walls(i))
+        End If
+      Next
 
-    ' (4) Roofs 
-    ' Add a roof over the walls' rectangular profile. 
-    IntroVb.ModelCreationExport.AddRoof(uiDoc.Document, walls)
+      ' (4) Roofs 
+      ' Add a roof over the walls' rectangular profile. 
+      IntroVb.ModelCreationExport.AddRoof(uiDoc.Document, walls)
+      transaction.Commit()
+    End Using
+
 
   End Sub
 

@@ -67,18 +67,11 @@ namespace IntroCs
       _app = rvtUIApp.Application;
       _doc = uiDoc.Document;
 
-      using (Transaction transaction = new Transaction(_doc))
-      {
-        transaction.Start("Create House");
-        // Let's make a simple "house" composed of four walls, a window 
-        // and a door. 
-        CreateHouse(_doc);
-
-        transaction.Commit();
-      }
+      // Let's make a simple "house" composed of four walls, a window 
+      // and a door. 
+      CreateHouse(_doc);
 
       return Result.Succeeded;
-
     }
 
     public void CreateHouse_v1()
@@ -101,20 +94,25 @@ namespace IntroCs
 
     public static void CreateHouse(Document rvtDoc)
     {
-      // Simply create four walls with rectangular profile. 
-      List<Wall> walls = CreateWalls(rvtDoc);
-
-      // Add a door to the second wall 
-      AddDoor(rvtDoc, walls[0]);
-
-      // Add windows to the rest of the walls. 
-      for (int i = 1; i <= 3; i++)
+      using (Transaction transaction = new Transaction(rvtDoc))
       {
-        AddWindow(rvtDoc, walls[i]);
-      }
+        transaction.Start("Create House");
+        // Simply create four walls with rectangular profile. 
+        List<Wall> walls = CreateWalls(rvtDoc);
 
-      // (optional) add a roof over the walls' rectangular profile. 
-      AddRoof(rvtDoc, walls);
+        // Add a door to the second wall 
+        AddDoor(rvtDoc, walls[0]);
+
+        // Add windows to the rest of the walls. 
+        for (int i = 1; i <= 3; i++)
+        {
+          AddWindow(rvtDoc, walls[i]);
+        }
+
+        // (optional) add a roof over the walls' rectangular profile. 
+        AddRoof(rvtDoc, walls);
+        transaction.Commit();
+      }
     }
 
     /// <summary>
