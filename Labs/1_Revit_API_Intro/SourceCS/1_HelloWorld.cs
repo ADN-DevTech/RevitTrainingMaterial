@@ -31,10 +31,10 @@ using Autodesk.Revit.ApplicationServices; // This is for Revit Application
 #region Description
 // Revit Intro Lab - 1
 //
-// In this lab, you will learn how to "hook" your add-on program to Revit.
-// This command defines a minimum external command.
+// In this lab, you will learn how to "hook" your add-in to Revit.
+// This lab defines a minimum external command.
 //
-// Explain about addin manifest. How to create GUID.
+// Explain about add-in manifest, how to create GUID.
 // Hello World in VB.NET is from page 367 of Developer Guide.
 #endregion
 
@@ -45,7 +45,7 @@ namespace IntroCs
   /// with all namespaces fully qualified.
   /// </summary>
   [Autodesk.Revit.Attributes.Transaction(
-    Autodesk.Revit.Attributes.TransactionMode.ReadOnly)]
+    Autodesk.Revit.Attributes.TransactionMode.Manual)]
   public class HelloWorld : Autodesk.Revit.UI.IExternalCommand
   {
     public Autodesk.Revit.UI.Result Execute(
@@ -63,7 +63,7 @@ namespace IntroCs
 
   /// <summary>
   /// Hello World #2 - simplified without full namespace
-  /// and use ReadOnly attribute.
+  /// and using ReadOnly attribute.
   /// </summary>
   [Transaction(TransactionMode.ReadOnly)]
   public class HelloWorldSimple : IExternalCommand
