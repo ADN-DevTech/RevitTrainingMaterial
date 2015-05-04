@@ -170,7 +170,7 @@ namespace UiCs
   /// 
   /// Show a task dialog and ask the user if he/she wants to create a house interactively or automatically. 
   /// </summary> 
-  [Transaction(TransactionMode.ReadOnly)]
+  [Transaction(TransactionMode.Manual)]
   public class UICreateHouseDialog : IExternalCommand
   {
     // Member variables 

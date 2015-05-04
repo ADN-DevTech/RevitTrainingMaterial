@@ -76,13 +76,10 @@ Public Class ModelCreationExport
     Dim uiDoc As UIDocument = rvtUIApp.ActiveUIDocument
     _app = rvtUIApp.Application
     _doc = uiDoc.Document
-    Using transaction As Transaction = New Transaction(_doc)
-      transaction.Start("Create House")
-      ' Let's make a simple "house" composed of four walls, a window 
-      ' and a door. 
-      CreateHouse(_doc)
-      transaction.Commit()
-    End Using
+
+    ' Let's make a simple "house" composed of four walls, a window 
+    ' and a door. 
+    CreateHouse(_doc)
 
     Return Result.Succeeded
 
@@ -107,21 +104,23 @@ Public Class ModelCreationExport
   End Sub
 
   Public Shared Sub CreateHouse(ByVal rvtDoc As Document)
+    Using transaction As Transaction = New Transaction(rvtDoc)
+      transaction.Start("Create House")
+      ' Simply create four walls with rectangular profile. 
+      Dim walls As List(Of Wall) = CreateWalls(rvtDoc)
 
-    ' Simply create four walls with rectangular profile. 
-    Dim walls As List(Of Wall) = CreateWalls(rvtDoc)
+      ' Add a door to the second wall 
+      AddDoor(rvtDoc, walls(0))
 
-    ' Add a door to the second wall 
-    AddDoor(rvtDoc, walls(0))
+      ' Add windows to the rest of the walls. 
+      For i As Integer = 1 To 3
+        AddWindow(rvtDoc, walls(i))
+      Next
 
-    ' Add windows to the rest of the walls. 
-    For i As Integer = 1 To 3
-      AddWindow(rvtDoc, walls(i))
-    Next
-
-    ' (optional) add a roof over the walls' rectangular profile. 
-    AddRoof(rvtDoc, walls)
-
+      ' (optional) add a roof over the walls' rectangular profile. 
+      AddRoof(rvtDoc, walls)
+      transaction.Commit()
+    End Using
   End Sub
 
   ''' <summary>
