@@ -77,7 +77,7 @@ April 2015
 
 ## Copyright
 
-(C) Copyright 2009-2016 by Autodesk, Inc.
+(C) Copyright 2009-2015 by Autodesk, Inc.
 
 Permission to use, copy, modify, and distribute this software in
 object code form for any purpose and without fee is hereby granted,
