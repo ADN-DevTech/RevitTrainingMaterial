@@ -1,4 +1,4 @@
-# Revit 2016 API Training
+# Revit API Labs Training Material
 
 This repository contains the ADN Revit API Labs, the material we use for our two-day hands-on Revit API training classes.
 
