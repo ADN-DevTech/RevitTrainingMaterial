@@ -2,7 +2,13 @@
 
 This repository contains the ADN Revit API Labs, the material we use for our two-day hands-on Revit API training classes.
 
-It includes both the labs, consisting of sample source code exercises in both C# and VB for you to fill in, corresponding instruction documents for both languages, and an accompanying slide deck.
+It includes both the labs themselves, consisting of sample source code exercises in both C# and VB for you to fill in, corresponding instruction documents for both languages, and an accompanying slide deck.
+
+The labs cover three main areas: 
+
+- Introduction for getting started with the Revit API, database, elements and properties
+- User interface programming to create an external application and custom ribbon
+- Family API for programmatic family generation
 
 Tip: For easiest set-up of the labs exercises, extract to the following folder:
 
