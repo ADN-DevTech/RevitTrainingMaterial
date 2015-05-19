@@ -1,6 +1,8 @@
 # Revit 2016 API Training
 
-This repository contains the ADN Revit API Labs, the material we use for our two-day Revit API training classes.
+This repository contains the ADN Revit API Labs, the material we use for our two-day hands-on Revit API training classes.
+
+It includes both the labs, consisting of sample source code exercises in both C# and VB for you to fill in, corresponding instruction documents for both languages, and an accompanying slide deck.
 
 Tip: For easiest set-up of the labs exercises, extract to the following folder:
 
