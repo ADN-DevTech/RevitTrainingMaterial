@@ -1,5 +1,5 @@
 ﻿#region Copyright
-// Copyright (C) 2010-2014 by Autodesk, Inc.
+// Copyright (C) 2010-2015 by Autodesk, Inc.
 //
 // Permission to use, copy, modify, and distribute this software in
 // object code form for any purpose and without fee is hereby granted,
@@ -45,17 +45,17 @@ namespace IntroCs
   /// with all namespaces fully qualified.
   /// </summary>
   [Autodesk.Revit.Attributes.Transaction(
-    Autodesk.Revit.Attributes.TransactionMode.Manual)]
+    Autodesk.Revit.Attributes.TransactionMode.Manual )]
   public class HelloWorld : Autodesk.Revit.UI.IExternalCommand
   {
     public Autodesk.Revit.UI.Result Execute(
       Autodesk.Revit.UI.ExternalCommandData commandData,
       ref string message,
-      Autodesk.Revit.DB.ElementSet elements)
+      Autodesk.Revit.DB.ElementSet elements )
     {
       Autodesk.Revit.UI.TaskDialog.Show(
         "My Dialog Title",
-        "Hello World!");
+        "Hello World!" );
 
       return Autodesk.Revit.UI.Result.Succeeded;
     }
@@ -65,17 +65,17 @@ namespace IntroCs
   /// Hello World #2 - simplified without full namespace
   /// and using ReadOnly attribute.
   /// </summary>
-  [Transaction(TransactionMode.ReadOnly)]
+  [Transaction( TransactionMode.ReadOnly )]
   public class HelloWorldSimple : IExternalCommand
   {
     public Result Execute(
       ExternalCommandData commandData,
       ref string message,
-      ElementSet elements)
+      ElementSet elements )
     {
       TaskDialog.Show(
         "My Dialog Title",
-        "Hello World Simple!");
+        "Hello World Simple!" );
 
       return Result.Succeeded;
     }
@@ -90,16 +90,16 @@ namespace IntroCs
   {
     // OnStartup() - called when Revit starts.
 
-    public Result OnStartup(UIControlledApplication app)
+    public Result OnStartup( UIControlledApplication app )
     {
-      TaskDialog.Show("My Dialog Title", "Hello World from App!");
+      TaskDialog.Show( "My Dialog Title", "Hello World from App!" );
 
       return Result.Succeeded;
     }
 
     // OnShutdown() - called when Revit ends.
 
-    public Result OnShutdown(UIControlledApplication app)
+    public Result OnShutdown( UIControlledApplication app )
     {
       return Result.Succeeded;
     }
@@ -111,13 +111,13 @@ namespace IntroCs
   /// commandData is the topmost object and
   /// provides the entry point to the Revit model.
   /// </summary>
-  [Transaction(TransactionMode.ReadOnly)]
+  [Transaction( TransactionMode.ReadOnly )]
   public class CommandData : IExternalCommand
   {
     public Result Execute(
       ExternalCommandData commandData,
       ref string message,
-      ElementSet elements)
+      ElementSet elements )
     {
       // The first argument, commandData, provides access to the top most object model.
       // You will get the necessary information from commandData.
@@ -137,18 +137,18 @@ namespace IntroCs
       TaskDialog.Show(
         "Revit Intro Lab",
         "Version Name = " + versionName
-        + "\nDocument Title = " + documentTitle);
+        + "\nDocument Title = " + documentTitle );
 
       // Print out a list of wall types available in the current rvt project:
 
       //WallTypeSet wallTypes = rvtDoc.WallTypes; // 2013, deprecated in 2014
 
       FilteredElementCollector wallTypes // 2014
-        = new FilteredElementCollector(rvtDoc)
-          .OfClass(typeof(WallType));
+        = new FilteredElementCollector( rvtDoc )
+          .OfClass( typeof( WallType ) );
 
       string s = "";
-      foreach (WallType wallType in wallTypes)
+      foreach( WallType wallType in wallTypes )
       {
         s += wallType.Name + "\r\n";
       }
@@ -157,13 +157,14 @@ namespace IntroCs
 
       TaskDialog.Show(
         "Revit Intro Lab",
-        "Wall Types (in main instruction):\n\n" + s);
+        "Wall Types (in main instruction):\n\n" + s );
 
-      // 2nd and 3rd arguments are when the command fails.
-      // 2nd - set a message to the user.
-      // 3rd - set elements to highlight.
+      // Return failure code to demonstrate output argument handling.
+      // 2nd and 3rd arguments are displayed to the user when the command fails.
+      // 2nd - set a message to display to the user.
+      // 3rd - set elements to highlight on screen.
 
-      return Result.Succeeded;
+      return Result.Failed;
     }
   }
 }
