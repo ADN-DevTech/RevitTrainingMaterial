@@ -12,7 +12,7 @@ Imports System.Runtime.InteropServices
 <Assembly: AssemblyDescription("Revit Family API Labs")>
 <Assembly: AssemblyCompany("Autodesk, Inc.")>
 <Assembly: AssemblyProduct("RFA LabsVb")>
-<Assembly: AssemblyCopyright("Copyright © 2009-2015 Autodesk, Inc.")>
+<Assembly: AssemblyCopyright("Copyright © 2009-2016 Autodesk, Inc.")>
 <Assembly: AssemblyTrademark("")>
 
 <Assembly: ComVisible(False)>

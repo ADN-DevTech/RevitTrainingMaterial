@@ -8,14 +8,14 @@ Imports System.Runtime.InteropServices
 
 ' Review the values of the assembly attributes
 
-<Assembly: AssemblyTitle("Revit API UI Labs for VB")> 
-<Assembly: AssemblyDescription("Revit API UI Labs for VB")> 
-<Assembly: AssemblyCompany("Autodesk Inc.")> 
-<Assembly: AssemblyProduct("Revit API UI Labs for VB")> 
-<Assembly: AssemblyCopyright("Copyright © 2009-2015 Autodesk Inc.")> 
-<Assembly: AssemblyTrademark("")> 
+<Assembly: AssemblyTitle("Revit API UI Labs for VB")>
+<Assembly: AssemblyDescription("Revit API UI Labs for VB")>
+<Assembly: AssemblyCompany("Autodesk Inc.")>
+<Assembly: AssemblyProduct("Revit API UI Labs for VB")>
+<Assembly: AssemblyCopyright("Copyright © 2009-2016 Autodesk Inc.")>
+<Assembly: AssemblyTrademark("")>
 
-<Assembly: ComVisible(False)> 
+<Assembly: ComVisible(False)>
 
 'The following GUID is for the ID of the typelib if this project is exposed to COM
 <Assembly: Guid("33e55dac-e8b7-4fb7-80fd-5ce4e6950fb2")>

@@ -10,7 +10,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration( "" )]
 [assembly: AssemblyCompany( "Autodesk, Inc." )]
 [assembly: AssemblyProduct( "RFA LabsCs" )]
-[assembly: AssemblyCopyright( "Copyright (C) 2009-2015 Autodesk, Inc." )]
+[assembly: AssemblyCopyright( "Copyright (C) 2009-2016 Autodesk, Inc." )]
 [assembly: AssemblyTrademark( "" )]
 [assembly: AssemblyCulture( "" )]
 
