@@ -12,12 +12,12 @@ The labs cover three main areas:
 
 Tip: For easiest set-up of the labs exercises, extract to the following folder:
 
-    C:\Revit 2016 API Training
+    C:\Revit API Training
 
 
 ## Labs
 
-Training Labs - a set of hands-on exercises during the class.
+Training Labs &ndash; a set of hands-on exercises during the class.
 
 ## Presentation
 
@@ -81,11 +81,11 @@ AEC workgroup
 Developer Technical Services
 Autodesk Developer Network
 
-April 2015
+July 2016
 
 ## Copyright
 
-(C) Copyright 2009-2015 by Autodesk, Inc.
+(C) Copyright 2009-2016 by Autodesk, Inc.
 
 Permission to use, copy, modify, and distribute this software in
 object code form for any purpose and without fee is hereby granted,
