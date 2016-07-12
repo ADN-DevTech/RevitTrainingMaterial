@@ -12,7 +12,7 @@ The labs cover three main areas:
 
 Tip: For easiest set-up of the labs exercises, extract to the following folder:
 
-    C:\Revit API Training
+    C:\RevitTrainingMaterial
 
 
 ## Labs
