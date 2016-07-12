@@ -4,7 +4,7 @@
   <AddIn Type="Application">
     <Name>UI Labs Ribbon</Name>
     <FullClassName>UiCs.UIRibbon</FullClassName>
-    <Assembly>C:\Revit_API_Training\Labs\2_Revit_UI_API\SourceCS\bin\Debug\UiCs.dll</Assembly>
+    <Assembly>C:\RevitTrainingMaterial\Labs\2_Revit_UI_API\SourceCS\bin\Debug\UiCs.dll</Assembly>
     <AddInId>94bc2dbd-551b-4669-9a92-dda4f12bdb6d</AddInId>
     <VendorId>ADNP</VendorId>
     <VendorDescription>Autodesk, Inc. www.autodesk.com</VendorDescription>
@@ -13,7 +13,7 @@
   <AddIn Type="Command">
     <Text>UI Labs Selection</Text>
     <FullClassName>UiCs.UISelection</FullClassName>
-    <Assembly>C:\Revit_API_Training\Labs\2_Revit_UI_API\SourceCS\bin\Debug\UiCs.dll</Assembly>
+    <Assembly>C:\RevitTrainingMaterial\Labs\2_Revit_UI_API\SourceCS\bin\Debug\UiCs.dll</Assembly>
     <AddInId>10430F00-9188-44AD-A034-06281B5ABD62</AddInId>
     <VendorId>ADNP</VendorId>
     <VendorDescription>Autodesk, Inc. www.autodesk.com</VendorDescription>
@@ -21,7 +21,7 @@
   <AddIn Type="Command">
     <Text>UI Labs Create House</Text>
     <FullClassName>UiCs.UICreateHouse</FullClassName>
-    <Assembly>C:\Revit_API_Training\Labs\2_Revit_UI_API\SourceCS\bin\Debug\UiCs.dll</Assembly>
+    <Assembly>C:\RevitTrainingMaterial\Labs\2_Revit_UI_API\SourceCS\bin\Debug\UiCs.dll</Assembly>
     <AddInId>C88C467F-561A-494D-9280-D837E5CC4157</AddInId>
     <VendorId>ADNP</VendorId>
     <VendorDescription>Autodesk, Inc. www.autodesk.com</VendorDescription>
@@ -30,7 +30,7 @@
   <AddIn Type="Command">
     <Text>UI Labs TaskDialog</Text>
     <FullClassName>UiCs.UITaskDialog</FullClassName>
-    <Assembly>C:\Revit_API_Training\Labs\2_Revit_UI_API\SourceCS\bin\Debug\UiCs.dll</Assembly>
+    <Assembly>C:\RevitTrainingMaterial\Labs\2_Revit_UI_API\SourceCS\bin\Debug\UiCs.dll</Assembly>
     <AddInId>E47AFD66-F520-4C55-8566-62FEDC56EB57</AddInId>
     <VendorId>ADNP</VendorId>
     <VendorDescription>Autodesk, Inc. www.autodesk.com</VendorDescription>
@@ -38,7 +38,7 @@
   <AddIn Type="Command"> 
     <Text>UI Labs Create House Dialog</Text>
     <FullClassName>UiCs.UICreateHouseDialog</FullClassName>
-    <Assembly>C:\Revit_API_Training\Labs\2_Revit_UI_API\SourceCS\bin\Debug\UiCs.dll</Assembly>
+    <Assembly>C:\RevitTrainingMaterial\Labs\2_Revit_UI_API\SourceCS\bin\Debug\UiCs.dll</Assembly>
     <AddInId>FC313849-D77A-4566-B5ED-F4A02B35C99A</AddInId>
     <VendorId>ADNP</VendorId>
     <VendorDescription>Autodesk, Inc. www.autodesk.com</VendorDescription>
@@ -47,7 +47,7 @@
   <AddIn Type="Application">
     <Name>UI Labs Event</Name>
     <FullClassName>UiCs.UIEventApp</FullClassName>
-    <Assembly>C:\Revit_API_Training\Labs\2_Revit_UI_API\SourceCS\bin\Debug\UiCs.dll</Assembly>
+    <Assembly>C:\RevitTrainingMaterial\Labs\2_Revit_UI_API\SourceCS\bin\Debug\UiCs.dll</Assembly>
     <AddInId>0ad71922-db98-4662-8dc0-034f80da6496</AddInId>
     <VendorId>ADNP</VendorId>
     <VendorDescription>Autodesk, Inc. www.autodesk.com</VendorDescription>
