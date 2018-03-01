@@ -81,15 +81,12 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Import Include="Autodesk" />
-    <Import Include="Autodesk.Revit" />
     <Import Include="Autodesk.Revit.ApplicationServices" />
     <Import Include="Autodesk.Revit.Attributes" />
     <Import Include="Autodesk.Revit.DB" />
     <Import Include="Autodesk.Revit.DB.Architecture" />
     <Import Include="Autodesk.Revit.UI" />
     <Import Include="Autodesk.Revit.UI.Selection" />
-    <Import Include="Autodesk.Revit.Utility" />
     <Import Include="Microsoft.VisualBasic" />
     <Import Include="System" />
     <Import Include="System.Collections" />
