@@ -1,5 +1,4 @@
-﻿Imports System
-Imports System.Reflection
+﻿Imports System.Reflection
 Imports System.Runtime.InteropServices
 
 ' General Information about an assembly is controlled through the following
@@ -12,7 +11,7 @@ Imports System.Runtime.InteropServices
 <Assembly: AssemblyDescription("Revit Family API Labs")>
 <Assembly: AssemblyCompany("Autodesk, Inc.")>
 <Assembly: AssemblyProduct("RFA LabsVb")>
-<Assembly: AssemblyCopyright("Copyright © 2009-2018 Autodesk, Inc.")>
+<Assembly: AssemblyCopyright("Copyright © 2009-2020 by Autodesk, Inc.")>
 <Assembly: AssemblyTrademark("")>
 
 <Assembly: ComVisible(False)>
@@ -31,5 +30,5 @@ Imports System.Runtime.InteropServices
 ' by using the '*' as shown below:
 ' <Assembly: AssemblyVersion("1.0.*")>
 
-<Assembly: AssemblyVersion("2018.0.0.0")>
-<Assembly: AssemblyFileVersion("2018.0.0.0")>
+<Assembly: AssemblyVersion("2019.0.0.0")>
+<Assembly: AssemblyFileVersion("2019.0.0.0")>

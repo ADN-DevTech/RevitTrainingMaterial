@@ -1,6 +1,6 @@
 ﻿#Region "Copyright"
 '
-' Copyright (C) 2009-2018 by Autodesk, Inc.
+' Copyright (C) 2009-2020 by Autodesk, Inc.
 '
 ' Permission to use, copy, modify, and distribute this software in
 ' object code form for any purpose and without fee is hereby granted,
@@ -85,7 +85,7 @@ Public Class UIRibbon
   ''' <param name="target">Target subdirectory name, e.g. "Images".</param>
   ''' <returns>The full path of the target directory if found, else null.</returns>
   Private Function FindFolderInParents(ByVal path As String, ByVal target As String) As String
-    Debug.Assert(Directory.Exists(path), _
+    Debug.Assert(Directory.Exists(path),
       "expected an existing directory to start search in")
     Do
       Dim s As String = System.IO.Path.Combine(path, target)
@@ -122,7 +122,7 @@ Public Class UIRibbon
 
     ' External application directory:
 
-    Dim dir As String = Path.GetDirectoryName( _
+    Dim dir As String = Path.GetDirectoryName(
         System.Reflection.Assembly.GetExecutingAssembly.Location)
 
     _introLabPath = Path.Combine(dir, _introLabName + _dllExtension)
@@ -139,10 +139,10 @@ Public Class UIRibbon
     _imageFolder = FindFolderInParents(dir, _imageFolderName)
 
     If _imageFolder Is Nothing Or Not Directory.Exists(_imageFolder) Then
-      TaskDialog.Show( _
-          "UIRibbon", _
-          String.Format( _
-            "No image folder named '{0}' found in the parent directories of '{1}.", _
+      TaskDialog.Show(
+          "UIRibbon",
+          String.Format(
+            "No image folder named '{0}' found in the parent directories of '{1}.",
             _imageFolderName, dir))
       Return Result.Failed
     End If

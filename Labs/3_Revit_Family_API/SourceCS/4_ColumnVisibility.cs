@@ -1,6 +1,6 @@
 #region Copyright
 //
-// (C) Copyright 2009-2018 by Autodesk, Inc.
+// (C) Copyright 2009-2020 by Autodesk, Inc.
 //
 // Permission to use, copy, modify, and distribute this software in
 // object code form for any purpose and without fee is hereby granted,
@@ -852,12 +852,10 @@ namespace FamilyCs
       SketchPlane pSketchPlane = SketchPlane.Create( _doc, pRefPlane.GetPlane() );  // Revit 2016
 
       // for vertical line, we draw a straight vertical line at the point[1] 
-      XYZ normal = XYZ.BasisX;
-
-      //Plane pGeomPlaneH = _app.Create.NewPlane( normal, pts[1] ); // 2016
-      Plane pGeomPlaneH = Plane.CreateByNormalAndOrigin( normal, pts[1] ); // 2017
-
-      //SketchPlane pSketchPlaneH = _doc.FamilyCreate.NewSketchPlane(pGeomPlaneH);  // Revit 2013
+      XYZ normal = new XYZ( 1.0, 0.0, 0.0 );
+      //Plane pGeomPlaneH = _app.Create.NewPlane( normal, pts[1] ); // Revit 2016
+      Plane pGeomPlaneH = Plane.CreateByNormalAndOrigin( normal, pts[1] ); // Revit 2017
+                                                                           //SketchPlane pSketchPlaneH = _doc.FamilyCreate.NewSketchPlane(pGeomPlaneH);  // Revit 2013
       SketchPlane pSketchPlaneH = SketchPlane.Create( _doc, pGeomPlaneH );  // Revit 2014
 
       // (3) create line objects: two symbolic curves on a plan and one model curve representing a column like a vertical stick.

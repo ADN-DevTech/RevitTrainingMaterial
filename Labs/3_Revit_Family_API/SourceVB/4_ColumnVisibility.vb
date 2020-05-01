@@ -1,6 +1,6 @@
 #Region "Copyright"
 ''
-'' (C) Copyright 2009-2018 by Autodesk, Inc.
+'' (C) Copyright 2009-2020 by Autodesk, Inc.
 ''
 '' Permission to use, copy, modify, and distribute this software in
 '' object code form for any purpose and without fee is hereby granted,
@@ -97,9 +97,9 @@ Public Class RvtCmd_FamilyCreateColumnVisibility
 
   ''  command main
   ''
-  Public Function Execute(
-      ByVal commandData As ExternalCommandData,
-      ByRef message As String,
+  Public Function Execute( _
+      ByVal commandData As ExternalCommandData, _
+      ByRef message As String, _
       ByVal elements As ElementSet) _
       As Result _
       Implements IExternalCommand.Execute
@@ -344,8 +344,8 @@ Public Class RvtCmd_FamilyCreateColumnVisibility
     ''  define vertices
     ''
     Const nVerts As Integer = 6 '' the number of vertices
-    Dim pts() As XYZ = {New XYZ(-w / 2, -d / 2, 0), New XYZ(w / 2, -d / 2, 0), New XYZ(w / 2, -d / 2 + td, 0),
-                        New XYZ(-w / 2 + tw, -d / 2 + td, 0), New XYZ(-w / 2 + tw, d / 2, 0), New XYZ(-w / 2, d / 2, 0),
+    Dim pts() As XYZ = {New XYZ(-w / 2, -d / 2, 0), New XYZ(w / 2, -d / 2, 0), New XYZ(w / 2, -d / 2 + td, 0), _
+                        New XYZ(-w / 2 + tw, -d / 2 + td, 0), New XYZ(-w / 2 + tw, d / 2, 0), New XYZ(-w / 2, d / 2, 0), _
                         New XYZ(-w / 2, -d / 2, 0)} ' the last one is to make the loop simple
 
     ''  define a loop. define individual edges and put them in a curveArray
@@ -841,11 +841,9 @@ Public Class RvtCmd_FamilyCreateColumnVisibility
     Dim pSketchPlane As SketchPlane = SketchPlane.Create(_doc, pRefPlane.GetPlane())  ' Revit 2014
 
     ''  for vertical line, we draw a straight vertical line at point (1) 
-    Dim normal As XYZ = XYZ.BasisX
-
-    'Dim pGeomPlaneH As Plane = _app.Create.NewPlane(normal, pts(1)) ' 2016
-    Dim pGeomPlaneH As Plane = Plane.CreateByNormalAndOrigin(normal, pts(1)) ' 2017
-
+    Dim normal As New XYZ(1, 0, 0)
+    'Dim pGeomPlaneH As Plane = _app.Create.NewPlane(normal, pts(1)) ' Revit 2016
+    Dim pGeomPlaneH As Plane = Plane.CreateByNormalAndOrigin(normal, pts(1)) ' Revit 2017
     'Dim pSketchPlaneH As SketchPlane = _doc.FamilyCreate.NewSketchPlane(pGeomPlaneH)  ' Revit 2013
     Dim pSketchPlaneH As SketchPlane = SketchPlane.Create(_doc, pGeomPlaneH)  ' Revit 2014
 

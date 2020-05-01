@@ -1,6 +1,6 @@
 ﻿#Region "Copyright"
 '
-' Copyright (C) 2009-2018 by Autodesk, Inc.
+' Copyright (C) 2009-2020 by Autodesk, Inc.
 '
 ' Permission to use, copy, modify, and distribute this software in
 ' object code form for any purpose and without fee is hereby granted,
@@ -47,7 +47,7 @@
 ''' DBElement - identifying element
 ''' </summary>
 
-<Transaction(TransactionMode.ReadOnly)> _
+<Transaction(TransactionMode.ReadOnly)>
 Public Class DBElement
   Implements IExternalCommand
 
@@ -55,9 +55,9 @@ Public Class DBElement
   Dim _app As Application
   Dim _doc As Document
 
-  Public Function Execute( _
-    ByVal commandData As ExternalCommandData, _
-    ByRef message As String, _
+  Public Function Execute(
+    ByVal commandData As ExternalCommandData,
+    ByRef message As String,
     ByVal elements As ElementSet) _
     As Result _
     Implements IExternalCommand.Execute
@@ -72,7 +72,7 @@ Public Class DBElement
     _doc = uiDoc.Document
 
     ' (1) select an object on a screen. (We'll come back to the selection in the UI Lab later.)
-    Dim ref As Reference = _
+    Dim ref As Reference =
         uiDoc.Selection.PickObject(ObjectType.Element, "Pick an element")
 
     ' We have picked something.
@@ -169,13 +169,13 @@ Public Class DBElement
       ' An instance of a component family is all FamilyInstance.
       ' We'll need to further check its category.
       ' e.g., Doors, Windows, Furnitures.
-      If e.Category.Id.IntegerValue = _
+      If e.Category.Id.IntegerValue =
           BuiltInCategory.OST_Doors Then
         s = "Door"
-      ElseIf e.Category.Id.IntegerValue = _
+      ElseIf e.Category.Id.IntegerValue =
           BuiltInCategory.OST_Windows Then
         s = "Window"
-      ElseIf e.Category.Id.IntegerValue = _
+      ElseIf e.Category.Id.IntegerValue =
           BuiltInCategory.OST_Furniture Then
         s = "Furniture"
       Else
@@ -205,7 +205,7 @@ Public Class DBElement
 
     For Each param As Parameter In params
       Dim name As String = param.Definition.Name
-      ' To get the value, we need to pause the param depending on the storage type
+      ' To get the value, we need to parse the param depending on the storage type
       ' see the helper function below
       Dim val As String = ParameterToString(param)
       s = s + name + " = " + val + vbCr
@@ -317,13 +317,13 @@ Public Class DBElement
 
     param = e.Parameter(BuiltInParameter.SYMBOL_FAMILY_AND_TYPE_NAMES_PARAM)
     If param IsNot Nothing Then
-      s += "SYMBOL_FAMILY_AND_TYPE_NAMES_PARAM (only by BuiltInParameter) = " + _
+      s += "SYMBOL_FAMILY_AND_TYPE_NAMES_PARAM (only by BuiltInParameter) = " +
       ParameterToString(param) + vbCr
     End If
 
     param = e.Parameter(BuiltInParameter.SYMBOL_FAMILY_NAME_PARAM)
     If param IsNot Nothing Then
-      s += "SYMBOL_FAMILY_NAME_PARAM (only by BuiltInParameter) = " + _
+      s += "SYMBOL_FAMILY_NAME_PARAM (only by BuiltInParameter) = " +
       ParameterToString(param) + vbCr
     End If
 
