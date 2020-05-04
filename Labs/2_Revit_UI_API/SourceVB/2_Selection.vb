@@ -363,7 +363,7 @@ Public Class UISelection
   End Sub
 
 
-#Region "Helper Function"
+#Region "Helper Functions"
   '====================================================================
   ' Helper Functions 
   '====================================================================
