@@ -1,6 +1,6 @@
 ﻿#Region "Copyright"
 '
-' Copyright (C) 2009-2018 by Autodesk, Inc.
+' Copyright (C) 2009-2020 by Autodesk, Inc.
 '
 ' Permission to use, copy, modify, and distribute this software in
 ' object code form for any purpose and without fee is hereby granted,
@@ -44,7 +44,7 @@
 ''' cf. Developer Guide, Section 3.9 Revit-style Task Dialogs (pp55) 
 ''' Appexdix G. API User Interface Guidelines (pp381), Task Dialog (pp404) 
 ''' </summary>
-<Transaction(TransactionMode.ReadOnly)> _
+<Transaction(TransactionMode.ReadOnly)>
 Public Class UITaskDialog
   Implements IExternalCommand
 
@@ -52,8 +52,8 @@ Public Class UITaskDialog
   Dim _uiApp As UIApplication
   Dim _uiDoc As UIDocument
 
-  Public Function Execute(ByVal commandData As ExternalCommandData, _
-                          ByRef message As String, _
+  Public Function Execute(ByVal commandData As ExternalCommandData,
+                          ByRef message As String,
                           ByVal elements As ElementSet) _
                           As Result _
                           Implements IExternalCommand.Execute
@@ -90,7 +90,7 @@ Public Class UITaskDialog
     ' Here we add [Yes] [No] [Cancel} 
 
     Dim res2 As TaskDialogResult
-    res2 = TaskDialog.Show("Task Dialog Static 2", "Main message", _
+    res2 = TaskDialog.Show("Task Dialog Static 2", "Main message",
                     (TaskDialogCommonButtons.Yes Or TaskDialogCommonButtons.No Or TaskDialogCommonButtons.Cancel))
 
     ' What did the user pressed? 
@@ -101,8 +101,8 @@ Public Class UITaskDialog
 
     Dim res3 As TaskDialogResult
     Dim defaultButton As TaskDialogResult = TaskDialogResult.Yes
-    res3 = TaskDialog.Show("Task Dialog Static 3", "Main message", _
-                    (TaskDialogCommonButtons.Yes Or TaskDialogCommonButtons.No Or TaskDialogCommonButtons.Cancel), _
+    res3 = TaskDialog.Show("Task Dialog Static 3", "Main message",
+                    (TaskDialogCommonButtons.Yes Or TaskDialogCommonButtons.No Or TaskDialogCommonButtons.Cancel),
                     TaskDialogResult.No)
 
     ' What did the user pressed? 
@@ -217,7 +217,7 @@ Public Class UICreateHouseDialog
 
     'TaskDialog.Show("Create house dialog", "The last action was: " + res.ToString)
 
-    ' (2)  pause the result and create a house with the method that use has chosen. 
+    ' (2)  parse the result and create a house with the method that use has chosen. 
     ' 
     ' Create a house interactively. 
     If res = TaskDialogResult.CommandLink1 Then

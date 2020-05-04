@@ -1,6 +1,6 @@
 #Region "Copyright"
 ''
-'' (C) Copyright 2009-2018 by Autodesk, Inc.
+'' (C) Copyright 2009-2020 by Autodesk, Inc.
 ''
 '' Permission to use, copy, modify, and distribute this software in
 '' object code form for any purpose and without fee is hereby granted,
@@ -88,7 +88,7 @@
 '' 
 #End Region
 
-<Transaction(TransactionMode.Manual)> _
+<Transaction(TransactionMode.Manual)>
 Public Class RvtCmd_FamilyCreateColumnFormulaMaterial
   Implements IExternalCommand
 

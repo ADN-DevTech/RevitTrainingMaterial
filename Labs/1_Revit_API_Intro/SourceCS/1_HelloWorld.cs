@@ -1,5 +1,5 @@
 ﻿#region Copyright
-// Copyright (C) 2010-2018 by Autodesk, Inc.
+// Copyright (C) 2010-2020 by Autodesk, Inc.
 //
 // Permission to use, copy, modify, and distribute this software in
 // object code form for any purpose and without fee is hereby granted,
@@ -166,5 +166,19 @@ namespace IntroCs
 
       return Result.Failed;
     }
+
+    #region Revit Macros
+    public void MyFirstMacro()
+    {
+      TaskDialog.Show( "My First Macro", "Hello World!" );
+    }
+
+    public void MyFirstMacro2()
+    {
+      TaskDialog.Show( "My First Macro",
+        "The current model file is " );
+        //+ this.Application.ActiveUIDocument.Document.PathName );
+    }
+    #endregion // Revit Macros
   }
 }
