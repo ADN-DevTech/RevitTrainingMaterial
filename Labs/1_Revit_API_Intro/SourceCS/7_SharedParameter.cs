@@ -309,7 +309,7 @@ namespace IntroCs
 
         // modified code for Revit 2015
         projInfoElem.LookupParameter(kParamNameVisible).Set(55);
-        projInfoElem.LookupParameter(kParamNameVisible).Set(0);
+        projInfoElem.LookupParameter(kParamNameInvisible).Set(0);
         transaction.Commit();
       }
 
