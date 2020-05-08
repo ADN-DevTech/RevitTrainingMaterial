@@ -184,33 +184,39 @@ namespace UiCs
     /// Note: when you run this code, you will see "Finish" and "Cancel" buttons in the dialog bar. 
     /// </summary>
     public void PickMethod_PickObjects()
-    {
-      IList<Reference> refs = _uiDoc.Selection.PickObjects(ObjectType.Element, "Select multiple elemens");
-
-      // Put it in a List form. 
-      IList<Element> elems = new List<Element>();
-      foreach (Reference r in refs)
       {
-        //elems.Add( r.Element ); // 2011 Warning: 'Autodesk.Revit.DB.Reference.Element' is obsolete: 
-        // 'Property will be removed. Use Document.GetElement(Reference) instead'
-        elems.Add(_uiDoc.Document.GetElement(r)); // 2012
+            IList<Reference> refs = _uiDoc.Selection.PickObjects(ObjectType.Element, "Select multiple elemens");
+
+            // Put it in a List form. 
+            IList<ElementId> elems = new List<ElementId>();
+            foreach (Reference r in refs)
+            {
+                //elems.Add( r.Element ); // 2011 Warning: 'Autodesk.Revit.DB.Reference.Element' is obsolete: 
+                // 'Property will be removed. Use Document.GetElement(Reference) instead'
+                elems.Add(r.ElementId); // 2012
+            }
+
+            ShowElementList(elems, "Pick Objects: ");
       }
 
-      ShowElementList(elems, "Pick Objects: ");
-    }
 
     /// <summary>
     /// Minimum PickElementByRectangle 
     /// </summary>
     public void PickMethod_PickElementByRectangle()
-    {
-      // Note: PickElementByRectangle returns the list of element. not reference. 
-      IList<Element> elems = _uiDoc.Selection.PickElementsByRectangle("Select by rectangle");
+      {
+            // Note: PickElementByRectangle returns the list of element. not reference. 
+            IList<Element> elems = _uiDoc.Selection.PickElementsByRectangle("Select by rectangle");
+            IList<ElementId> eids = new List<ElementId>();
+            foreach(Element e in elems)
+            {
+                eids.Add(e.Id);
+            }
+            // Show it. 
 
-      // Show it. 
+            ShowElementList(eids, "Pick By Rectangle: ");
+      }
 
-      ShowElementList(elems, "Pick By Rectangle: ");
-    }
 
     /// <summary>
     /// Minimum PickPoint 
@@ -268,7 +274,7 @@ namespace UiCs
       Reference r = _uiDoc.Selection.PickObject(ObjectType.Edge, "Select an edge");
       Element e = _uiDoc.Document.GetElement(r);
       //Edge oEdge = r.GeometryObject as Edge; // 2011
-      Face oEdge = e.GetGeometryObjectFromReference(r) as Face; // 2012
+      Edge oEdge = e.GetGeometryObjectFromReference(r) as Edge; // 2012
 
       // Show it. 
       string msg = "";
@@ -558,11 +564,11 @@ namespace UiCs
       _uiDoc = _uiApp.ActiveUIDocument;
       _doc = _uiDoc.Document;
 
-      using (Transaction transaction = new Transaction(_doc))
+    //  using (Transaction transaction = new Transaction(_doc))
       {
-        transaction.Start("Create House");
+     //   transaction.Start("Create House");
         CreateHouseInteractive(_uiDoc);
-        transaction.Commit();
+     //   transaction.Commit();
       }
 
       return Result.Succeeded;

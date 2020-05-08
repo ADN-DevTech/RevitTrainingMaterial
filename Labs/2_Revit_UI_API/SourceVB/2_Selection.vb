@@ -170,34 +170,37 @@ Public Class UISelection
   ''' Minimum PickObjects 
   ''' Note: when you run this code, you will see "Finish" and "Cancel" buttons in the dialog bar. 
   ''' </summary>
-  Sub PickMethod_PickObjects()
+ Sub PickMethod_PickObjects()
 
-    Dim refs As IList(Of Reference) =
-        _uiDoc.Selection.PickObjects(ObjectType.Element, "Select multiple elemens")
+        Dim refs As IList(Of Reference) =
+        _uiDoc.Selection.PickObjects(ObjectType.Element, "Select multiple elements")
 
-    ' put it in a List form. 
-    Dim elems As IList(Of Element) = New List(Of Element)
-    For Each r As Reference In refs
-      elems.Add(_uiDoc.Document.GetElement(r))
-    Next
-    ShowElementList(elems, "Pick Objects: ")
+        ' put it in a List form. 
+        Dim elems As IList(Of ElementId) = New List(Of ElementId)
+        For Each r As Reference In refs
+            elems.Add(r.ElementId)
+        Next
+        ShowElementList(elems, "Pick Objects: ")
 
-  End Sub
+    End Sub
 
   ''' <summary>
   ''' Minimum PickElementByRectangle 
   ''' </summary>
   Sub PickMethod_PickElementByRectangle()
 
-    ' Note: PickElementByRectangle returns the list of element. not reference. 
-    Dim elems As IList(Of Element) =
-        _uiDoc.Selection.PickElementsByRectangle("Select by rectangle")
+        ' Note: PickElementByRectangle returns the list of element. not reference. 
+        Dim elems As IList(Of Element) =
+            _uiDoc.Selection.PickElementsByRectangle("Select by rectangle")
 
-    ' Show it
+        ' Show it
+        Dim elemids As IList(Of ElementId) = New List(Of ElementId)
+        For Each e As Element In elems
+            elemids.Add(e.Id)
+        Next
+        ShowElementList(elemids, "Pick By Rectangle: ")
 
-    ShowElementList(elems, "Pick By Rectangle: ")
-
-  End Sub
+    End Sub
 
   ''' <summary>
   ''' Minimum PickPoint 
@@ -528,11 +531,11 @@ Public Class UICreateHouse
     _uiDoc = _uiApp.ActiveUIDocument
     _doc = _uiDoc.Document
 
-    Using transaction As Transaction = New Transaction(_doc)
-      transaction.Start("Create House")
+   ' Using transaction As Transaction = New Transaction(_doc)
+     ' transaction.Start("Create House")
       CreateHouseInteractive(_uiDoc)
-      transaction.Commit()
-    End Using
+     ' transaction.Commit()
+   ' End Using
     Return Result.Succeeded
 
   End Function
