@@ -1,4 +1,4 @@
-﻿#region "Copyright"
+﻿#region Copyright
 //
 // Copyright (C) 2009-2020 by Autodesk, Inc.
 //
@@ -36,7 +36,7 @@ using Util;
 using IntroCs;
 #endregion
 
-#region "Description"
+#region Description
 // Revit Intro Lab 5 - Element Creation.  
 //
 // In this lab, you will learn how to create revit models. 
