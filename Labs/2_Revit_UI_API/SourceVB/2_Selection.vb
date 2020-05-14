@@ -176,11 +176,11 @@ Public Class UISelection
         _uiDoc.Selection.PickObjects(ObjectType.Element, "Select multiple elements")
 
         ' put it in a List form. 
-        Dim elems As IList(Of ElementId) = New List(Of ElementId)
+        Dim elemIds As IList(Of ElementId) = New List(Of ElementId)
         For Each r As Reference In refs
-            elems.Add(r.ElementId)
+            elemIds.Add(r.ElementId)
         Next
-        ShowElementList(elems, "Pick Objects: ")
+        ShowElementList(elemIds, "Pick Objects: ")
 
     End Sub
 
