@@ -1,4 +1,4 @@
-﻿#region Copyright
+#region Copyright
 //
 // Copyright (C) 2009-2020 by Autodesk, Inc.
 //
@@ -188,15 +188,15 @@ namespace UiCs
             IList<Reference> refs = _uiDoc.Selection.PickObjects(ObjectType.Element, "Select multiple elemens");
 
             // Put it in a List form. 
-            IList<ElementId> elems = new List<ElementId>();
+            IList<ElementId> elemIds = new List<ElementId>();
             foreach (Reference r in refs)
             {
                 //elems.Add( r.Element ); // 2011 Warning: 'Autodesk.Revit.DB.Reference.Element' is obsolete: 
                 // 'Property will be removed. Use Document.GetElement(Reference) instead'
-                elems.Add(r.ElementId); // 2012
+                elemIds.Add(r.ElementId); // 2012
             }
 
-            ShowElementList(elems, "Pick Objects: ");
+            ShowElementList(elemIds, "Pick Objects: ");
       }
 
 
