@@ -1,5 +1,5 @@
 ﻿#region Copyright
-// Copyright (C) 2010-2020 by Autodesk, Inc.
+// Copyright (C) 2010-2021 by Autodesk, Inc.
 //
 // Permission to use, copy, modify, and distribute this software in
 // object code form for any purpose and without fee is hereby granted,

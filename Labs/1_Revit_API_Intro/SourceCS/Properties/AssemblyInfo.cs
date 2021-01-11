@@ -10,7 +10,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration( "" )]
 [assembly: AssemblyCompany( "Autodesk Inc." )]
 [assembly: AssemblyProduct( "Revit API Introduction Labs for C#" )]
-[assembly: AssemblyCopyright( "Copyright © 2009-2020 by Jeremy Tammik, Autodesk Inc." )]
+[assembly: AssemblyCopyright( "Copyright © 2009-2021 by Jeremy Tammik, Autodesk Inc." )]
 [assembly: AssemblyTrademark( "" )]
 [assembly: AssemblyCulture( "" )]
 
