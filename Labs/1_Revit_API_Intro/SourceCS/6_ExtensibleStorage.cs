@@ -132,7 +132,8 @@ namespace IntroCs
 
       // Set unit type
 
-      fieldBuilder1.SetUnitType(UnitType.UT_Length);
+      //fieldBuilder1.SetUnitType( UnitType.UT_Length ); // 2020
+      fieldBuilder1.SetSpec(SpecTypeId.Length); // 2021
 
       // Add documentation (optional)
 
@@ -151,7 +152,8 @@ namespace IntroCs
 
       Entity ent = new Entity(schema);
       Field socketLocation = schema.GetField("SocketLocation");
-      ent.Set<XYZ>(socketLocation, new XYZ(2, 0, 0), DisplayUnitType.DUT_METERS);
+      //ent.Set<XYZ>( socketLocation, new XYZ( 2, 0, 0 ), DisplayUnitType.DUT_METERS ); // 2020
+      ent.Set<XYZ>(socketLocation, new XYZ(2, 0, 0), UnitTypeId.Meters ); // 2021
 
       Field socketNumber = schema.GetField("SocketNumber");
       ent.Set<string>(socketNumber, "200");
@@ -194,7 +196,8 @@ namespace IntroCs
 
       XYZ wallSocketPos = wallSchemaEnt.Get<XYZ>(
         Schema.Lookup(_guid).GetField("SocketLocation"),
-        DisplayUnitType.DUT_METERS);
+        //DisplayUnitType.DUT_METERS ); // 2020
+        UnitTypeId.Meters ); // 2021
 
       s = "SocketLocation: " + Format.PointString(wallSocketPos);
 
