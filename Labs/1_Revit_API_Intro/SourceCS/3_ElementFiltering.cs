@@ -388,7 +388,7 @@ namespace IntroCs
         = new FilterStringEquals();
 
       FilterRule rule = new FilterStringRule(
-        provider, evaluator, wallTypeName, true);
+        provider, evaluator, wallTypeName);
 
       ElementParameterFilter filter
         = new ElementParameterFilter(rule);

@@ -363,9 +363,9 @@ Public Class ElementFiltering
 
     Dim evaluator As FilterStringRuleEvaluator = New FilterStringEquals()
 
-    Dim rule As FilterRule = New FilterStringRule(provider, evaluator, wallTypeName, True)
+        Dim rule As FilterRule = New FilterStringRule(provider, evaluator, wallTypeName)
 
-    Dim filter As New ElementParameterFilter(rule)
+        Dim filter As New ElementParameterFilter(rule)
 
     Return New FilteredElementCollector(_doc).OfClass(GetType(WallType)).WherePasses(filter).FirstElement()
 

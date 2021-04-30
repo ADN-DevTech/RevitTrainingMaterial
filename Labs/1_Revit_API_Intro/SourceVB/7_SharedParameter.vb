@@ -82,9 +82,10 @@ Class SharedParameter
     ' parameters can still be bound to these categories. 
     Dim visible As Boolean = cat.AllowsBoundParameters
 
-    ' Get or create the shared params definition
-    Dim fireRatingParamDef As Definition = GetOrCreateSharedParamsDefinition(sharedParamsGroup, ParameterType.Number, kSharedParamsDefFireRating, visible)
-    If fireRatingParamDef Is Nothing Then
+        ' Get or create the shared params definition
+        Dim forgeTypeId As ForgeTypeId = New ForgeTypeId(SpecTypeId.Number.ToString())
+        Dim fireRatingParamDef As Definition = GetOrCreateSharedParamsDefinition(sharedParamsGroup, forgeTypeId, kSharedParamsDefFireRating, visible)
+        If fireRatingParamDef Is Nothing Then
       message = "Error in creating shared parameter."
       Return Result.Failed
     End If
@@ -164,31 +165,30 @@ Class SharedParameter
     Return g
   End Function
 
-  Public Shared Function GetOrCreateSharedParamsDefinition(ByVal defGroup As DefinitionGroup, ByVal defType As ParameterType, ByVal defName As String, ByVal visible As Boolean) As Definition
-    Dim definition As Definition = defGroup.Definitions.Item(defName)
-    If definition Is Nothing Then
-      Try
+    Public Shared Function GetOrCreateSharedParamsDefinition(ByVal defGroup As DefinitionGroup, ByVal forgetypeId As ForgeTypeId, ByVal defName As String, ByVal visible As Boolean) As Definition
+        Dim definition As Definition = defGroup.Definitions.Item(defName)
+        If definition Is Nothing Then
+            Try
+                ''Public Function Create(name As String, type As Autodesk.Revit.DB.ParameterType, visible As Boolean) 
+                ''As Autodesk.Revit.DB.Definition' is obsolete: 
+                'This method is deprecated in Revit 2015. 
+                'Use Create(Autodesk.Revit.DB.ExternalDefinitonCreationOptions) instead'
 
-        ''Public Function Create(name As String, type As Autodesk.Revit.DB.ParameterType, visible As Boolean) 
-        ''As Autodesk.Revit.DB.Definition' is obsolete: 
-        'This method is deprecated in Revit 2015. 
-        'Use Create(Autodesk.Revit.DB.ExternalDefinitonCreationOptions) instead'
+                'definition = defGroup.Definitions.Create(defName, defType, visible)
 
-        'definition = defGroup.Definitions.Create(defName, defType, visible)
+                ' updated for Revit 2015
+                Dim extDefCrOptions As ExternalDefinitionCreationOptions _
+                  = New ExternalDefinitionCreationOptions(defName, forgetypeId)
 
-        ' updated for Revit 2015
-        Dim extDefCrOptions As ExternalDefinitionCreationOptions _
-          = New ExternalDefinitionCreationOptions(defName, defType)
+                extDefCrOptions.Visible = True
+                definition = defGroup.Definitions.Create(extDefCrOptions)
 
-        extDefCrOptions.Visible = True
-        definition = defGroup.Definitions.Create(extDefCrOptions)
-
-      Catch generatedExceptionName As Exception
-        definition = Nothing
-      End Try
-    End If
-    Return definition
-  End Function
+            Catch generatedExceptionName As Exception
+                definition = Nothing
+            End Try
+        End If
+        Return definition
+    End Function
 End Class
 
 <Transaction(TransactionMode.Manual)> _
@@ -219,15 +219,15 @@ Public Class PerDocParameter
         TaskDialog.Show("Per document parameter", "Error getting the shared params group.")
         Return Result.Failed
       End If
-      ' visible param
-      Dim docParamDefVisible As Definition = SharedParameter.GetOrCreateSharedParamsDefinition(sharedParamsGroup, ParameterType.[Integer], kParamNameVisible, True)
-      If docParamDefVisible Is Nothing Then
+            ' visible param
+            Dim docParamDefVisible As Definition = SharedParameter.GetOrCreateSharedParamsDefinition(sharedParamsGroup, New ForgeTypeId(SpecTypeId.Number.ToString()), kParamNameVisible, True)
+            If docParamDefVisible Is Nothing Then
         TaskDialog.Show("Per document parameter", "Error creating visible per-doc parameter.")
         Return Result.Failed
       End If
-      ' invisible param
-      Dim docParamDefInvisible As Definition = SharedParameter.GetOrCreateSharedParamsDefinition(sharedParamsGroup, ParameterType.[Integer], kParamNameInvisible, False)
-      If docParamDefInvisible Is Nothing Then
+            ' invisible param
+            Dim docParamDefInvisible As Definition = SharedParameter.GetOrCreateSharedParamsDefinition(sharedParamsGroup, New ForgeTypeId(SpecTypeId.Number.ToString()), kParamNameInvisible, False)
+            If docParamDefInvisible Is Nothing Then
         TaskDialog.Show("Per document parameter", "Error creating invisible per-doc parameter.")
         Return Result.Failed
       End If
