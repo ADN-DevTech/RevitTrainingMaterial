@@ -85,7 +85,7 @@ July 2019
 
 ## Copyright
 
-(C) Copyright 2009-2020 by Autodesk, Inc.
+(C) Copyright 2009-2021 by Autodesk, Inc.
 
 Permission to use, copy, modify, and distribute this software in
 object code form for any purpose and without fee is hereby granted,

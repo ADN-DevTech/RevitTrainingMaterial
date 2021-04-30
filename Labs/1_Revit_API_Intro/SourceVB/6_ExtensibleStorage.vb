@@ -50,80 +50,80 @@ Imports IntroVb.Util
 ''' </summary>
 <Transaction(TransactionMode.Manual)> _
 Friend Class ExtensibleStorage
-  Implements IExternalCommand
+    Implements IExternalCommand
 
-  ''' <summary>
-  ''' The schema specific GUID.
-  ''' </summary>
-  Private _guid As Guid = New Guid("87aaad89-6f1b-45e1-9397-2985e1560a02")
+    ''' <summary>
+    ''' The schema specific GUID.
+    ''' </summary>
+    Private _guid As Guid = New Guid("87aaad89-6f1b-45e1-9397-2985e1560a02")
 
-  ''' <summary>
-  ''' Allow only walls to be selected.
-  ''' </summary>
-  Private Class WallSelectionFilter
-    Implements ISelectionFilter
+    ''' <summary>
+    ''' Allow only walls to be selected.
+    ''' </summary>
+    Private Class WallSelectionFilter
+        Implements ISelectionFilter
 
-    Public Function AllowElement(ByVal e As Element) As Boolean Implements ISelectionFilter.AllowElement
-      Return TypeOf e Is Wall
-    End Function
+        Public Function AllowElement(ByVal e As Element) As Boolean Implements ISelectionFilter.AllowElement
+            Return TypeOf e Is Wall
+        End Function
 
-    Public Function AllowReference(ByVal r As Reference, ByVal p As XYZ) As Boolean Implements ISelectionFilter.AllowReference
-      Return True
-    End Function
+        Public Function AllowReference(ByVal r As Reference, ByVal p As XYZ) As Boolean Implements ISelectionFilter.AllowReference
+            Return True
+        End Function
 
-  End Class
+    End Class
 
-  Public Function Execute( _
-    ByVal commandData As ExternalCommandData, _
-    ByRef message As String, _
+    Public Function Execute(
+    ByVal commandData As ExternalCommandData,
+    ByRef message As String,
     ByVal elements As ElementSet) _
     As Result _
     Implements IExternalCommand.Execute
 
-    Dim uiDoc As UIDocument = commandData.Application.ActiveUIDocument
-    Dim doc As Document = uiDoc.Document
+        Dim uiDoc As UIDocument = commandData.Application.ActiveUIDocument
+        Dim doc As Document = uiDoc.Document
 
-    ' Create transaction for working with schema
+        ' Create transaction for working with schema
 
-    Dim trans As New Transaction(doc, "Extensible Storage")
-    trans.Start()
+        Dim trans As New Transaction(doc, "Extensible Storage")
+        trans.Start()
 
-    ' Select a wall element
+        ' Select a wall element
 
-    Dim wall As Wall = Nothing
-    Try
-      Dim r As Reference = uiDoc.Selection.PickObject(ObjectType.Element, New WallSelectionFilter)
-      wall = TryCast(doc.GetElement(r), Wall)
-    Catch exception1 As Autodesk.Revit.Exceptions.OperationCanceledException
-      message = "Nothing selected; please select a wall to attach extensible data to."
-      Return Result.Failed
-    End Try
+        Dim wall As Wall = Nothing
+        Try
+            Dim r As Reference = uiDoc.Selection.PickObject(ObjectType.Element, New WallSelectionFilter)
+            wall = TryCast(doc.GetElement(r), Wall)
+        Catch exception1 As Autodesk.Revit.Exceptions.OperationCanceledException
+            message = "Nothing selected; please select a wall to attach extensible data to."
+            Return Result.Failed
+        End Try
 
-    Debug.Assert(wall IsNot Nothing, "expected a wall to be selected")
+        Debug.Assert(wall IsNot Nothing, "expected a wall to be selected")
 
-    If wall Is Nothing Then
-      message = "Please select a wall to attach extensible data to."
-      Return Result.Failed
-    End If
+        If wall Is Nothing Then
+            message = "Please select a wall to attach extensible data to."
+            Return Result.Failed
+        End If
 
-    ' Create a schema builder
+        ' Create a schema builder
 
-    Dim builder As New SchemaBuilder(_guid)
+        Dim builder As New SchemaBuilder(_guid)
 
-    ' Set read and write access levels 
+        ' Set read and write access levels 
 
-    builder.SetReadAccessLevel(AccessLevel.Public)
-    builder.SetWriteAccessLevel(AccessLevel.Public)
+        builder.SetReadAccessLevel(AccessLevel.Public)
+        builder.SetWriteAccessLevel(AccessLevel.Public)
 
-    ' Note: if this was set as vendor or application access, 
-    ' we would have been additionally required to use SetVendorId
+        ' Note: if this was set as vendor or application access, 
+        ' we would have been additionally required to use SetVendorId
 
-    ' Set name to this schema builder
+        ' Set name to this schema builder
 
-    builder.SetSchemaName("WallSocketLocation")
-    builder.SetDocumentation("Data store for socket related info in a wall")
+        builder.SetSchemaName("WallSocketLocation")
+        builder.SetDocumentation("Data store for socket related info in a wall")
 
-    ' Create field1
+        ' Create field1
 
     Dim fieldBuilder1 As FieldBuilder =
       builder.AddSimpleField("SocketLocation", GetType(XYZ))
@@ -131,85 +131,87 @@ Friend Class ExtensibleStorage
     ' .SetSpec(SpecTypeId.Length) ' 2021
     ' GetType(XYZ)).SetUnitType(UnitType.UT_Length) ' 2020
 
-    ' Set unit type
+        ' Set unit type
 
-    'fieldBuilder1.SetUnitType(UnitType.UT_Length) ' 2020
-    fieldBuilder1.SetSpec(SpecTypeId.Length) ' 2021
+fieldBuilder1.SetSpec(SpecTypeId.Length) ' 2022
 
-    ' Add documentation (optional)
+        'fieldBuilder1.SetUnitType(UnitType.UT_Length) ' 2020
+        fieldBuilder1.SetSpec(SpecTypeId.Length) ' 2021
 
-    ' Create field2
+        ' Add documentation (optional)
 
-    Dim fieldBuilder2 As FieldBuilder = _
+        ' Create field2
+
+        Dim fieldBuilder2 As FieldBuilder =
       builder.AddSimpleField("SocketNumber", GetType(String))
 
-    'fieldBuilder2.SetUnitType(UnitType.UT_Custom);
+        'fieldBuilder2.SetUnitType(UnitType.UT_Custom);
 
-    ' Register the schema object
+        ' Register the schema object
 
-    Dim schema As Schema = builder.Finish
+        Dim schema As Schema = builder.Finish
 
-    ' Create an entity (object) for this schema (class)
+        ' Create an entity (object) for this schema (class)
 
-    Dim ent As New Entity(schema)
-    Dim socketLocation As Field = schema.GetField("SocketLocation")
-    'ent.Set(Of XYZ)(socketLocation, New XYZ(2, 0, 0), DisplayUnitType.DUT_METERS) ' 2020
-    ent.Set(Of XYZ)(socketLocation, New XYZ(2, 0, 0), UnitTypeId.Meters) ' 2021
+        Dim ent As New Entity(schema)
+        Dim socketLocation As Field = schema.GetField("SocketLocation")
+        'ent.Set(Of XYZ)(socketLocation, New XYZ(2, 0, 0), DisplayUnitType.DUT_METERS) ' 2020
+        ent.Set(Of XYZ)(socketLocation, New XYZ(2, 0, 0), UnitTypeId.Meters) ' 2021
 
-    Dim socketNumber As Field = schema.GetField("SocketNumber")
-    ent.Set(Of String)(socketNumber, "200")
+        Dim socketNumber As Field = schema.GetField("SocketNumber")
+        ent.Set(Of String)(socketNumber, "200")
 
-    wall.SetEntity(ent)
+        wall.SetEntity(ent)
 
-    ' Now create another entity (object) for this schema (class)
+        ' Now create another entity (object) for this schema (class)
 
-    Dim ent2 As New Entity(schema)
-    Dim socketNumber1 As Field = schema.GetField("SocketNumber")
-    ent2.Set(Of String)(socketNumber1, "400")
-    wall.SetEntity(ent2)
+        Dim ent2 As New Entity(schema)
+        Dim socketNumber1 As Field = schema.GetField("SocketNumber")
+        ent2.Set(Of String)(socketNumber1, "400")
+        wall.SetEntity(ent2)
 
-    ' Note: this will replace the previous entity on the wall 
+        ' Note: this will replace the previous entity on the wall 
 
-    ' List all schemas in the document
+        ' List all schemas in the document
 
-    Dim s As String = String.Empty
-    Dim schemas As IList(Of Schema) = schema.ListSchemas
-    Dim sch As Schema
-    For Each sch In schemas
-      s += vbCrLf + "Schema name: " + sch.SchemaName
-    Next
-    TaskDialog.Show("Schema details", s)
+        Dim s As String = String.Empty
+        Dim schemas As IList(Of Schema) = Schema.ListSchemas
+        Dim sch As Schema
+        For Each sch In schemas
+            s += vbCrLf + "Schema name: " + sch.SchemaName
+        Next
+        TaskDialog.Show("Schema details", s)
 
-    ' List all Fields for our schema
+        ' List all Fields for our schema
 
-    s = String.Empty
-    Dim fields As IList(Of Field) = schema.Lookup(_guid).ListFields
-    Dim fld As Field
-    For Each fld In fields
-      s += vbCrLf + "Field name: " + fld.FieldName
-    Next
-    TaskDialog.Show("Field details", s)
+        s = String.Empty
+        Dim fields As IList(Of Field) = Schema.Lookup(_guid).ListFields
+        Dim fld As Field
+        For Each fld In fields
+            s += vbCrLf + "Field name: " + fld.FieldName
+        Next
+        TaskDialog.Show("Field details", s)
 
-    ' Extract the value for the field we created
+        ' Extract the value for the field we created
 
-    Dim wallSchemaEnt As Entity = wall.GetEntity(schema.Lookup(_guid))
+        Dim wallSchemaEnt As Entity = wall.GetEntity(Schema.Lookup(_guid))
 
-    Dim wallSocketPos As XYZ = wallSchemaEnt.Get(Of XYZ)(
+        Dim wallSocketPos As XYZ = wallSchemaEnt.Get(Of XYZ)(
       Schema.Lookup(_guid).GetField("SocketLocation"),
       UnitTypeId.Meters) ' 2021
-    ' DisplayUnitType.DUT_METERS) ' 2020 _
+        ' DisplayUnitType.DUT_METERS) ' 2020 _
 
-    s = "SocketLocation: " + Format.PointString(wallSocketPos)
+        s = "SocketLocation: " + Format.PointString(wallSocketPos)
 
-    Dim wallSocketNumber As String = wallSchemaEnt.Get(Of String)( _
-      schema.Lookup(_guid).GetField("SocketNumber"))
+        Dim wallSocketNumber As String = wallSchemaEnt.Get(Of String)(
+      Schema.Lookup(_guid).GetField("SocketNumber"))
 
-    s += vbCrLf + "SocketNumber: " + wallSocketNumber
+        s += vbCrLf + "SocketNumber: " + wallSocketNumber
 
-    TaskDialog.Show("Field Values", s)
+        TaskDialog.Show("Field Values", s)
 
-    trans.Commit()
+        trans.Commit()
 
-    Return Result.Succeeded
-  End Function
+        Return Result.Succeeded
+    End Function
 End Class
