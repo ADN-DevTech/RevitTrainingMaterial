@@ -9,7 +9,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration( "" )]
 [assembly: AssemblyCompany( "Autodesk, Inc." )]
 [assembly: AssemblyProduct( "RFA LabsCs" )]
-[assembly: AssemblyCopyright( "Copyright (C) 2009-2020 by Autodesk, Inc." )]
+[assembly: AssemblyCopyright( "Copyright (C) 2009-2021 by Autodesk, Inc." )]
 [assembly: AssemblyTrademark( "" )]
 [assembly: AssemblyCulture( "" )]
 
@@ -31,5 +31,5 @@ using System.Runtime.InteropServices;
 // You can specify all the values or you can default the Build and Revision Numbers
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion( "2021.0.0.0" )]
-[assembly: AssemblyFileVersion( "2021.0.0.0" )]
+[assembly: AssemblyVersion( "2022.0.0.0" )]
+[assembly: AssemblyFileVersion( "2022.0.0.0" )]
