@@ -413,9 +413,7 @@ namespace UiCs
     //  TaskDialog.Show("Revit UI Lab", s);
     //}
 
-    /// Changing this in Revit 2015  
-    /// 
-    public void ShowElementList(IEnumerable elemIds, string header)
+    public void ShowElementList(IEnumerable<ElementId> elemIds, string header)
     {
       string s = "\n\n - Class - Category - Name (or Family: Type Name) - Id - " + "\r\n";
 
@@ -431,8 +429,6 @@ namespace UiCs
 
       TaskDialog.Show("Revit UI Lab", s);
     }
-
-    /// end of Changing in Revit 2015
 
     /// <summary>
     /// Helper function: summarize an element information as a line of text, 

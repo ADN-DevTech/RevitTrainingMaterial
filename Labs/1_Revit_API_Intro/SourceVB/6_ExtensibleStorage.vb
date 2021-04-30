@@ -125,13 +125,15 @@ Friend Class ExtensibleStorage
 
         ' Create field1
 
-        Dim fieldBuilder1 As FieldBuilder =
+    Dim fieldBuilder1 As FieldBuilder =
       builder.AddSimpleField("SocketLocation", GetType(XYZ))
 
-        ' .SetSpec(SpecTypeId.Length) ' 2021
-        ' GetType(XYZ)).SetUnitType(UnitType.UT_Length) ' 2020
+    ' .SetSpec(SpecTypeId.Length) ' 2021
+    ' GetType(XYZ)).SetUnitType(UnitType.UT_Length) ' 2020
 
         ' Set unit type
+
+fieldBuilder1.SetSpec(SpecTypeId.Length) ' 2022
 
         'fieldBuilder1.SetUnitType(UnitType.UT_Length) ' 2020
         fieldBuilder1.SetSpec(SpecTypeId.Length) ' 2021
