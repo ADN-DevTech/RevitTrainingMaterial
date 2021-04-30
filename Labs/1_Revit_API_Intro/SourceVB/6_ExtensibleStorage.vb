@@ -133,8 +133,6 @@ Friend Class ExtensibleStorage
 
         ' Set unit type
 
-fieldBuilder1.SetSpec(SpecTypeId.Length) ' 2022
-
         'fieldBuilder1.SetUnitType(UnitType.UT_Length) ' 2020
         fieldBuilder1.SetSpec(SpecTypeId.Length) ' 2021
 
