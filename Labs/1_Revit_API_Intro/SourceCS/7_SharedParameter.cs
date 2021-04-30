@@ -87,8 +87,9 @@ namespace IntroCs
       bool visible = cat.AllowsBoundParameters;
 
       // Get or create the shared params definition
-      Definition fireRatingParamDef = GetOrCreateSharedParamsDefinition(
-        sharedParamsGroup, ParameterType.Number, kSharedParamsDefFireRating, visible);
+         ForgeTypeId forgeTypeId = new ForgeTypeId(SpecTypeId.Number.ToString());
+         Definition fireRatingParamDef = GetOrCreateSharedParamsDefinition(
+        sharedParamsGroup, forgeTypeId, kSharedParamsDefFireRating, visible);
       if (null == fireRatingParamDef)
       {
         message = "Error in creating shared parameter.";
@@ -195,7 +196,7 @@ namespace IntroCs
 
     public static Definition GetOrCreateSharedParamsDefinition(
       DefinitionGroup defGroup,
-      ParameterType defType,
+      ForgeTypeId forgeTypeId,
       string defName,
       bool visible)
     {
@@ -203,7 +204,7 @@ namespace IntroCs
       if (null == definition)
       {
         try
-        {
+        {          
           //definition = defGroup.Definitions.Create(defName, defType, visible);
 
           // 'Autodesk.Revit.DB.Definitions.Create(string, Autodesk.Revit.DB.ParameterType, bool)' is obsolete: 
@@ -214,7 +215,7 @@ namespace IntroCs
 
           ExternalDefinitionCreationOptions opt
             = new ExternalDefinitionCreationOptions(
-              defName, defType);
+              defName, forgeTypeId);
           opt.Visible = true;
           definition = defGroup.Definitions.Create(opt);
         }
@@ -261,14 +262,14 @@ namespace IntroCs
           return Result.Failed;
         }
         // visible param
-        Definition docParamDefVisible = SharedParameter.GetOrCreateSharedParamsDefinition(sharedParamsGroup, ParameterType.Integer, kParamNameVisible, true);
+        Definition docParamDefVisible = SharedParameter.GetOrCreateSharedParamsDefinition(sharedParamsGroup, new ForgeTypeId(SpecTypeId.Number.ToString()), kParamNameVisible, true);
         if (null == docParamDefVisible)
         {
           TaskDialog.Show("Per document parameter", "Error creating visible per-doc parameter.");
           return Result.Failed;
         }
         // invisible param
-        Definition docParamDefInvisible = SharedParameter.GetOrCreateSharedParamsDefinition(sharedParamsGroup, ParameterType.Integer, kParamNameInvisible, false);
+        Definition docParamDefInvisible = SharedParameter.GetOrCreateSharedParamsDefinition(sharedParamsGroup, new ForgeTypeId(SpecTypeId.Number.ToString()), kParamNameInvisible, false);
         if (null == docParamDefInvisible)
         {
           TaskDialog.Show("Per document parameter", "Error creating invisible per-doc parameter.");
