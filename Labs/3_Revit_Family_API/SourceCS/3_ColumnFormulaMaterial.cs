@@ -517,8 +517,8 @@ namespace FamilyCs
 
       // API parameter group for Dimension is PG_GEOMETRY:
       //
-      ForgeTypeId builtinParamGroup=new ForgeTypeId(BuiltInParameterGroup.PG_GEOMETRY.ToString());
-      ForgeTypeId parametertype = new ForgeTypeId(SpecTypeId.Length.ToString());
+      ForgeTypeId builtinParamGroup=new ForgeTypeId(GroupTypeId.Geometry.TypeId);
+      ForgeTypeId parametertype = SpecTypeId.Length;
       FamilyParameter paramTw = mgr.AddParameter(
         "Tw", builtinParamGroup,
         parametertype, false);
@@ -795,8 +795,8 @@ namespace FamilyCs
         // this time we use instance parameter so that we can change it at instance level.
         //
         FamilyManager pFamilyMgr = _doc.FamilyManager;
-        ForgeTypeId builtinParamGroup = new ForgeTypeId(BuiltInParameterGroup.PG_MATERIALS.ToString());
-        ForgeTypeId parametertype = new ForgeTypeId(SpecTypeId.Reference.Material.ToString());
+        ForgeTypeId builtinParamGroup = new ForgeTypeId(GroupTypeId.Materials.TypeId);
+        ForgeTypeId parametertype = SpecTypeId.Reference.Material;
         FamilyParameter famParamFinish = pFamilyMgr.AddParameter("ColumnFinish", builtinParamGroup,parametertype, true);
 
         // (2b.1) associate material parameter to the family parameter we just added

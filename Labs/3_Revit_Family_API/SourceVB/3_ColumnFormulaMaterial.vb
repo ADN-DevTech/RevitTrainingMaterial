@@ -501,8 +501,8 @@ Public Class RvtCmd_FamilyCreateColumnFormulaMaterial
         ''
         ''  parameter group for Dimension is PG_GEOMETRY in API
         ''
-        Dim builtinParamGroup As ForgeTypeId = New ForgeTypeId(BuiltInParameterGroup.PG_GEOMETRY.ToString())
-        Dim parametertype As ForgeTypeId = New ForgeTypeId(SpecTypeId.Length.ToString())
+        Dim builtinParamGroup As ForgeTypeId = New ForgeTypeId(GroupTypeId.Geometry.TypeId)
+        Dim parametertype As ForgeTypeId = SpecTypeId.Length
         Dim paramTw As FamilyParameter = _doc.FamilyManager.AddParameter("Tw", builtinParamGroup, parametertype, False)
         Dim paramTd As FamilyParameter = _doc.FamilyManager.AddParameter("Td", builtinParamGroup, parametertype, False)
 
@@ -768,8 +768,8 @@ Public Class RvtCmd_FamilyCreateColumnFormulaMaterial
         ''  this time we use instance parameter so that we can change it at instance level.
         ''
         Dim pFamilyMgr As FamilyManager = _doc.FamilyManager
-        Dim builtinParamGroup As ForgeTypeId = New ForgeTypeId(BuiltInParameterGroup.PG_MATERIALS.ToString())
-        Dim parametertype As ForgeTypeId = New ForgeTypeId(SpecTypeId.Reference.Material.ToString())
+        Dim builtinParamGroup As ForgeTypeId = New ForgeTypeId(GroupTypeId.Materials.TypeId)
+        Dim parametertype As ForgeTypeId = SpecTypeId.Reference.Material
         Dim famParamFinish As FamilyParameter = pFamilyMgr.AddParameter("ColumnFinish", builtinParamGroup, parametertype, True)
 
         ''  (2b.1) associate material parameter to the family parameter we just added

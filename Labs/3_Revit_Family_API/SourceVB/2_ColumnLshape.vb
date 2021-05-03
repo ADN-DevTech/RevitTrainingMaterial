@@ -489,8 +489,8 @@ Public Class RvtCmd_FamilyCreateColumnLShape
 
         ''  parameter group for Dimension is PG_GEOMETRY in API
         ''
-        Dim builtinParamGroup As ForgeTypeId = New ForgeTypeId(BuiltInParameterGroup.PG_GEOMETRY.ToString())
-        Dim parameterTypeId As ForgeTypeId = New ForgeTypeId(SpecTypeId.Length.ToString())
+        Dim builtinParamGroup As ForgeTypeId = New ForgeTypeId(GroupTypeId.Geometry.TypeId)
+        Dim parameterTypeId As ForgeTypeId = SpecTypeId.Length
         Dim paramTw As FamilyParameter = _doc.FamilyManager.AddParameter("Tw", builtinParamGroup, parameterTypeId, False)
         Dim paramTd As FamilyParameter = _doc.FamilyManager.AddParameter("Td", builtinParamGroup, parameterTypeId, False)
 

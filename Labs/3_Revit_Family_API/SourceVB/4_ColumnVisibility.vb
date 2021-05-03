@@ -512,8 +512,8 @@ Public Class RvtCmd_FamilyCreateColumnVisibility
         ''
         ''  parameter group for Dimension is PG_GEOMETRY in API
         ''
-        Dim builtinParamgroupTypeId As ForgeTypeId = New ForgeTypeId(BuiltInParameterGroup.PG_GEOMETRY.ToString())
-        Dim parameterTypeId As ForgeTypeId = New ForgeTypeId(SpecTypeId.Length.ToString())
+        Dim builtinParamgroupTypeId As ForgeTypeId = New ForgeTypeId(GroupTypeId.Geometry.TypeId)
+        Dim parameterTypeId As ForgeTypeId = SpecTypeId.Length
         Dim paramTw As FamilyParameter = _doc.FamilyManager.AddParameter("Tw", builtinParamgroupTypeId, parameterTypeId, False)
         Dim paramTd As FamilyParameter = _doc.FamilyManager.AddParameter("Td", builtinParamgroupTypeId,parameterTypeId, False)
 
@@ -778,8 +778,8 @@ Public Class RvtCmd_FamilyCreateColumnVisibility
         ''  this time we use instance parameter so that we can change it at instance level.
         ''
         Dim pFamilyMgr As FamilyManager = _doc.FamilyManager
-        Dim builtinParamgroupTypeId As ForgeTypeId = New ForgeTypeId(BuiltInParameterGroup.PG_MATERIALS.ToString())
-        Dim parameterTypeId As ForgeTypeId = New ForgeTypeId(SpecTypeId.Reference.Material.ToString())
+        Dim builtinParamgroupTypeId As ForgeTypeId = New ForgeTypeId(GroupTypeId.Materials.TypeId)
+        Dim parameterTypeId As ForgeTypeId = SpecTypeId.Reference.Material
         Dim famParamFinish As FamilyParameter = pFamilyMgr.AddParameter("ColumnFinish", builtinParamgroupTypeId, parameterTypeId, True)
 
         ''  (2b.1) associate material parameter to the family parameter we just added
