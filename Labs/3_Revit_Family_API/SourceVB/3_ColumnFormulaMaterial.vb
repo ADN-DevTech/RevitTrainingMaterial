@@ -497,16 +497,18 @@ Public Class RvtCmd_FamilyCreateColumnFormulaMaterial
   '' ============================================
   Sub addParameters()
 
-    ''  (1)  add dimensional parameters, Tw and Td.
-    ''
-    ''  parameter group for Dimension is PG_GEOMETRY in API
-    ''
-    Dim paramTw As FamilyParameter = _doc.FamilyManager.AddParameter("Tw", BuiltInParameterGroup.PG_GEOMETRY, ParameterType.Length, False)
-    Dim paramTd As FamilyParameter = _doc.FamilyManager.AddParameter("Td", BuiltInParameterGroup.PG_GEOMETRY, ParameterType.Length, False)
+        ''  (1)  add dimensional parameters, Tw and Td.
+        ''
+        ''  parameter group for Dimension is PG_GEOMETRY in API
+        ''
+        Dim builtinParamGroup As ForgeTypeId = New ForgeTypeId(BuiltInParameterGroup.PG_GEOMETRY.ToString())
+        Dim parametertype As ForgeTypeId = New ForgeTypeId(SpecTypeId.Length.ToString())
+        Dim paramTw As FamilyParameter = _doc.FamilyManager.AddParameter("Tw", builtinParamGroup, parametertype, False)
+        Dim paramTd As FamilyParameter = _doc.FamilyManager.AddParameter("Td", builtinParamGroup, parametertype, False)
 
-    ''  give initial values
-    ''
-    Dim tw As Double = mmToFeet(150.0) ' hard coded for simplicity
+        ''  give initial values
+        ''
+        Dim tw As Double = mmToFeet(150.0) ' hard coded for simplicity
     Dim td As Double = mmToFeet(150.0)
     _doc.FamilyManager.Set(paramTw, tw)
     _doc.FamilyManager.Set(paramTd, td)
@@ -757,20 +759,22 @@ Public Class RvtCmd_FamilyCreateColumnFormulaMaterial
     End If
     Dim idMat As ElementId = pMat.Id
 
-    ''  (2a) this add a material to the solid base.  but then, we cannot change it for each column.
-    ''
-    'pSolid.Parameter("Material").Set(idMat)
+        ''  (2a) this add a material to the solid base.  but then, we cannot change it for each column.
+        ''
+        'pSolid.Parameter("Material").Set(idMat)
 
-    ''  (2b) add a parameter for material finish
-    ''
-    ''  this time we use instance parameter so that we can change it at instance level.
-    ''
-    Dim pFamilyMgr As FamilyManager = _doc.FamilyManager
-    Dim famParamFinish As FamilyParameter = pFamilyMgr.AddParameter("ColumnFinish", BuiltInParameterGroup.PG_MATERIALS, ParameterType.Material, True)
+        ''  (2b) add a parameter for material finish
+        ''
+        ''  this time we use instance parameter so that we can change it at instance level.
+        ''
+        Dim pFamilyMgr As FamilyManager = _doc.FamilyManager
+        Dim builtinParamGroup As ForgeTypeId = New ForgeTypeId(BuiltInParameterGroup.PG_MATERIALS.ToString())
+        Dim parametertype As ForgeTypeId = New ForgeTypeId(SpecTypeId.Reference.Material.ToString())
+        Dim famParamFinish As FamilyParameter = pFamilyMgr.AddParameter("ColumnFinish", builtinParamGroup, parametertype, True)
 
-    ''  (2b.1) associate material parameter to the family parameter we just added
-    ''
-    pSolid.LookupParameter("Material").Set(idMat)
+        ''  (2b.1) associate material parameter to the family parameter we just added
+        ''
+        pSolid.LookupParameter("Material").Set(idMat)
 
     '' Dim paramMat As Parameter = pSolid.Parameter("Material")
 

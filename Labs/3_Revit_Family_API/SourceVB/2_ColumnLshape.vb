@@ -487,19 +487,21 @@ Public Class RvtCmd_FamilyCreateColumnLShape
   '' ============================================
   Sub addParameters()
 
-    ''  parameter group for Dimension is PG_GEOMETRY in API
-    ''
-    Dim paramTw As FamilyParameter = _doc.FamilyManager.AddParameter("Tw", BuiltInParameterGroup.PG_GEOMETRY, ParameterType.Length, False)
-    Dim paramTd As FamilyParameter = _doc.FamilyManager.AddParameter("Td", BuiltInParameterGroup.PG_GEOMETRY, ParameterType.Length, False)
+        ''  parameter group for Dimension is PG_GEOMETRY in API
+        ''
+        Dim builtinParamGroup As ForgeTypeId = New ForgeTypeId(BuiltInParameterGroup.PG_GEOMETRY.ToString())
+        Dim parameterTypeId As ForgeTypeId = New ForgeTypeId(SpecTypeId.Length.ToString())
+        Dim paramTw As FamilyParameter = _doc.FamilyManager.AddParameter("Tw", builtinParamGroup, parameterTypeId, False)
+        Dim paramTd As FamilyParameter = _doc.FamilyManager.AddParameter("Td", builtinParamGroup, parameterTypeId, False)
 
-    ''  give initial values
-    ''
-    Dim tw As Double = mmToFeet(150.0) ' hard coded for simplicity
-    Dim td As Double = mmToFeet(150.0)
-    _doc.FamilyManager.Set(paramTw, tw)
-    _doc.FamilyManager.Set(paramTd, td)
+        ''  give initial values
+        ''
+        Dim tw As Double = mmToFeet(150.0) ' hard coded for simplicity
+        Dim td As Double = mmToFeet(150.0)
+        _doc.FamilyManager.Set(paramTw, tw)
+        _doc.FamilyManager.Set(paramTd, td)
 
-  End Sub
+    End Sub
 
   '' ============================================
   ''   (3.2) add dimensions

@@ -508,12 +508,14 @@ Public Class RvtCmd_FamilyCreateColumnVisibility
   '' ============================================
   Sub addParameters()
 
-    ''  (1)  add dimensional parameters, Tw and Td.
-    ''
-    ''  parameter group for Dimension is PG_GEOMETRY in API
-    ''
-    Dim paramTw As FamilyParameter = _doc.FamilyManager.AddParameter("Tw", BuiltInParameterGroup.PG_GEOMETRY, ParameterType.Length, False)
-    Dim paramTd As FamilyParameter = _doc.FamilyManager.AddParameter("Td", BuiltInParameterGroup.PG_GEOMETRY, ParameterType.Length, False)
+        ''  (1)  add dimensional parameters, Tw and Td.
+        ''
+        ''  parameter group for Dimension is PG_GEOMETRY in API
+        ''
+        Dim builtinParamgroupTypeId As ForgeTypeId = New ForgeTypeId(BuiltInParameterGroup.PG_GEOMETRY.ToString())
+        Dim parameterTypeId As ForgeTypeId = New ForgeTypeId(SpecTypeId.Length.ToString())
+        Dim paramTw As FamilyParameter = _doc.FamilyManager.AddParameter("Tw", builtinParamgroupTypeId, parameterTypeId, False)
+        Dim paramTd As FamilyParameter = _doc.FamilyManager.AddParameter("Td", builtinParamgroupTypeId,parameterTypeId, False)
 
     ''  give initial values
     ''
@@ -767,28 +769,30 @@ Public Class RvtCmd_FamilyCreateColumnVisibility
     End If
     Dim idMat As ElementId = pMat.Id
 
-    ''  (2a) this add a material to the solid base.  but then, we cannot change it for each column.
-    ''
-    'pSolid.Parameter("Material").Set(idMat)
+        ''  (2a) this add a material to the solid base.  but then, we cannot change it for each column.
+        ''
+        'pSolid.Parameter("Material").Set(idMat)
 
-    ''  (2b) add a parameter for material finish
-    ''
-    ''  this time we use instance parameter so that we can change it at instance level.
-    ''
-    Dim pFamilyMgr As FamilyManager = _doc.FamilyManager
-    Dim famParamFinish As FamilyParameter = pFamilyMgr.AddParameter("ColumnFinish", BuiltInParameterGroup.PG_MATERIALS, ParameterType.Material, True)
+        ''  (2b) add a parameter for material finish
+        ''
+        ''  this time we use instance parameter so that we can change it at instance level.
+        ''
+        Dim pFamilyMgr As FamilyManager = _doc.FamilyManager
+        Dim builtinParamgroupTypeId As ForgeTypeId = New ForgeTypeId(BuiltInParameterGroup.PG_MATERIALS.ToString())
+        Dim parameterTypeId As ForgeTypeId = New ForgeTypeId(SpecTypeId.Reference.Material.ToString())
+        Dim famParamFinish As FamilyParameter = pFamilyMgr.AddParameter("ColumnFinish", builtinParamgroupTypeId, parameterTypeId, True)
 
-    ''  (2b.1) associate material parameter to the family parameter we just added
-    ''
+        ''  (2b.1) associate material parameter to the family parameter we just added
+        ''
 
-    'Dim paramMat As Parameter = pSolid.Parameter("Material")
+        'Dim paramMat As Parameter = pSolid.Parameter("Material")
 
-    ''  'Get' accessor of 'Public ReadOnly Property Parameter(paramName As String) As Autodesk.Revit.DB.Parameter' is obsolete: 
-    '' 'This property is obsolete in Revit 2015    
+        ''  'Get' accessor of 'Public ReadOnly Property Parameter(paramName As String) As Autodesk.Revit.DB.Parameter' is obsolete: 
+        '' 'This property is obsolete in Revit 2015    
 
-    '' Updated for Revit 2015
+        '' Updated for Revit 2015
 
-    Dim paramMat As Parameter = pSolid.LookupParameter("Material")
+        Dim paramMat As Parameter = pSolid.LookupParameter("Material")
 
     pFamilyMgr.AssociateElementParameterToFamilyParameter(paramMat, famParamFinish)
 
