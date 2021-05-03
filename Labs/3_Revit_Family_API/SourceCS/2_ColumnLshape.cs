@@ -503,13 +503,16 @@ namespace FamilyCs
 
             // API parameter group for Dimension is PG_GEOMETRY:
             //
+            ForgeTypeId builtinParamGroup = new ForgeTypeId(GroupTypeId.Geometry.TypeId);
+            ForgeTypeId parameterTypeId = SpecTypeId.Length;
+            
             FamilyParameter paramTw = mgr.AddParameter(
-              "Tw", BuiltInParameterGroup.PG_GEOMETRY,
-              ParameterType.Length, false);
+              "Tw", builtinParamGroup,
+              parameterTypeId, false);
 
             FamilyParameter paramTd = mgr.AddParameter(
-              "Td", BuiltInParameterGroup.PG_GEOMETRY,
-              ParameterType.Length, false);
+              "Td", builtinParamGroup,
+              parameterTypeId, false);
 
             // set initial values:
             //

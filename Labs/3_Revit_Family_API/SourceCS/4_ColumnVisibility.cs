@@ -516,15 +516,17 @@ namespace FamilyCs
     {
       FamilyManager mgr = _doc.FamilyManager;
 
-      // API parameter group for Dimension is PG_GEOMETRY:
-      //
+            // API parameter group for Dimension is PG_GEOMETRY:
+            //
+            ForgeTypeId builtinParamgroupTypeId = new ForgeTypeId(GroupTypeId.Geometry.TypeId);
+            ForgeTypeId parameterTypeId =SpecTypeId.Length;
       FamilyParameter paramTw = mgr.AddParameter(
-        "Tw", BuiltInParameterGroup.PG_GEOMETRY,
-        ParameterType.Length, false );
+        "Tw", builtinParamgroupTypeId,
+        parameterTypeId, false );
 
       FamilyParameter paramTd = mgr.AddParameter(
-        "Td", BuiltInParameterGroup.PG_GEOMETRY,
-        ParameterType.Length, false );
+        "Td", builtinParamgroupTypeId,
+        parameterTypeId, false );
 
       // set initial values:
       //
@@ -783,13 +785,14 @@ namespace FamilyCs
         // (2a) this add a material to the solid base.  but then, we cannot change it for each column.
         //
         //pSolid.Parameter("Material").Set(idMat)
-
         // (2b) add a parameter for material finish
         //
         // this time we use instance parameter so that we can change it at instance level.
         //
+        ForgeTypeId builtinParamgroupTypeId = new ForgeTypeId(GroupTypeId.Materials.TypeId);
+        ForgeTypeId parameterTypeId = SpecTypeId.Reference.Material;
         FamilyManager pFamilyMgr = _doc.FamilyManager;
-        FamilyParameter famParamFinish = pFamilyMgr.AddParameter( "ColumnFinish", BuiltInParameterGroup.PG_MATERIALS, ParameterType.Material, true );
+        FamilyParameter famParamFinish = pFamilyMgr.AddParameter( "ColumnFinish", builtinParamgroupTypeId,parameterTypeId, true );
 
         // (2b.1) associate material parameter to the family parameter we just added
         //
